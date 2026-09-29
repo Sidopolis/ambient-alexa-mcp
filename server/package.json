@@ -1,0 +1,28 @@
+{
+  "name": "auraplus-mcp-server",
+  "version": "1.0.0",
+  "description": "Self-hosted Streamable HTTP Model Context Protocol (MCP) server for Alexa+ with AWS Bedrock integration",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "keywords": [
+    "alexa-plus",
+    "mcp",
+    "model-context-protocol",
+    "streamable-http",
+    "aws-bedrock",
+    "agentic-ai"
+  ],
+  "author": "Sidhant Patro",
+  "license": "MIT",
+  "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.750.0",
+    "@modelcontextprotocol/sdk": "^1.6.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  }
+}

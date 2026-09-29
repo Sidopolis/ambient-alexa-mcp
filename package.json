@@ -1,0 +1,19 @@
+{
+  "name": "auraplus-alexa-mcp",
+  "version": "1.0.0",
+  "description": "Aura+ - Autonomous Agent & Model Context Protocol (MCP) Ecosystem for Alexa+ with AWS Bedrock",
+  "scripts": {
+    "start": "npm --prefix server start",
+    "dev": "npm --prefix server run dev"
+  },
+  "keywords": [
+    "alexa-plus",
+    "mcp",
+    "model-context-protocol",
+    "streamable-http",
+    "aws-bedrock",
+    "amazon-developer-hackathon"
+  ],
+  "author": "Sidhant Patro",
+  "license": "MIT"
+}

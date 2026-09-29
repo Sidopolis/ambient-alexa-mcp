@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aura+ | Autonomous Alexa+ Agent & MCP Streamable HTTP Platform</title>
+  <meta name="description" content="Self-hosted Streamable HTTP Model Context Protocol (MCP) server & simulated Alexa+ agent powered by AWS Bedrock.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Ambient background glow layers -->
+  <div class="ambient-glow cyan-glow"></div>
+  <div class="ambient-glow purple-glow"></div>
+
+  <div class="app-layout">
+    <!-- Top Navigation Bar -->
+    <header class="top-nav">
+      <div class="brand">
+        <div class="brand-badge">ALEXA+</div>
+        <div class="brand-title">
+          <h1>Aura<span>+</span></h1>
+          <span class="brand-sub">Autonomous MCP Agent</span>
+        </div>
+      </div>
+
+      <!-- Telemetry & Specs Pill -->
+      <div class="header-badges">
+        <div class="status-pill live-pill" id="mcpStatusBadge">
+          <span class="pulsing-dot"></span>
+          <span class="status-text">MCP Streamable HTTP (2025-11-25)</span>
+        </div>
+        <div class="status-pill bedrock-pill" id="bedrockPill">
+          <span class="aws-icon">⚡</span>
+          <span>AWS Bedrock Runtime</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Workspace Grid -->
+    <main class="main-content">
+      <!-- Left Panel: Simulated Alexa+ Interaction Stage -->
+      <section class="stage-panel glass-card">
+        <!-- Iconic Alexa+ Dynamic Multi-Color Ring -->
+        <div class="ring-container" id="alexaRingWrapper">
+          <div class="alexa-glow"></div>
+          <div class="alexa-ring" id="alexaRing">
+            <div class="ring-core">
+              <button class="mic-toggle-btn" id="micBtn" title="Click to Speak to Alexa+">
+                <svg class="mic-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                  <line x1="12" y1="19" x2="12" y2="23"/>
+                  <line x1="8" y1="23" x2="16" y2="23"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="alexa-state-label" id="alexaStateLabel">Ready • Say "Alexa" or Click to Speak</div>
+        </div>
+
+        <!-- Real-Time Dialogue Bubble -->
+        <div class="speech-dialogue" id="speechDialogue">
+          <div class="user-transcript" id="userTranscript">
+            <span class="speaker-tag">You:</span>
+            <span class="text">"Alexa, activate Deep Focus routine and adjust the lights."</span>
+          </div>
+          <div class="agent-response" id="agentResponse">
+            <span class="speaker-tag">Alexa+:</span>
+            <span class="text" id="responseText">"Welcome to Aura+. I am connected via Streamable HTTP to your self-hosted MCP server and AWS Bedrock. Try speaking or clicking a sample intent below."</span>
+          </div>
+        </div>
+
+        <!-- Quick Sample Prompts -->
+        <div class="quick-prompts">
+          <span class="quick-label">Try autonomous intents:</span>
+          <div class="prompt-chips">
+            <button class="chip" data-prompt="Activate Deep Focus routine and set lights">🎯 Deep Focus Routine</button>
+            <button class="chip" data-prompt="Turn on living room lights with cyan glow">💡 Living Room Lights</button>
+            <button class="chip" data-prompt="Adjust climate thermostat to 22 degrees">❄️ Set Climate 22°C</button>
+            <button class="chip" data-prompt="Check Hackathon checklist and MCP status">📋 Hackathon Checklist</button>
+          </div>
+        </div>
+
+        <!-- Custom Prompt Input -->
+        <form class="prompt-input-bar" id="promptForm">
+          <input type="text" id="promptInput" placeholder="Type a command or ask Alexa+ to execute a workflow..." autocomplete="off">
+          <button type="submit" class="send-btn" id="sendBtn" title="Send to Agent">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
+        </form>
+
+        <!-- Dynamic Visual Display (MCP Apps: Cards & Carousels) -->
+        <div class="visual-cards-container">
+          <div class="cards-header">
+            <h3>Interactive Visual Surface <span class="badge-mcp-app">MCP Apps Spec</span></h3>
+            <span class="cards-subtitle">Rich multi-modal components rendered directly by MCP tool execution</span>
+          </div>
+          <div class="cards-canvas" id="cardsCanvas">
+            <!-- Dynamically injected via visualCards.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Panel: Live MCP Protocol & Streamable HTTP Inspector -->
+      <aside class="inspector-panel glass-card">
+        <div class="inspector-header">
+          <div class="title-group">
+            <div class="terminal-dots">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+            </div>
+            <h2>MCP Stream Inspector</h2>
+          </div>
+          <button class="clear-log-btn" id="clearLogBtn" title="Clear log stream">Clear</button>
+        </div>
+
+        <div class="telemetry-bar">
+          <div class="telemetry-metric">
+            <span class="metric-label">TRANSPORT</span>
+            <span class="metric-val highlight">Streamable HTTP</span>
+          </div>
+          <div class="telemetry-metric">
+            <span class="metric-label">SPEC VER</span>
+            <span class="metric-val">2025-11-25</span>
+          </div>
+          <div class="telemetry-metric">
+            <span class="metric-label">BEDROCK LATENCY</span>
+            <span class="metric-val" id="telemetryLatency">48ms</span>
+          </div>
+          <div class="telemetry-metric">
+            <span class="metric-label">TOKENS</span>
+            <span class="metric-val" id="telemetryTokens">164</span>
+          </div>
+        </div>
+
+        <!-- Real-Time Streamable HTTP JSON-RPC Event Log -->
+        <div class="stream-log-container" id="streamLogContainer">
+          <div class="log-entry system-entry">
+            <span class="log-time">[System]</span>
+            <span class="log-body">Connected to Streamable HTTP endpoint: <code>/sse</code> (Keep-Alive Active)</span>
+          </div>
+        </div>
+
+        <!-- Active MCP Registered Tools -->
+        <div class="tools-inventory">
+          <h4>Active MCP Server Tools</h4>
+          <div class="tool-tags" id="toolTags">
+            <span class="tool-tag" title="smart_home_control">⚡ smart_home_control</span>
+            <span class="tool-tag" title="execute_multi_step_routine">🔄 execute_multi_step_routine</span>
+            <span class="tool-tag" title="manage_context_memory">🧠 manage_context_memory</span>
+            <span class="tool-tag" title="render_interactive_card">🖼️ render_interactive_card</span>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Hackathon Track Footer -->
+    <footer class="app-footer">
+      <div class="footer-left">
+        <span>Built for <strong>Amazon Developer Hackathon</strong></span>
+        <span class="footer-separator">•</span>
+        <span>Primary Track: <strong>Alexa+</strong></span>
+        <span class="footer-separator">•</span>
+        <span>Mini-Challenges: <strong>AWS Builder & Open Source</strong></span>
+      </div>
+      <div class="footer-right">
+        <a href="https://github.com" target="_blank" class="footer-link">GitHub Repository (MIT)</a>
+        <span class="footer-separator">•</span>
+        <a href="/sse" target="_blank" class="footer-link">Direct SSE Stream</a>
+      </div>
+    </footer>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
