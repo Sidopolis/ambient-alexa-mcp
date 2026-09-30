@@ -265,6 +265,9 @@ function renderCard(card) {
   cardsCanvas.prepend(cardElement);
 }
 
+// Expose prompt handler on window for inline card onclick handlers
+window.handleUserPrompt = handleUserPrompt;
+
 // Global action handler for card buttons
 window.toggleDeviceAction = async function(deviceId, action) {
   try {
@@ -275,8 +278,16 @@ window.toggleDeviceAction = async function(deviceId, action) {
     });
     const data = await res.json();
     if (data.success) {
-      appendLog("event-tool", `Device ${deviceId} toggled: ${action}`);
+      appendLog("event-tool", `⚡ Device [${deviceId}] toggled: ${action.toUpperCase()}`);
       speakAlexaResponse(`Living room lighting is now ${action === 'turn_on' ? 'turned on' : 'turned off'}.`);
+
+      // Dynamically update existing device cards in the DOM
+      document.querySelectorAll(".ui-card").forEach(c => {
+        if (c.innerHTML.includes("Living Room Light")) {
+          const statusVal = c.querySelector(".metric-item .val");
+          if (statusVal) statusVal.textContent = action === 'turn_on' ? "Active (On)" : "Off";
+        }
+      });
     }
   } catch (err) {
     console.error("Device toggle failed:", err);

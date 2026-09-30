@@ -109,37 +109,7 @@ export async function runAgentReasoning(userPrompt, conversationContext = []) {
 function formulateAutonomousPlan(prompt) {
   const lower = prompt.toLowerCase();
 
-  // Smart Home Lights / Climate / Routine
-  if (lower.includes("light") || lower.includes("living room")) {
-    const action = lower.includes("off") ? "turn_off" : "turn_on";
-    const color = lower.includes("purple") ? "#9d00ff" : lower.includes("cyan") ? "#00d2ff" : "#ffffff";
-    return {
-      reasoning: "User expressed intent regarding living room lighting. Invoking smart_home_control MCP tool.",
-      toolName: "smart_home_control",
-      toolArgs: { deviceId: "living_room_light", action, value: color },
-      responseText: `I've ${action === "turn_on" ? "turned on" : "turned off"} the Living Room lights and synced the ambience for you.`,
-      defaultCard: {
-        cardType: "device_controller",
-        title: "Living Room Lighting",
-        details: { state: action === "turn_on" ? "Active" : "Off", color, brightness: "80%" }
-      }
-    };
-  }
-
-  if (lower.includes("temp") || lower.includes("cool") || lower.includes("warm") || lower.includes("climate")) {
-    return {
-      reasoning: "User intent targets environmental climate control. Adjusting thermostat to optimum 22°C.",
-      toolName: "smart_home_control",
-      toolArgs: { deviceId: "thermostat", action: "set_temperature", value: "22" },
-      responseText: "Adjusted the climate control to 22°C. The current temperature is 23°C and cooling.",
-      defaultCard: {
-        cardType: "device_controller",
-        title: "Smart Thermostat",
-        details: { target: "22°C", current: "23°C", mode: "Eco Cooling" }
-      }
-    };
-  }
-
+  // 1. Autonomous Multi-Step Routines (Highest Priority)
   if (lower.includes("routine") || lower.includes("work mode") || lower.includes("focus") || lower.includes("morning")) {
     return {
       reasoning: "Complex multi-service routine detected. Initiating autonomous multi-step execution across devices, tasks, and lighting.",
@@ -163,6 +133,38 @@ function formulateAutonomousPlan(prompt) {
           activeAudio: "Echo Studio - Focus Stream",
           ambientLighting: "Deep Indigo (#4A00E0)"
         }
+      }
+    };
+  }
+
+  // 2. Climate / Thermostat Control
+  if (lower.includes("temp") || lower.includes("cool") || lower.includes("warm") || lower.includes("climate")) {
+    return {
+      reasoning: "User intent targets environmental climate control. Adjusting thermostat to optimum 22°C.",
+      toolName: "smart_home_control",
+      toolArgs: { deviceId: "thermostat", action: "set_temperature", value: "22" },
+      responseText: "Adjusted the climate control to 22°C. The current temperature is 23°C and cooling.",
+      defaultCard: {
+        cardType: "device_controller",
+        title: "Smart Thermostat",
+        details: { target: "22°C", current: "23°C", mode: "Eco Cooling" }
+      }
+    };
+  }
+
+  // 3. Smart Home Lighting Control
+  if (lower.includes("light") || lower.includes("living room")) {
+    const action = lower.includes("off") ? "turn_off" : "turn_on";
+    const color = lower.includes("purple") ? "#9d00ff" : lower.includes("cyan") ? "#00d2ff" : "#ffffff";
+    return {
+      reasoning: "User expressed intent regarding living room lighting. Invoking smart_home_control MCP tool.",
+      toolName: "smart_home_control",
+      toolArgs: { deviceId: "living_room_light", action, value: color },
+      responseText: `I've ${action === "turn_on" ? "turned on" : "turned off"} the Living Room lights and synced the ambience for you.`,
+      defaultCard: {
+        cardType: "device_controller",
+        title: "Living Room Lighting",
+        details: { state: action === "turn_on" ? "Active" : "Off", color, brightness: "80%" }
       }
     };
   }

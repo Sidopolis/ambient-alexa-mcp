@@ -205,6 +205,17 @@ export async function handleToolExecution(name, args) {
       const { routineName, steps } = args;
       const executionResults = [];
 
+      // Apply real device state changes according to routine
+      if (routineName.toLowerCase().includes("focus") || routineName.toLowerCase().includes("work")) {
+        memoryStore.smartDevices.living_room_light.state = "on";
+        memoryStore.smartDevices.living_room_light.brightness = 40;
+        memoryStore.smartDevices.living_room_light.color = "#4A00E0";
+        memoryStore.smartDevices.thermostat.targetTemp = 21.5;
+        memoryStore.smartDevices.thermostat.state = "cooling";
+        memoryStore.smartDevices.front_door_lock.state = "locked";
+        memoryStore.preferences.routineActive = routineName;
+      }
+
       for (let i = 0; i < steps.length; i++) {
         const step = steps[i];
         executionResults.push(`Step ${i + 1}/${steps.length}: Completed "${step}"`);
@@ -216,7 +227,16 @@ export async function handleToolExecution(name, args) {
             type: "text",
             text: `Autonomous Routine '${routineName}' executed successfully:\n` + executionResults.join("\n")
           }
-        ]
+        ],
+        uiPayload: {
+          cardType: "task_carousel",
+          title: `${routineName} Active`,
+          details: {
+            stepsCompleted: steps.length,
+            activeAudio: "Echo Studio - Focus Stream",
+            ambientLighting: "Deep Indigo (#4A00E0)"
+          }
+        }
       };
     }
 
