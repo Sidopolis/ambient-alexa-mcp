@@ -81,7 +81,13 @@ graph TD
    npm start
    ```
 
-3. **Open the simulated Alexa+ interface:**
+3. **Run automated test suite:**
+   ```bash
+   npm test
+   ```
+   *(Executes 11 automated verification tests for MCP tools, schemas, and Bedrock intent parsing).*
+
+4. **Open the simulated Alexa+ interface:**
    Visit `http://localhost:3000` in your browser.
 
 ---
@@ -102,14 +108,21 @@ When you receive your $150 AWS Promotional Credits, configure your AWS credentia
 
 ---
 
-## 🛠️ MCP Tool Schema Reference
+## 🛠️ MCP Tools & Resources Reference
 
+### Autonomous Tools (`tools/list` & `tools/call`)
 | Tool Name | Parameters | Purpose |
 | :--- | :--- | :--- |
 | `smart_home_control` | `deviceId`, `action`, `value` | Controls lights, thermostats, locks, and audio players |
-| `execute_multi_step_routine` | `routineName`, `steps[]` | Autonomously executes sequential multi-device routines |
+| `execute_multi_step_routine` | `routineName`, `steps[]` | Autonomously executes sequential multi-device routines & mutates device states |
 | `manage_context_memory` | `operation`, `key`, `value` | Stores and recalls preferences across conversation sessions |
 | `render_interactive_card` | `cardType`, `title`, `details` | Renders rich UI cards adhering to MCP Apps standards |
+
+### MCP Resources (`resources/list` & `resources/read`)
+| Resource URI | MIME Type | Description |
+| :--- | :--- | :--- |
+| `alexa://user/profile` | `application/json` | User smart home device topology, active routines, and todo items |
+| `alexa://system/telemetry` | `application/json` | Server uptime, active Streamable HTTP connections, and protocol health |
 
 ---
 

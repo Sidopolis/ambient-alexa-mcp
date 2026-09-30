@@ -756,6 +756,101 @@ body {
 }
 
 /* ----------------------------------------------------
+   CONNECTED DEVICE MATRIX (LIVE DIGITAL TWIN)
+   ---------------------------------------------------- */
+.devices-grid-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 20px;
+}
+
+.device-matrix-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.matrix-device-card {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: var(--transition-smooth);
+}
+
+.matrix-device-card.active {
+  border-color: rgba(0, 210, 255, 0.4);
+  background: rgba(0, 210, 255, 0.04);
+  box-shadow: 0 4px 20px rgba(0, 210, 255, 0.08);
+}
+
+.matrix-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.matrix-device-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.device-status-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.badge-on {
+  background: rgba(0, 242, 152, 0.15);
+  color: var(--success-emerald);
+}
+
+.badge-off {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-dim);
+}
+
+.matrix-device-sub {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+
+.matrix-action-bar {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.matrix-btn {
+  flex: 1;
+  padding: 5px 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-main);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.matrix-btn:hover {
+  background: rgba(0, 210, 255, 0.15);
+  border-color: var(--alexa-cyan);
+}
+
+/* ----------------------------------------------------
    FOOTER
    ---------------------------------------------------- */
 .app-footer {

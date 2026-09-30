@@ -127,10 +127,53 @@ app.post("/messages", async (req, res) => {
               name: "User Smart Profile",
               description: "Preferences, home devices, and routine configuration",
               mimeType: "application/json"
+            },
+            {
+              uri: "alexa://system/telemetry",
+              name: "System Telemetry & Health",
+              description: "Server uptime, active Streamable HTTP connections, and protocol health",
+              mimeType: "application/json"
             }
           ]
         };
+        broadcastMcpEvent("jsonrpc_response", { id, result });
         return res.json({ jsonrpc: "2.0", id, result });
+      }
+
+      case "resources/read": {
+        const { uri } = params || {};
+        if (uri === "alexa://user/profile") {
+          const contents = [
+            {
+              uri,
+              mimeType: "application/json",
+              text: JSON.stringify(memoryStore, null, 2)
+            }
+          ];
+          broadcastMcpEvent("jsonrpc_response", { id, result: { contents } });
+          return res.json({ jsonrpc: "2.0", id, result: { contents } });
+        } else if (uri === "alexa://system/telemetry") {
+          const contents = [
+            {
+              uri,
+              mimeType: "application/json",
+              text: JSON.stringify({
+                status: "healthy",
+                uptimeSeconds: Math.floor(process.uptime()),
+                activeSseConnections: sseClients.size,
+                protocolVersion: "2025-11-25",
+                transport: "Streamable HTTP"
+              }, null, 2)
+            }
+          ];
+          broadcastMcpEvent("jsonrpc_response", { id, result: { contents } });
+          return res.json({ jsonrpc: "2.0", id, result: { contents } });
+        }
+        return res.status(404).json({
+          jsonrpc: "2.0",
+          id,
+          error: { code: -32602, message: `Resource not found: ${uri}` }
+        });
       }
 
       default:

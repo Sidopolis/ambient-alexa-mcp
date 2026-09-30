@@ -17,11 +17,69 @@ const streamLogContainer = document.getElementById("streamLogContainer");
 const clearLogBtn = document.getElementById("clearLogBtn");
 const telemetryLatency = document.getElementById("telemetryLatency");
 const telemetryTokens = document.getElementById("telemetryTokens");
+const deviceMatrixGrid = document.getElementById("deviceMatrixGrid");
 
 // State
 let isListening = false;
 let speechSynth = window.speechSynthesis;
 let speechRecognizer = null;
+let audioCtx = null;
+
+function getAudioContext() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioCtx.state === "suspended") {
+    audioCtx.resume();
+  }
+  return audioCtx;
+}
+
+// Iconic Alexa Wake Chime (Dual-frequency sine wave chime)
+function playAlexaWakeChime() {
+  try {
+    const ctx = getAudioContext();
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(523.25, now); // C5
+    osc.frequency.exponentialRampToValueAtTime(880, now + 0.12); // A5
+
+    gain.gain.setValueAtTime(0.12, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.26);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.26);
+  } catch (e) {}
+}
+
+// Confirmation Chime for completed autonomous tasks
+function playAlexaSuccessChime() {
+  try {
+    const ctx = getAudioContext();
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(659.25, now); // E5
+    osc.frequency.setValueAtTime(880, now + 0.08); // A5
+
+    gain.gain.setValueAtTime(0.1, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.22);
+  } catch (e) {}
+}
 
 // Initialize Speech Recognition if supported in browser
 function setupSpeechRecognition() {
@@ -146,6 +204,7 @@ function escapeHtml(str) {
 async function handleUserPrompt(promptText) {
   if (!promptText.trim()) return;
 
+  playAlexaWakeChime();
   userTranscript.querySelector(".text").textContent = `"${promptText}"`;
   setAlexaState("thinking", "Alexa+ & AWS Bedrock Orchestrating...");
   promptInput.value = "";
@@ -164,11 +223,17 @@ async function handleUserPrompt(promptText) {
       telemetryLatency.textContent = `${data.latencyMs}ms`;
       telemetryTokens.textContent = `${data.tokens}`;
 
+      playAlexaSuccessChime();
       speakAlexaResponse(data.response);
 
       // Render Dynamic Visual Card
       if (data.uiCard) {
         renderCard(data.uiCard);
+      }
+
+      // Synchronize live device matrix digital twin
+      if (result.currentState?.smartDevices) {
+        renderDeviceMatrix(result.currentState.smartDevices);
       }
     } else {
       responseText.textContent = `"I encountered an issue executing this request: ${result.error}"`;
@@ -265,29 +330,84 @@ function renderCard(card) {
   cardsCanvas.prepend(cardElement);
 }
 
+// ----------------------------------------------------
+// CONNECTED DEVICE MATRIX (LIVE DIGITAL TWIN)
+// ----------------------------------------------------
+function renderDeviceMatrix(devices) {
+  if (!deviceMatrixGrid || !devices) return;
+  deviceMatrixGrid.innerHTML = "";
+
+  Object.entries(devices).forEach(([id, dev]) => {
+    const card = document.createElement("div");
+    const isActive = dev.state === "on" || dev.state === "cooling" || dev.state === "locked" || dev.state === "playing" || dev.state === "adjusting";
+    card.className = `matrix-device-card ${isActive ? "active" : ""}`;
+
+    let subText = "";
+    if (dev.type === "light") {
+      subText = `Brightness: ${dev.brightness}% • Color: <span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${dev.color};vertical-align:middle;box-shadow:0 0 6px ${dev.color}"></span>`;
+    } else if (dev.type === "thermostat") {
+      subText = `Target: ${dev.targetTemp}°C (Current: ${dev.currentTemp}°C)`;
+    } else if (dev.type === "lock") {
+      subText = `Status: ${dev.state.toUpperCase()} • Battery: ${dev.battery}%`;
+    } else if (dev.type === "media") {
+      subText = `Track: "${dev.track}"`;
+    }
+
+    let actions = "";
+    if (dev.type === "light") {
+      actions = `
+        <button class="matrix-btn" onclick="toggleDeviceAction('${id}', 'turn_on')">Turn On</button>
+        <button class="matrix-btn" onclick="toggleDeviceAction('${id}', 'turn_off')">Turn Off</button>
+      `;
+    } else if (dev.type === "thermostat") {
+      actions = `
+        <button class="matrix-btn" onclick="toggleDeviceAction('${id}', 'set_temperature', '20')">Cool (20°C)</button>
+        <button class="matrix-btn" onclick="toggleDeviceAction('${id}', 'set_temperature', '22')">Eco (22°C)</button>
+      `;
+    } else if (dev.type === "lock") {
+      actions = `
+        <button class="matrix-btn" onclick="toggleDeviceAction('${id}', '${dev.state === "locked" ? "unlock" : "lock"}')">${dev.state === "locked" ? "Unlock" : "Lock"}</button>
+      `;
+    } else if (dev.type === "media") {
+      actions = `
+        <button class="matrix-btn" onclick="toggleDeviceAction('${id}', '${dev.state === "playing" ? "turn_off" : "turn_on"}')">${dev.state === "playing" ? "Pause" : "Play"}</button>
+      `;
+    }
+
+    card.innerHTML = `
+      <div class="matrix-card-header">
+        <span class="matrix-device-title">${dev.name}</span>
+        <span class="device-status-badge ${isActive ? "badge-on" : "badge-off"}">${dev.state}</span>
+      </div>
+      <div class="matrix-device-sub">${subText}</div>
+      <div class="matrix-action-bar">${actions}</div>
+    `;
+
+    deviceMatrixGrid.appendChild(card);
+  });
+}
+
 // Expose prompt handler on window for inline card onclick handlers
 window.handleUserPrompt = handleUserPrompt;
 
 // Global action handler for card buttons
-window.toggleDeviceAction = async function(deviceId, action) {
+window.toggleDeviceAction = async function(deviceId, action, value) {
   try {
     const res = await fetch("/api/device/toggle", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ deviceId, action })
+      body: JSON.stringify({ deviceId, action, value })
     });
     const data = await res.json();
     if (data.success) {
-      appendLog("event-tool", `⚡ Device [${deviceId}] toggled: ${action.toUpperCase()}`);
-      speakAlexaResponse(`Living room lighting is now ${action === 'turn_on' ? 'turned on' : 'turned off'}.`);
+      playAlexaSuccessChime();
+      appendLog("event-tool", `⚡ Device [${deviceId}] toggled: ${action.toUpperCase()} ${value ? `(${value})` : ""}`);
+      speakAlexaResponse(`${deviceId.replace(/_/g, ' ')} is now updated to ${action.replace('turn_', '')}.`);
 
-      // Dynamically update existing device cards in the DOM
-      document.querySelectorAll(".ui-card").forEach(c => {
-        if (c.innerHTML.includes("Living Room Light")) {
-          const statusVal = c.querySelector(".metric-item .val");
-          if (statusVal) statusVal.textContent = action === 'turn_on' ? "Active (On)" : "Off";
-        }
-      });
+      // Update Live Device Matrix
+      if (data.currentDevices) {
+        renderDeviceMatrix(data.currentDevices);
+      }
     }
   } catch (err) {
     console.error("Device toggle failed:", err);
@@ -299,6 +419,12 @@ async function fetchCurrentState() {
   try {
     const res = await fetch("/api/state");
     const state = await res.json();
+
+    // Render Digital Twin Device Matrix
+    if (state.smartDevices) {
+      renderDeviceMatrix(state.smartDevices);
+    }
+
     // Render initial smart device card if canvas is empty
     if (cardsCanvas.children.length === 0 && state.smartDevices) {
       renderCard({

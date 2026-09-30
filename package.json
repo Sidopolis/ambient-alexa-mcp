@@ -4,7 +4,8 @@
   "description": "Aura+ - Autonomous Agent & Model Context Protocol (MCP) Ecosystem for Alexa+ with AWS Bedrock",
   "scripts": {
     "start": "npm --prefix server start",
-    "dev": "npm --prefix server run dev"
+    "dev": "npm --prefix server run dev",
+    "test": "npm --prefix server test"
   },
   "keywords": [
     "alexa-plus",
