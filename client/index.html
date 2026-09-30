@@ -1,10 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
   <title>Aura+ | Autonomous Alexa+ Agent & MCP Streamable HTTP Platform</title>
-  <meta name="description" content="Self-hosted Streamable HTTP Model Context Protocol (MCP) server & simulated Alexa+ agent powered by AWS Bedrock.">
+  <meta name="description" content="Aura+ is a self-hosted Model Context Protocol (MCP) server & simulated Alexa+ agent powered by AWS Bedrock for the Amazon Developer Hackathon.">
+  <meta name="theme-color" content="#07090e">
+  <meta name="color-scheme" content="dark">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph / Facebook Meta Tags -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Aura+ Alexa+ Agent">
+  <meta property="og:title" content="Aura+ | Autonomous Alexa+ Agent & MCP Streamable HTTP Platform">
+  <meta property="og:description" content="Self-hosted Streamable HTTP Model Context Protocol (MCP) server & simulated Alexa+ agent powered by AWS Bedrock.">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Aura+ | Autonomous Alexa+ Agent">
+  <meta name="twitter:description" content="Self-hosted Streamable HTTP MCP server for Alexa+ with AWS Bedrock integration.">
+
+  <!-- Inline SVG Favicon (Glowing Alexa Halo Ring) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%2307090e' stroke='%2300d2ff' stroke-width='3' stroke-dasharray='20 10'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%239d00ff'/%3E%3C/svg%3E">
+
+  <!-- Fonts & Stylesheet -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -12,14 +33,14 @@
 </head>
 <body>
   <!-- Ambient background glow layers -->
-  <div class="ambient-glow cyan-glow"></div>
-  <div class="ambient-glow purple-glow"></div>
+  <div class="ambient-glow cyan-glow" aria-hidden="true"></div>
+  <div class="ambient-glow purple-glow" aria-hidden="true"></div>
 
   <div class="app-layout">
     <!-- Top Navigation Bar -->
-    <header class="top-nav">
+    <header class="top-nav" role="banner">
       <div class="brand">
-        <div class="brand-badge">ALEXA+</div>
+        <div class="brand-badge" aria-label="Amazon Alexa Plus Platform">ALEXA+</div>
         <div class="brand-title">
           <h1>Aura<span>+</span></h1>
           <span class="brand-sub">Autonomous MCP Agent</span>
@@ -27,29 +48,29 @@
       </div>
 
       <!-- Telemetry & Specs Pill -->
-      <div class="header-badges">
+      <div class="header-badges" role="region" aria-label="Protocol Status">
         <div class="status-pill live-pill" id="mcpStatusBadge">
-          <span class="pulsing-dot"></span>
+          <span class="pulsing-dot" aria-hidden="true"></span>
           <span class="status-text">MCP Streamable HTTP (2025-11-25)</span>
         </div>
         <div class="status-pill bedrock-pill" id="bedrockPill">
-          <span class="aws-icon">⚡</span>
+          <span class="aws-icon" aria-hidden="true">⚡</span>
           <span>AWS Bedrock Runtime</span>
         </div>
       </div>
     </header>
 
     <!-- Main Workspace Grid -->
-    <main class="main-content">
+    <main class="main-content" role="main">
       <!-- Left Panel: Simulated Alexa+ Interaction Stage -->
-      <section class="stage-panel glass-card">
+      <section class="stage-panel glass-card" aria-label="Alexa+ Simulated Interface">
         <!-- Iconic Alexa+ Dynamic Multi-Color Ring -->
         <div class="ring-container" id="alexaRingWrapper">
-          <div class="alexa-glow"></div>
-          <div class="alexa-ring" id="alexaRing">
+          <div class="alexa-glow" aria-hidden="true"></div>
+          <div class="alexa-ring" id="alexaRing" role="status" aria-label="Alexa light ring indicator">
             <div class="ring-core">
-              <button class="mic-toggle-btn" id="micBtn" title="Click to Speak to Alexa+">
-                <svg class="mic-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
+              <button class="mic-toggle-btn" id="micBtn" type="button" aria-label="Click to speak to Alexa+" title="Click to Speak to Alexa+">
+                <svg class="mic-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                   <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
                   <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
                   <line x1="12" y1="19" x2="12" y2="23"/>
@@ -62,33 +83,33 @@
         </div>
 
         <!-- Real-Time Dialogue Bubble -->
-        <div class="speech-dialogue" id="speechDialogue">
+        <div class="speech-dialogue" id="speechDialogue" role="region" aria-label="Conversation Dialogue" aria-live="polite">
           <div class="user-transcript" id="userTranscript">
             <span class="speaker-tag">You:</span>
             <span class="text">"Alexa, activate Deep Focus routine and adjust the lights."</span>
           </div>
-          <div class="agent-response" id="agentResponse">
+          <div class="agent-response" id="agentResponse" aria-live="polite">
             <span class="speaker-tag">Alexa+:</span>
             <span class="text" id="responseText">"Welcome to Aura+. I am connected via Streamable HTTP to your self-hosted MCP server and AWS Bedrock. Try speaking or clicking a sample intent below."</span>
           </div>
         </div>
 
         <!-- Quick Sample Prompts -->
-        <div class="quick-prompts">
+        <div class="quick-prompts" role="region" aria-label="Quick Intent Suggestions">
           <span class="quick-label">Try autonomous intents:</span>
           <div class="prompt-chips">
-            <button class="chip" data-prompt="Activate Deep Focus routine and set lights">🎯 Deep Focus Routine</button>
-            <button class="chip" data-prompt="Turn on living room lights with cyan glow">💡 Living Room Lights</button>
-            <button class="chip" data-prompt="Adjust climate thermostat to 22 degrees">❄️ Set Climate 22°C</button>
-            <button class="chip" data-prompt="Check Hackathon checklist and MCP status">📋 Hackathon Checklist</button>
+            <button class="chip" type="button" data-prompt="Activate Deep Focus routine and set lights">🎯 Deep Focus Routine</button>
+            <button class="chip" type="button" data-prompt="Turn on living room lights with cyan glow">💡 Living Room Lights</button>
+            <button class="chip" type="button" data-prompt="Adjust climate thermostat to 22 degrees">❄️ Set Climate 22°C</button>
+            <button class="chip" type="button" data-prompt="Check Hackathon checklist and MCP status">📋 Hackathon Checklist</button>
           </div>
         </div>
 
         <!-- Custom Prompt Input -->
-        <form class="prompt-input-bar" id="promptForm">
-          <input type="text" id="promptInput" placeholder="Type a command or ask Alexa+ to execute a workflow..." autocomplete="off">
-          <button type="submit" class="send-btn" id="sendBtn" title="Send to Agent">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5">
+        <form class="prompt-input-bar" id="promptForm" role="search">
+          <input type="text" id="promptInput" placeholder="Type a command or ask Alexa+ to execute a workflow..." autocomplete="off" aria-label="Enter prompt or command for Alexa+">
+          <button type="submit" class="send-btn" id="sendBtn" title="Send to Agent" aria-label="Send prompt to Alexa+">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
               <line x1="22" y1="2" x2="11" y2="13"></line>
               <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
             </svg>
@@ -96,7 +117,7 @@
         </form>
 
         <!-- Dynamic Visual Display (MCP Apps: Cards & Carousels) -->
-        <div class="visual-cards-container">
+        <div class="visual-cards-container" role="region" aria-label="Interactive Visual Surface">
           <div class="cards-header">
             <h3>Interactive Visual Surface <span class="badge-mcp-app">MCP Apps Spec</span></h3>
             <span class="cards-subtitle">Rich multi-modal components rendered directly by MCP tool execution</span>
@@ -107,7 +128,7 @@
         </div>
 
         <!-- Connected Smart Device Topology (Live State Grid) -->
-        <div class="devices-grid-section">
+        <div class="devices-grid-section" role="region" aria-label="Connected Smart Device Topology">
           <div class="cards-header">
             <h3>Connected Device Matrix <span class="badge-mcp-app">Digital Twin</span></h3>
             <span class="cards-subtitle">Real-time status synchronized with MCP smart_home_control & routines</span>
@@ -119,20 +140,20 @@
       </section>
 
       <!-- Right Panel: Live MCP Protocol & Streamable HTTP Inspector -->
-      <aside class="inspector-panel glass-card">
+      <aside class="inspector-panel glass-card" aria-label="MCP Protocol and Telemetry Inspector">
         <div class="inspector-header">
           <div class="title-group">
-            <div class="terminal-dots">
+            <div class="terminal-dots" aria-hidden="true">
               <span class="dot red"></span>
               <span class="dot yellow"></span>
               <span class="dot green"></span>
             </div>
             <h2>MCP Stream Inspector</h2>
           </div>
-          <button class="clear-log-btn" id="clearLogBtn" title="Clear log stream">Clear</button>
+          <button class="clear-log-btn" id="clearLogBtn" type="button" title="Clear log stream" aria-label="Clear Stream Inspector Log">Clear</button>
         </div>
 
-        <div class="telemetry-bar">
+        <div class="telemetry-bar" role="region" aria-label="Telemetry Metrics">
           <div class="telemetry-metric">
             <span class="metric-label">TRANSPORT</span>
             <span class="metric-val highlight">Streamable HTTP</span>
@@ -152,7 +173,7 @@
         </div>
 
         <!-- Real-Time Streamable HTTP JSON-RPC Event Log -->
-        <div class="stream-log-container" id="streamLogContainer">
+        <div class="stream-log-container" id="streamLogContainer" role="log" aria-label="MCP Protocol Stream Log" aria-live="polite" aria-relevant="additions">
           <div class="log-entry system-entry">
             <span class="log-time">[System]</span>
             <span class="log-body">Connected to Streamable HTTP endpoint: <code>/sse</code> (Keep-Alive Active)</span>
@@ -160,7 +181,7 @@
         </div>
 
         <!-- Active MCP Registered Tools -->
-        <div class="tools-inventory">
+        <div class="tools-inventory" role="region" aria-label="Registered MCP Tools">
           <h4>Active MCP Server Tools</h4>
           <div class="tool-tags" id="toolTags">
             <span class="tool-tag" title="smart_home_control">⚡ smart_home_control</span>
@@ -173,7 +194,7 @@
     </main>
 
     <!-- Hackathon Track Footer -->
-    <footer class="app-footer">
+    <footer class="app-footer" role="contentinfo">
       <div class="footer-left">
         <span>Built for <strong>Amazon Developer Hackathon</strong></span>
         <span class="footer-separator">•</span>
@@ -182,9 +203,9 @@
         <span>Mini-Challenges: <strong>AWS Builder & Open Source</strong></span>
       </div>
       <div class="footer-right">
-        <a href="https://github.com" target="_blank" class="footer-link">GitHub Repository (MIT)</a>
+        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub Repository (MIT)</a>
         <span class="footer-separator">•</span>
-        <a href="/sse" target="_blank" class="footer-link">Direct SSE Stream</a>
+        <a href="/sse" target="_blank" rel="noopener noreferrer" class="footer-link">Direct SSE Stream</a>
       </div>
     </footer>
   </div>

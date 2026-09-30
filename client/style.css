@@ -33,6 +33,13 @@
   box-sizing: border-box;
 }
 
+/* Accessible Keyboard Focus Indication (Front-End Checklist standard) */
+:focus-visible {
+  outline: 2px solid var(--alexa-cyan);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
 body {
   background-color: var(--bg-dark);
   color: var(--text-main);
@@ -892,5 +899,21 @@ body {
   }
   .telemetry-bar {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ----------------------------------------------------
+   ACCESSIBILITY: PREFERS REDUCED MOTION
+   Front-End Checklist standard for vestibular safety
+   ---------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .alexa-ring, .alexa-glow, .pulsing-dot {
+    animation: none !important;
   }
 }
