@@ -77,8 +77,8 @@ graph TD
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/amazonhack.git
-   cd amazonhack
+   git clone https://github.com/Sidopolis/ambient-alexa-mcp.git
+   cd ambient-alexa-mcp
    ```
 
 2. **Start the application:**
