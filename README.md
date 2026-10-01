@@ -1,151 +1,145 @@
-# Aura+ — Autonomous Agent & Model Context Protocol (MCP) Platform for Alexa+
+# Aura+
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Hackathon: Amazon Developer 2026](https://img.shields.io/badge/Amazon%20Developer%20Hackathon-Alexa%2B%20Track-orange.svg)](https://amazonappdev2026.devpost.com/)
 [![MCP Spec](https://img.shields.io/badge/MCP%20Spec-2025--11--25%20Streamable%20HTTP-brightgreen.svg)](https://modelcontextprotocol.io/)
 [![AWS Bedrock](https://img.shields.io/badge/AWS-Bedrock%20Runtime-FF9900.svg)](https://aws.amazon.com/bedrock/)
 
-> **Built for the Build, Ship, Shape: Amazon Developer Hackathon**  
-> **Primary Track:** Alexa+ (Self-Hosted MCP Server & Simulated Web Experience)  
-> **Mini-Challenges:** AWS Builder & Open Source  
+> **Build, Ship, Shape: Amazon Developer Hackathon 2026**
+> Primary Track: **Alexa+** (Self-Hosted MCP Server & Simulated Web Experience)
+> Mini-Challenges: **AWS Builder** & **Open Source**
 
 ---
 
-## 🌟 Overview
+## What is Aura+?
 
-**Aura+** is a self-hosted **Model Context Protocol (MCP)** server and simulated **Alexa+** agent interface built to pioneer the next generation of ambient computing. 
+Aura+ is a self-hosted MCP server and simulated Alexa+ agent that goes beyond traditional single-turn voice skills. Instead of "ask a question, get an answer," Aura+ can plan and execute multi-step tasks across your smart home, remember your preferences across sessions, and render interactive controls directly on screen.
 
-Rather than relying on legacy single-turn Q&A voice skills, Aura+ implements the open **Streamable HTTP transport** (Spec 2025-11-25+) paired with **Amazon Bedrock**. It empowers Alexa+ to autonomously orchestrate multi-step physical and digital tasks, maintain persistent context across sessions, and dynamically project interactive visual cards (MCP Apps spec) onto modern screens.
+It runs on the open **Streamable HTTP** transport (MCP Spec 2025-11-25+) and uses **AWS Bedrock** (Claude 3.5 Sonnet) for reasoning and tool selection. When Bedrock credentials aren't available, it falls back to a built-in intent engine so judges can test everything locally without AWS access.
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```mermaid
 graph TD
-    User([User Voice / Text Input]) --> Client["Simulated Alexa+ Interface<br/>(Glowing Light Ring • Audio Synthesis • MCP Cards)"]
-    
-    subgraph "Streamable HTTP Transport (Spec 2025-11-25)"
-        Client <-->|SSE Stream: /sse| MCP["Self-Hosted MCP Server<br/>(Express • Node.js)"]
-        Client <-->|JSON-RPC 2.0: /messages| MCP
+    User(["User Voice / Text Input"]) --> Client["Alexa+ Interface"]
+
+    subgraph Transport["Streamable HTTP Transport"]
+        Client <-->|"SSE Stream /sse"| MCP["MCP Server - Express/Node.js"]
+        Client <-->|"JSON-RPC 2.0 /messages"| MCP
     end
-    
-    subgraph "AWS AI Cloud (AWS Builder)"
-        MCP <-->|@aws-sdk/client-bedrock-runtime| Bedrock["Amazon Bedrock<br/>(Claude 3.5 Sonnet / Nova Pro)"]
+
+    subgraph AWS["AWS Cloud"]
+        MCP <-->|"Bedrock Runtime SDK"| Bedrock["Amazon Bedrock - Claude 3.5 Sonnet"]
     end
-    
-    subgraph "Autonomous MCP Tools"
-        MCP --> T1["smart_home_control<br/>(Lights, Climate, Locks, Media)"]
-        MCP --> T2["execute_multi_step_routine<br/>(Autonomous Complex Workflows)"]
-        MCP --> T3["manage_context_memory<br/>(Persistent Cross-Session Store)"]
-        MCP --> T4["render_interactive_card<br/>(MCP Apps Spec Visual Components)"]
+
+    subgraph Tools["MCP Tools"]
+        MCP --> T1["smart_home_control"]
+        MCP --> T2["execute_multi_step_routine"]
+        MCP --> T3["manage_context_memory"]
+        MCP --> T4["render_interactive_card"]
     end
 ```
 
 ---
 
-## 🚀 Key Features
+## Key Features
 
-1. **Self-Hosted Streamable HTTP MCP Server:**
-   - Implements MCP specification `2025-11-25+` with Server-Sent Events (`/sse`) and JSON-RPC 2.0 (`/messages`).
-   - Compliant with Amazon's official Alexa+ preview integration standards.
-2. **AWS Bedrock Runtime Integration:**
-   - Leverages `@aws-sdk/client-bedrock-runtime` for multi-step reasoning, autonomous planning, and tool calling.
-   - Built-in zero-downtime developer fallback mode for offline testing.
-3. **Simulated Alexa+ Slate Glass Voice Experience:**
-   - Editorial obsidian design (`#09090B`) with architectural dotgrid texture, crisp typography, and 5-bar voice activity waveform.
-   - Natural speech recognition (Mic input) + Alexa voice synthesis (SpeechSynthesis TTS) + Web Audio synthesized chimes.
-4. **Hierarchical Agent Planning & 21st.dev Disclosures:**
-   - Real-time hierarchical agent plan tree (`id: 2127`) showing task status (`In Flight`, `Complete`, `Queued`).
-   - Expandable AI Tool Call disclosure cards (`id: 23789`) with JSON-RPC arguments and outputs.
-5. **Multi-Tab Telemetry & Digital Twin Surface:**
-   - **Execution Trace View:** Millisecond-accurate waterfall spans (`0-480ms` calibrated ruler) for model, tool, and stream IO.
-   - **Power Grid & Telemetry:** Interactive solar/load area chart with crosshair scrubber, Tesla Powerwall 3 wave tank, and climate hub.
-   - **Device Topology:** Room-by-room Digital Twin device matrix with live bidirectional state control.
-6. **Interactive Visual Surface (MCP Apps Spec):**
-   - Directly renders interactive components onto the user's screen during voice interaction (device sliders, status badges, actionable buttons).
+**MCP Server**
+- Full Streamable HTTP implementation with SSE (`/sse`) and JSON-RPC 2.0 (`/messages`)
+- 4 registered tools: device control, multi-step routines, persistent memory, and visual card rendering
+- MCP Resources for user profile (`alexa://user/profile`) and system telemetry (`alexa://system/telemetry`)
 
----
+**AWS Bedrock Integration**
+- Uses `@aws-sdk/client-bedrock-runtime` for autonomous planning and tool calling
+- Built-in offline fallback so everything works without AWS credentials
 
-## ⚡ Quick Start Guide
+**Web Interface (4 Views)**
+- **Orchestrator Console** — command bar with voice input, one-click workflow chips, hierarchical agent plan tree, and expandable tool call disclosures showing JSON-RPC arguments and results
+- **Execution Trace** — waterfall visualization of each span (model reasoning, tool execution, SSE broadcast) with a calibrated 0-480ms ruler
+- **Power Grid & Telemetry** — interactive solar/load area chart with crosshair scrubber, Tesla Powerwall 3 battery tank, and multi-zone climate controller
+- **Device Topology** — digital twin matrix showing all connected devices with live state and toggle controls
 
-### Prerequisites
-- Node.js (v18+)
-- npm (v9+)
-
-### Installation & Run
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/Sidopolis/ambient-alexa-mcp.git
-   cd ambient-alexa-mcp
-   ```
-
-2. **Start the application:**
-   ```bash
-   npm start
-   ```
-
-3. **Run automated test suite:**
-   ```bash
-   npm test
-   ```
-   *(Executes 11 automated verification tests for MCP tools, schemas, and Bedrock intent parsing).*
-
-4. **Open the simulated Alexa+ interface:**
-   Visit `http://localhost:3000` in your browser.
+**Audio & Voice**
+- Web Audio API chimes for wake and success feedback
+- Browser SpeechRecognition for voice input
+- SpeechSynthesis TTS for Alexa-style spoken responses
 
 ---
 
-## 🔧 AWS Bedrock Configuration (Optional)
+## Quick Start
 
-When you receive your $150 AWS Promotional Credits, configure your AWS credentials to activate live Amazon Bedrock inference:
+**Prerequisites:** Node.js v18+, npm v9+
 
-1. Create a `.env` file in `server/.env`:
-   ```env
-   AWS_REGION=us-east-1
-   AWS_ACCESS_KEY_ID=your_access_key
-   AWS_SECRET_ACCESS_KEY=your_secret_key
-   BEDROCK_MODEL_ID=anthropic.claude-3-5-sonnet-20240620-v1:0
-   PORT=3000
-   ```
-2. Restart the server (`npm start`). Aura+ will automatically detect your AWS credentials and route queries through the live Bedrock runtime.
+```bash
+git clone https://github.com/Sidopolis/ambient-alexa-mcp.git
+cd ambient-alexa-mcp
+npm start
+```
+
+Open `http://localhost:3000` in your browser.
+
+Run the test suite:
+```bash
+npm test
+```
+This runs 11 tests covering tool schema validation, execution engine, and intent parsing.
 
 ---
 
-## 🛠️ MCP Tools & Resources Reference
+## AWS Bedrock Setup (Optional)
 
-### Autonomous Tools (`tools/list` & `tools/call`)
-| Tool Name | Parameters | Purpose |
+Create `server/.env`:
+```env
+AWS_REGION=us-east-1
+AWS_ACCESS_KEY_ID=your_access_key
+AWS_SECRET_ACCESS_KEY=your_secret_key
+BEDROCK_MODEL_ID=anthropic.claude-3-5-sonnet-20240620-v1:0
+PORT=3000
+```
+Restart the server. Aura+ detects the credentials and routes queries through Bedrock automatically.
+
+Without this file, the built-in intent engine handles all requests locally.
+
+---
+
+## MCP Tools & Resources
+
+### Tools (`tools/list` & `tools/call`)
+| Tool | Parameters | What it does |
 | :--- | :--- | :--- |
-| `smart_home_control` | `deviceId`, `action`, `value` | Controls lights, thermostats, locks, and audio players |
-| `execute_multi_step_routine` | `routineName`, `steps[]` | Autonomously executes sequential multi-device routines & mutates device states |
-| `manage_context_memory` | `operation`, `key`, `value` | Stores and recalls preferences across conversation sessions |
-| `render_interactive_card` | `cardType`, `title`, `details` | Renders rich UI cards adhering to MCP Apps standards |
+| `smart_home_control` | `deviceId`, `action`, `value` | Controls lights, thermostats, locks, speakers |
+| `execute_multi_step_routine` | `routineName`, `steps[]` | Runs sequential multi-device routines |
+| `manage_context_memory` | `operation`, `key`, `value` | Persists user preferences across sessions |
+| `render_interactive_card` | `cardType`, `title`, `details` | Renders UI cards on the visual surface |
 
-### MCP Resources (`resources/list` & `resources/read`)
-| Resource URI | MIME Type | Description |
+### Resources (`resources/list` & `resources/read`)
+| URI | Type | Content |
 | :--- | :--- | :--- |
-| `alexa://user/profile` | `application/json` | User smart home device topology, active routines, and todo items |
-| `alexa://system/telemetry` | `application/json` | Server uptime, active Streamable HTTP connections, and protocol health |
+| `alexa://user/profile` | `application/json` | Device topology, routines, and todo list |
+| `alexa://system/telemetry` | `application/json` | Uptime, SSE connections, protocol health |
 
 ---
 
-## 📋 3-Minute Demo Video Walkthrough Script
+## Demo Video Script (3 Minutes)
 
-*For recording your submission demo video:*
-- **[0:00 - 0:35] Problem & Architecture:** Introduce the limitations of legacy single-turn voice skills. Explain how Aura+ implements the open **Streamable HTTP MCP specification (2025-11-25+)** coupled with **AWS Bedrock** for autonomous agentic orchestration.
-- **[0:35 - 1:15] Orchestrator Console & Voice:** Trigger the voice input or one-click routine *"Activate Deep Focus routine"*. Highlight the 5-bar audio waveform, the chime sound, the 21st.dev hierarchical Agent Plan (`id: 2127`), and expandable Tool Call disclosures (`id: 23789`).
-- **[1:15 - 1:50] Execution Trace Waterfall:** Switch to the **Execution Trace** tab. Showcase the millisecond trace waterfall (`bedrock:claude-3-5-sonnet`, `mcp:smart_home_control`, `sse:streamable_http`) with calibrated ruler and token breakdown.
-- **[1:50 - 2:25] Power Grid & Device Topology:** Switch to **Power Grid & Telemetry** to scrub the interactive solar area chart and toggle Powerwall modes. Then open **Device Topology** to demonstrate direct digital twin hardware state synchronization.
-- **[2:25 - 3:00] Open Source & Friction Log:** Conclude with the open-source MIT license, AWS Bedrock runtime adapter, and the official [FRICTION_LOG.md](FRICTION_LOG.md) submitted for Amazon's DevRel team (securing the 10% bonus).
-
----
-
-## 📜 Official Friction Log
-See [FRICTION_LOG.md](FRICTION_LOG.md) for detailed observations on Streamable HTTP, Bedrock schema adapters, and actionable recommendations for the Amazon Developer Relations team (qualifying for the **10% judging bonus**).
+| Time | What to show |
+| :--- | :--- |
+| 0:00 - 0:35 | The problem with single-turn voice skills. How Aura+ uses Streamable HTTP MCP + Bedrock to plan and execute autonomously. |
+| 0:35 - 1:15 | Click "Activate Deep Focus routine" in the Orchestrator Console. Show the voice waveform, chime, agent plan tree, and tool call disclosures. |
+| 1:15 - 1:50 | Switch to **Execution Trace**. Walk through the waterfall spans and timing ruler. |
+| 1:50 - 2:25 | Switch to **Power Grid & Telemetry**. Scrub the solar chart, toggle Powerwall modes. Open **Device Topology** and toggle a device. |
+| 2:25 - 3:00 | Wrap up with MIT license, Bedrock integration, and the [FRICTION_LOG.md](FRICTION_LOG.md) for the 10% judging bonus. |
 
 ---
 
-## 📄 License
-This project is licensed under the [MIT License](LICENSE).
+## Friction Log
+
+See [FRICTION_LOG.md](FRICTION_LOG.md) for documented issues with Streamable HTTP session binding, Bedrock schema normalization, and real-time card state sync. This qualifies for the **10% judging bonus**.
+
+---
+
+## License
+
+[MIT](LICENSE)
