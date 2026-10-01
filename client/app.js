@@ -1,29 +1,33 @@
 /**
- * Aura+ Client Application Controller
- * Handles Streamable HTTP SSE transport, Voice Synthesis/Recognition,
- * Alexa Ring animations, and MCP Apps dynamic visual cards.
+ * Aura+ Application Controller v4.0 (Slate Glass Voice Architecture)
+ * Compliant with MCP Spec 2025-11-25+ & AWS Bedrock Runtime
+ * Components from 21st.dev (Agent Plan, AI Tool Call, Trace Waterfall)
  */
 
 // DOM Elements
-const alexaRing = document.getElementById("alexaRing");
 const alexaStateLabel = document.getElementById("alexaStateLabel");
 const micBtn = document.getElementById("micBtn");
-const userTranscript = document.getElementById("userTranscript");
-const responseText = document.getElementById("responseText");
+const conversationContainer = document.getElementById("conversationContainer");
 const promptForm = document.getElementById("promptForm");
 const promptInput = document.getElementById("promptInput");
 const cardsCanvas = document.getElementById("cardsCanvas");
-const streamLogContainer = document.getElementById("streamLogContainer");
-const clearLogBtn = document.getElementById("clearLogBtn");
-const telemetryLatency = document.getElementById("telemetryLatency");
-const telemetryTokens = document.getElementById("telemetryTokens");
 const deviceMatrixGrid = document.getElementById("deviceMatrixGrid");
+const toastContainer = document.getElementById("toastContainer");
+const voiceWaveBars = document.getElementById("voiceWaveBars");
+const toolCallsList = document.getElementById("toolCallsList");
+const planStatusTag = document.getElementById("planStatusTag");
+const traceTotalDuration = document.getElementById("traceTotalDuration");
+
+// Set welcome timestamp
+const welcomeTimeEl = document.getElementById("welcomeTime");
+if (welcomeTimeEl) welcomeTimeEl.textContent = new Date().toLocaleTimeString();
 
 // State
 let isListening = false;
 let speechSynth = window.speechSynthesis;
 let speechRecognizer = null;
 let audioCtx = null;
+let isProcessing = false;
 
 function getAudioContext() {
   if (!audioCtx) {
@@ -35,30 +39,40 @@ function getAudioContext() {
   return audioCtx;
 }
 
-// Iconic Alexa Wake Chime (Dual-frequency sine wave chime)
+// ============================================================
+// AUDIO FEEDBACK (Web Audio API Synthesized Chimes)
+// ============================================================
 function playAlexaWakeChime() {
   try {
     const ctx = getAudioContext();
     const now = ctx.currentTime;
-    const osc = ctx.createOscillator();
+    const osc1 = ctx.createOscillator();
+    const osc2 = ctx.createOscillator();
     const gain = ctx.createGain();
 
-    osc.type = "sine";
-    osc.frequency.setValueAtTime(523.25, now); // C5
-    osc.frequency.exponentialRampToValueAtTime(880, now + 0.12); // A5
+    osc1.type = "sine";
+    osc2.type = "sine";
+    osc1.frequency.setValueAtTime(523.25, now); // C5
+    osc1.frequency.exponentialRampToValueAtTime(783.99, now + 0.12); // G5
+    osc2.frequency.setValueAtTime(659.25, now + 0.05); // E5
+    osc2.frequency.exponentialRampToValueAtTime(1046.50, now + 0.18); // C6
 
-    gain.gain.setValueAtTime(0.12, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.26);
+    gain.gain.setValueAtTime(0.08, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
 
-    osc.connect(gain);
+    osc1.connect(gain);
+    osc2.connect(gain);
     gain.connect(ctx.destination);
 
-    osc.start(now);
-    osc.stop(now + 0.26);
-  } catch (e) {}
+    osc1.start(now);
+    osc2.start(now + 0.05);
+    osc1.stop(now + 0.35);
+    osc2.stop(now + 0.35);
+  } catch (err) {
+    console.debug("Audio chime skipped:", err);
+  }
 }
 
-// Confirmation Chime for completed autonomous tasks
 function playAlexaSuccessChime() {
   try {
     const ctx = getAudioContext();
@@ -67,63 +81,98 @@ function playAlexaSuccessChime() {
     const gain = ctx.createGain();
 
     osc.type = "sine";
-    osc.frequency.setValueAtTime(659.25, now); // E5
-    osc.frequency.setValueAtTime(880, now + 0.08); // A5
+    osc.frequency.setValueAtTime(440, now);
+    osc.frequency.exponentialRampToValueAtTime(880, now + 0.15);
 
-    gain.gain.setValueAtTime(0.1, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+    gain.gain.setValueAtTime(0.07, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
 
     osc.connect(gain);
     gain.connect(ctx.destination);
 
     osc.start(now);
-    osc.stop(now + 0.22);
-  } catch (e) {}
+    osc.stop(now + 0.25);
+  } catch (err) {
+    console.debug("Audio chime skipped:", err);
+  }
 }
 
-// Initialize Speech Recognition if supported in browser
+// ============================================================
+// TOAST NOTIFICATIONS
+// ============================================================
+function showToast(message, type = "info", duration = 3000) {
+  if (!toastContainer) return;
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+  toast.textContent = message;
+  toastContainer.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = "0";
+    toast.style.transform = "translateY(8px)";
+    toast.style.transition = "all 0.3s ease";
+    setTimeout(() => toast.remove(), 300);
+  }, duration);
+}
+
+// ============================================================
+// VOICE SYNTHESIS & RECOGNITION
+// ============================================================
+function setVoiceState(state, label) {
+  if (alexaStateLabel) alexaStateLabel.textContent = label;
+  if (voiceWaveBars) {
+    if (state === "listening" || state === "speaking") {
+      voiceWaveBars.classList.add("active");
+    } else {
+      voiceWaveBars.classList.remove("active");
+    }
+  }
+  if (micBtn) {
+    if (state === "listening") {
+      micBtn.classList.add("active");
+    } else {
+      micBtn.classList.remove("active");
+    }
+  }
+}
+
 function setupSpeechRecognition() {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (SpeechRecognition) {
-    speechRecognizer = new SpeechRecognition();
-    speechRecognizer.continuous = false;
-    speechRecognizer.interimResults = false;
-    speechRecognizer.lang = "en-US";
-
-    speechRecognizer.onstart = () => {
-      setAlexaState("listening", "Listening to voice input...");
-    };
-
-    speechRecognizer.onresult = (event) => {
-      const transcript = event.results[0][0].transcript;
-      userTranscript.querySelector(".text").textContent = `"${transcript}"`;
-      promptInput.value = transcript;
-      handleUserPrompt(transcript);
-    };
-
-    speechRecognizer.onerror = (event) => {
-      console.warn("Speech recognition error:", event.error);
-      setAlexaState("idle", "Ready • Click mic or prompt chips");
-    };
-
-    speechRecognizer.onend = () => {
-      isListening = false;
-    };
-  } else {
-    console.info("Speech recognition not natively supported, prompt input active.");
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRec) {
+    console.warn("SpeechRecognition API not available in this browser.");
+    return;
   }
+
+  speechRecognizer = new SpeechRec();
+  speechRecognizer.continuous = false;
+  speechRecognizer.interimResults = false;
+  speechRecognizer.lang = "en-US";
+
+  speechRecognizer.onstart = () => {
+    isListening = true;
+    setVoiceState("listening", "Listening for voice command...");
+    playAlexaWakeChime();
+  };
+
+  speechRecognizer.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    setVoiceState("thinking", `Heard: "${transcript}"`);
+    handleUserPrompt(transcript);
+  };
+
+  speechRecognizer.onerror = (event) => {
+    console.warn("Speech recognition error:", event.error);
+    isListening = false;
+    setVoiceState("idle", "Ready • Enter command or click mic");
+  };
+
+  speechRecognizer.onend = () => {
+    isListening = false;
+    if (!isProcessing) {
+      setVoiceState("idle", "Ready • Enter command or click mic");
+    }
+  };
 }
 
-// Update the Alexa+ Halo Ring visual state
-function setAlexaState(state, label) {
-  alexaRing.classList.remove("listening", "thinking", "speaking");
-  if (state !== "idle") {
-    alexaRing.classList.add(state);
-  }
-  alexaStateLabel.textContent = label;
-}
-
-// Speak response with Alexa-like natural cadence
 function speakAlexaResponse(text) {
   if (!speechSynth) return;
   speechSynth.cancel();
@@ -132,82 +181,118 @@ function speakAlexaResponse(text) {
   utterance.rate = 1.05;
   utterance.pitch = 1.0;
 
-  // Attempt to select a clean English voice
   const voices = speechSynth.getVoices();
   const selectedVoice = voices.find(v => v.lang.startsWith("en") && (v.name.includes("Female") || v.name.includes("Natural") || v.name.includes("Google"))) || voices[0];
   if (selectedVoice) utterance.voice = selectedVoice;
 
-  setAlexaState("speaking", "Alexa+ Speaking...");
+  setVoiceState("speaking", "Alexa+ Speaking response...");
 
   utterance.onend = () => {
-    setAlexaState("idle", "Ready • Say 'Alexa' or Click to Speak");
+    setVoiceState("idle", "Ready • Enter command or click mic");
   };
 
   speechSynth.speak(utterance);
 }
 
-// ----------------------------------------------------
-// STREAMABLE HTTP (SSE) REAL-TIME INSPECTOR
-// ----------------------------------------------------
+// ============================================================
+// CONVERSATION STREAM
+// ============================================================
+function addConversationMessage(sender, text) {
+  if (!conversationContainer) return;
+  const msg = document.createElement("div");
+  msg.className = `chat-item ${sender === "user" ? "user" : "agent"}`;
+  const time = new Date().toLocaleTimeString();
+  msg.innerHTML = `
+    <div class="chat-meta">
+      <span class="chat-sender">${sender === "user" ? "You" : "Alexa+ Agent"}</span>
+      <span class="chat-timestamp">${time}</span>
+    </div>
+    <div class="chat-bubble">${escapeHtml(text)}</div>
+  `;
+  conversationContainer.appendChild(msg);
+  conversationContainer.scrollTop = conversationContainer.scrollHeight;
+}
+
+// ============================================================
+// 21ST.DEV COMPONENT: AI TOOL CALL DISCLOSURE (id: 23789)
+// ============================================================
+window.toggleToolCard = function(id) {
+  const card = document.getElementById(id);
+  if (card) card.classList.toggle("open");
+};
+
+function addToolCallDisclosure(toolName, args, result) {
+  if (!toolCallsList) return;
+  const id = `toolCall_${Date.now()}`;
+  const card = document.createElement("div");
+  card.className = "ai-tool-card open";
+  card.id = id;
+
+  const argsStr = typeof args === "object" ? JSON.stringify(args, null, 2) : String(args);
+  const resultStr = typeof result === "object" ? JSON.stringify(result, null, 2) : String(result);
+
+  card.innerHTML = `
+    <div class="tool-card-summary" onclick="toggleToolCard('${id}')">
+      <span class="tool-badge">✓</span>
+      <span class="tool-name">${escapeHtml(toolName)}</span>
+      <span class="tool-summary-text">${escapeHtml(argsStr.substring(0, 50))}...</span>
+      <span class="chevron-icon">›</span>
+    </div>
+    <div class="tool-card-details">
+      <div class="detail-block">
+        <div class="detail-label">Arguments (JSON-RPC)</div>
+        <pre class="code-block"><code>${escapeHtml(argsStr)}</code></pre>
+      </div>
+      <div class="detail-block">
+        <div class="detail-label">Execution Result</div>
+        <pre class="code-block result"><code>${escapeHtml(resultStr)}</code></pre>
+      </div>
+    </div>
+  `;
+
+  toolCallsList.prepend(card);
+}
+
+// ============================================================
+// STREAMABLE HTTP (SSE) HANDSHAKE & EVENT STREAM
+// ============================================================
 function connectStreamableHttp() {
   const sseSource = new EventSource("/sse");
 
-  appendLog("system", "Initiating Streamable HTTP handshake on /sse...");
-
   sseSource.addEventListener("endpoint", (e) => {
     const data = JSON.parse(e.data);
-    appendLog("event-handshake", `[MCP Streamable HTTP] Session bound: ${data.sessionId} via ${data.endpoint}`);
-  });
-
-  sseSource.addEventListener("handshake", (e) => {
-    const data = JSON.parse(e.data);
-    appendLog("event-handshake", `[MCP Spec 2025-11-25] Server: ${data.serverName} v${data.serverVersion} (Tools listChanged: true)`);
-  });
-
-  sseSource.addEventListener("jsonrpc_request", (e) => {
-    const data = JSON.parse(e.data);
-    appendLog("event-jsonrpc", `--> JSON-RPC 2.0 Request: method="${data.method}" id=${data.id}`);
-  });
-
-  sseSource.addEventListener("jsonrpc_response", (e) => {
-    const data = JSON.parse(e.data);
-    appendLog("event-jsonrpc", `<-- JSON-RPC 2.0 Response: id=${data.id} payload=${JSON.stringify(data.result).substring(0, 100)}...`);
+    showToast(`MCP session established: ${data.sessionId}`, "info");
   });
 
   sseSource.addEventListener("tool_execution", (e) => {
     const data = JSON.parse(e.data);
-    appendLog("event-tool", `⚡ Tool Executed: [${data.tool}] Args: ${JSON.stringify(data.input)}`);
+    addToolCallDisclosure(data.tool, data.input, data.result);
     fetchCurrentState();
   });
 
-  sseSource.onerror = (err) => {
-    appendLog("system", "Streamable HTTP connection paused or reconnecting...");
+  sseSource.onerror = () => {
+    console.warn("Streamable HTTP connection paused or reconnecting...");
   };
 }
 
-function appendLog(typeClass, message) {
-  const entry = document.createElement("div");
-  entry.className = `log-entry ${typeClass}`;
-  const time = new Date().toLocaleTimeString();
-  entry.innerHTML = `<span class="log-time">[${time}]</span> <span class="log-body">${escapeHtml(message)}</span>`;
-  streamLogContainer.appendChild(entry);
-  streamLogContainer.scrollTop = streamLogContainer.scrollHeight;
-}
-
 function escapeHtml(str) {
-  return str.replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[m]);
+  if (!str) return "";
+  return String(str).replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[m]);
 }
 
-// ----------------------------------------------------
+// ============================================================
 // AGENT PROMPT SUBMISSION & EXECUTION
-// ----------------------------------------------------
+// ============================================================
 async function handleUserPrompt(promptText) {
-  if (!promptText.trim()) return;
+  if (!promptText.trim() || isProcessing) return;
 
+  isProcessing = true;
   playAlexaWakeChime();
-  userTranscript.querySelector(".text").textContent = `"${promptText}"`;
-  setAlexaState("thinking", "Alexa+ & AWS Bedrock Orchestrating...");
+  addConversationMessage("user", promptText);
+  setVoiceState("thinking", "Alexa+ & AWS Bedrock Orchestrating...");
   promptInput.value = "";
+
+  if (planStatusTag) planStatusTag.textContent = "Orchestrating...";
 
   try {
     const response = await fetch("/api/agent/chat", {
@@ -217,14 +302,22 @@ async function handleUserPrompt(promptText) {
     });
 
     const result = await response.json();
+
     if (result.success) {
       const data = result.data;
-      responseText.textContent = `"${data.response}"`;
-      telemetryLatency.textContent = `${data.latencyMs}ms`;
-      telemetryTokens.textContent = `${data.tokens}`;
+      addConversationMessage("agent", data.response);
+
+      if (traceTotalDuration) {
+        traceTotalDuration.textContent = `Total: ${data.latencyMs}ms`;
+      }
 
       playAlexaSuccessChime();
       speakAlexaResponse(data.response);
+
+      // Render Tool Call Disclosure if a tool was executed
+      if (data.toolCalled) {
+        addToolCallDisclosure(data.toolCalled, data.toolInput || {}, data.toolResult || data.response);
+      }
 
       // Render Dynamic Visual Card
       if (data.uiCard) {
@@ -235,28 +328,36 @@ async function handleUserPrompt(promptText) {
       if (result.currentState?.smartDevices) {
         renderDeviceMatrix(result.currentState.smartDevices);
       }
+
+      if (planStatusTag) planStatusTag.textContent = "Strategy Executed";
+      showToast(data.toolCalled ? `Tool executed: ${data.toolCalled}` : "Response generated", "success");
     } else {
-      responseText.textContent = `"I encountered an issue executing this request: ${result.error}"`;
-      setAlexaState("idle", "Error occurred");
+      addConversationMessage("agent", `I encountered an issue: ${result.error}`);
+      setVoiceState("idle", "Ready");
+      showToast("Request failed", "error");
     }
   } catch (error) {
-    responseText.textContent = `"Network connection error to local MCP server: ${error.message}"`;
-    setAlexaState("idle", "Ready");
+    addConversationMessage("agent", `Network error: ${error.message}`);
+    setVoiceState("idle", "Ready");
+    showToast("Connection error", "error");
   }
+
+  isProcessing = false;
 }
 
-// ----------------------------------------------------
+// ============================================================
 // DYNAMIC VISUAL CARDS (MCP APPS SPEC)
-// ----------------------------------------------------
+// ============================================================
 function renderCard(card) {
+  if (!cardsCanvas) return;
   const cardElement = document.createElement("div");
   cardElement.className = "ui-card";
 
   if (card.cardType === "device_controller") {
     cardElement.innerHTML = `
       <div class="card-top">
-        <h4>${card.title}</h4>
-        <span class="card-badge">Smart Device</span>
+        <h4>💡 ${escapeHtml(card.title)}</h4>
+        <span class="card-badge badge-device">Smart Device</span>
       </div>
       <div class="card-metrics">
         <div class="metric-item">
@@ -276,81 +377,72 @@ function renderCard(card) {
   } else if (card.cardType === "task_carousel") {
     cardElement.innerHTML = `
       <div class="card-top">
-        <h4>${card.title}</h4>
-        <span class="card-badge">Autonomous Routine</span>
+        <h4>🎯 ${escapeHtml(card.title)}</h4>
+        <span class="card-badge badge-routine">Autonomous Routine</span>
       </div>
       <div class="card-metrics">
         <div class="metric-item">
           <span class="label">Steps Executed</span>
-          <span class="val">${card.details.stepsCompleted || 5}</span>
+          <span class="val" style="color: var(--accent-emerald)">${card.details.stepsCompleted || 5}</span>
         </div>
         <div class="metric-item">
-          <span class="label">Ambient Hue</span>
-          <span class="val" style="color: #9d00ff">Indigo</span>
+          <span class="label">Mode</span>
+          <span class="val" style="color: var(--accent-cyan)">Deep Focus</span>
         </div>
       </div>
       <div class="card-actions">
         <button class="card-btn primary" onclick="handleUserPrompt('Cancel Focus routine')">Disengage Routine</button>
       </div>
     `;
-  } else if (card.cardType === "metrics_dashboard") {
-    cardElement.innerHTML = `
-      <div class="card-top">
-        <h4>${card.title}</h4>
-        <span class="card-badge">Hackathon Status</span>
-      </div>
-      <div class="card-metrics">
-        <div class="metric-item">
-          <span class="label">Primary Track</span>
-          <span class="val" style="font-size: 0.95rem; color: #00d2ff;">Alexa+ MCP</span>
-        </div>
-        <div class="metric-item">
-          <span class="label">Bonus Eligible</span>
-          <span class="val" style="font-size: 0.95rem; color: #00f298;">+10% Bonus</span>
-        </div>
-      </div>
-      <div class="card-actions">
-        <button class="card-btn primary" onclick="window.open('/sse', '_blank')">View Stream</button>
-      </div>
-    `;
   } else {
     cardElement.innerHTML = `
       <div class="card-top">
-        <h4>${card.title}</h4>
-        <span class="card-badge">MCP Suggestion</span>
+        <h4>✨ ${escapeHtml(card.title)}</h4>
+        <span class="card-badge badge-device">MCP Result</span>
       </div>
-      <p style="font-size: 0.85rem; color: var(--text-muted);">${JSON.stringify(card.details)}</p>
-      <div class="card-actions">
-        <button class="card-btn primary" onclick="handleUserPrompt('Activate Deep Focus routine and set lights')">Execute Routine</button>
-      </div>
+      <p style="font-size: 0.78rem; color: var(--text-muted);">${JSON.stringify(card.details)}</p>
     `;
   }
 
-  // Prepend new card so latest appears at top
   cardsCanvas.prepend(cardElement);
 }
 
-// ----------------------------------------------------
-// CONNECTED DEVICE MATRIX (LIVE DIGITAL TWIN)
-// ----------------------------------------------------
+// ============================================================
+// DEVICE TOPOLOGY (DIGITAL TWIN)
+// ============================================================
+const deviceIcons = {
+  light: "💡",
+  thermostat: "🌡️",
+  lock: "🔐",
+  media: "🔊",
+  battery: "🔋",
+  ev: "🚗"
+};
+
 function renderDeviceMatrix(devices) {
   if (!deviceMatrixGrid || !devices) return;
   deviceMatrixGrid.innerHTML = "";
 
   Object.entries(devices).forEach(([id, dev]) => {
     const card = document.createElement("div");
-    const isActive = dev.state === "on" || dev.state === "cooling" || dev.state === "locked" || dev.state === "playing" || dev.state === "adjusting";
+    const isActive = dev.state === "on" || dev.state === "cooling" || dev.state === "locked" || dev.state === "playing" || dev.state === "adjusting" || dev.state === "charging" || dev.state === "active";
     card.className = `matrix-device-card ${isActive ? "active" : ""}`;
+
+    const icon = deviceIcons[dev.type] || "📟";
 
     let subText = "";
     if (dev.type === "light") {
-      subText = `Brightness: ${dev.brightness}% • Color: <span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${dev.color};vertical-align:middle;box-shadow:0 0 6px ${dev.color}"></span>`;
+      subText = `Brightness: ${dev.brightness}% • Color: <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${dev.color};vertical-align:middle;"></span>`;
     } else if (dev.type === "thermostat") {
       subText = `Target: ${dev.targetTemp}°C (Current: ${dev.currentTemp}°C)`;
     } else if (dev.type === "lock") {
       subText = `Status: ${dev.state.toUpperCase()} • Battery: ${dev.battery}%`;
     } else if (dev.type === "media") {
       subText = `Track: "${dev.track}"`;
+    } else if (dev.type === "battery") {
+      subText = `Level: ${dev.batteryLevel}% • Flow: +${dev.chargeRateKw || 3.4} kW`;
+    } else if (dev.type === "ev") {
+      subText = `Wallbox: ${dev.powerKw} kW • Target: ${dev.targetPct}%`;
     }
 
     let actions = "";
@@ -372,11 +464,15 @@ function renderDeviceMatrix(devices) {
       actions = `
         <button class="matrix-btn" onclick="toggleDeviceAction('${id}', '${dev.state === "playing" ? "turn_off" : "turn_on"}')">${dev.state === "playing" ? "Pause" : "Play"}</button>
       `;
+    } else {
+      actions = `
+        <button class="matrix-btn" onclick="showToast('Node synchronized with MCP mesh', 'info')">Sync Telemetry</button>
+      `;
     }
 
     card.innerHTML = `
       <div class="matrix-card-header">
-        <span class="matrix-device-title">${dev.name}</span>
+        <span class="matrix-device-title"><span class="device-icon">${icon}</span> ${escapeHtml(dev.name)}</span>
         <span class="device-status-badge ${isActive ? "badge-on" : "badge-off"}">${dev.state}</span>
       </div>
       <div class="matrix-device-sub">${subText}</div>
@@ -387,12 +483,11 @@ function renderDeviceMatrix(devices) {
   });
 }
 
-// Expose prompt handler on window for inline card onclick handlers
-window.handleUserPrompt = handleUserPrompt;
-
-// Global action handler for card buttons
+// Global toggle device action
 window.toggleDeviceAction = async function(deviceId, action, value) {
   try {
+    showToast(`Sending command to ${deviceId.replace(/_/g, ' ')}...`, "info", 2000);
+
     const res = await fetch("/api/device/toggle", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -401,63 +496,188 @@ window.toggleDeviceAction = async function(deviceId, action, value) {
     const data = await res.json();
     if (data.success) {
       playAlexaSuccessChime();
-      appendLog("event-tool", `⚡ Device [${deviceId}] toggled: ${action.toUpperCase()} ${value ? `(${value})` : ""}`);
-      speakAlexaResponse(`${deviceId.replace(/_/g, ' ')} is now updated to ${action.replace('turn_', '')}.`);
+      const readableAction = action.replace('turn_', '').replace('set_', 'set to ');
+      showToast(`${deviceId.replace(/_/g, ' ')} → ${readableAction} ${value || ""}`, "success");
 
-      // Update Live Device Matrix
       if (data.currentDevices) {
         renderDeviceMatrix(data.currentDevices);
       }
     }
   } catch (err) {
     console.error("Device toggle failed:", err);
+    showToast("Device command failed", "error");
   }
 };
 
-// Fetch current memory store state
+// ============================================================
+// TELEMETRY & CONTROLLERS (Area Chart, Battery, Climate)
+// ============================================================
+function initTelemetryChart() {
+  const wrapper = document.getElementById("chartCanvasWrapper");
+  const scrubberLine = document.getElementById("chartScrubberLine");
+  const dotSolar = document.getElementById("chartScrubberDotSolar");
+  const dotLoad = document.getElementById("chartScrubberDotLoad");
+  const tooltip = document.getElementById("chartTooltip");
+  const tooltipTime = document.getElementById("tooltipTime");
+  const tooltipVal = document.getElementById("tooltipVal");
+  if (!wrapper || !scrubberLine) return;
+
+  wrapper.addEventListener("mousemove", (e) => {
+    const rect = wrapper.getBoundingClientRect();
+    const x = Math.max(10, Math.min(rect.width - 10, e.clientX - rect.left));
+    const pct = x / rect.width;
+
+    const svgX = pct * 680;
+    scrubberLine.setAttribute("x1", svgX);
+    scrubberLine.setAttribute("x2", svgX);
+
+    const hour = Math.floor(6 + pct * 16);
+    const minute = Math.floor((pct * 16 % 1) * 60).toString().padStart(2, "0");
+    const solarKw = (Math.max(0.2, Math.sin(pct * Math.PI) * 5.2)).toFixed(1);
+    const loadKw = (1.8 + Math.cos(pct * Math.PI * 2) * 0.7).toFixed(1);
+
+    const solarY = Math.max(25, 140 - (solarKw / 5.5) * 115);
+    const loadY = Math.max(40, 140 - (loadKw / 5.5) * 115);
+
+    if (dotSolar) {
+      dotSolar.setAttribute("cx", svgX);
+      dotSolar.setAttribute("cy", solarY);
+    }
+    if (dotLoad) {
+      dotLoad.setAttribute("cx", svgX);
+      dotLoad.setAttribute("cy", loadY);
+    }
+
+    if (tooltip) {
+      tooltip.style.left = `${x}px`;
+      if (tooltipTime) tooltipTime.textContent = `${hour}:${minute} (${pct > 0.4 && pct < 0.65 ? 'Peak Generation' : 'Normal Flow'})`;
+      if (tooltipVal) tooltipVal.textContent = `Solar: ${solarKw} kW • Load: ${loadKw} kW`;
+      tooltip.style.opacity = "1";
+    }
+  });
+
+  wrapper.addEventListener("mouseleave", () => {
+    if (tooltip) tooltip.style.opacity = "0.7";
+  });
+}
+
+window.setBatteryMode = async function(mode) {
+  const btnSelf = document.getElementById("btnSelfPowered");
+  const btnBackup = document.getElementById("btnBackupOnly");
+  const badge = document.getElementById("batteryStatusBadge");
+  const flowRate = document.getElementById("batteryFlowRate");
+
+  if (mode === "self_powered") {
+    if (btnSelf) btnSelf.classList.add("active");
+    if (btnBackup) btnBackup.classList.remove("active");
+    if (badge) badge.textContent = "⚡ Self-Powered (+3.4 kW)";
+    if (flowRate) flowRate.textContent = "+3.4 kW";
+    showToast("Powerwall: Maximizing clean solar self-consumption", "success");
+  } else {
+    if (btnBackup) btnBackup.classList.add("active");
+    if (btnSelf) btnSelf.classList.remove("active");
+    if (badge) badge.textContent = "🛡️ 100% Backup Mode";
+    if (flowRate) flowRate.textContent = "Idle (0 kW)";
+    showToast("Powerwall: Reserve locked for weather resilience", "warning");
+  }
+
+  await window.toggleDeviceAction("solar_storage", "set_mode", mode);
+};
+
+function initClimateScrubber() {
+  const rangeInput = document.getElementById("climateRangeInput");
+  const tempDisplay = document.getElementById("currentTempDisplay");
+  if (!rangeInput) return;
+
+  rangeInput.addEventListener("input", (e) => {
+    const val = parseFloat(e.target.value);
+    if (tempDisplay) tempDisplay.textContent = val.toFixed(1);
+  });
+
+  rangeInput.addEventListener("change", (e) => {
+    const val = parseFloat(e.target.value);
+    window.toggleDeviceAction("thermostat", "set_temperature", val.toString());
+  });
+}
+
+window.applyEcoComfortPreset = function() {
+  const rangeInput = document.getElementById("climateRangeInput");
+  const tempDisplay = document.getElementById("currentTempDisplay");
+  if (rangeInput) rangeInput.value = 21.0;
+  if (tempDisplay) tempDisplay.textContent = "21.0";
+  window.toggleDeviceAction("thermostat", "set_temperature", "21");
+  showToast("Eco Comfort Preset (21°C) applied", "success");
+};
+
+// Navigation Tab Switching
+function initNavTabs() {
+  const tabs = document.querySelectorAll(".nav-tab-btn");
+  const views = document.querySelectorAll(".app-view");
+
+  tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      const targetViewId = tab.getAttribute("data-view");
+
+      tabs.forEach(t => {
+        t.classList.remove("active");
+        t.setAttribute("aria-selected", "false");
+      });
+      tab.classList.add("active");
+      tab.setAttribute("aria-selected", "true");
+
+      views.forEach(v => {
+        v.classList.remove("active");
+        if (v.id === targetViewId) {
+          v.classList.add("active");
+        }
+      });
+    });
+  });
+}
+
 async function fetchCurrentState() {
   try {
     const res = await fetch("/api/state");
     const state = await res.json();
 
-    // Render Digital Twin Device Matrix
     if (state.smartDevices) {
       renderDeviceMatrix(state.smartDevices);
-    }
 
-    // Render initial smart device card if canvas is empty
-    if (cardsCanvas.children.length === 0 && state.smartDevices) {
-      renderCard({
-        cardType: "device_controller",
-        title: "Living Room Light",
-        details: { state: state.smartDevices.living_room_light.state, brightness: "75%" }
-      });
-      renderCard({
-        cardType: "metrics_dashboard",
-        title: "Amazon Developer Hackathon Progress",
-        details: {}
-      });
+      if (state.smartDevices.solar_storage) {
+        const bat = state.smartDevices.solar_storage;
+        const waveLevel = document.getElementById("liquidWaveLevel");
+        const pctLabel = document.getElementById("batteryPctLabel");
+        const flowLabel = document.getElementById("batteryFlowRate");
+        if (waveLevel) waveLevel.style.height = `${bat.batteryLevel}%`;
+        if (pctLabel) pctLabel.textContent = `${bat.batteryLevel}%`;
+        if (flowLabel) flowLabel.textContent = `+${bat.chargeRateKw || 3.4} kW`;
+      }
+
+      if (state.smartDevices.thermostat) {
+        const t = state.smartDevices.thermostat;
+        const tempDisplay = document.getElementById("currentTempDisplay");
+        const rangeInput = document.getElementById("climateRangeInput");
+        if (tempDisplay && t.targetTemp) tempDisplay.textContent = t.targetTemp.toFixed(1);
+        if (rangeInput && t.targetTemp) rangeInput.value = t.targetTemp;
+      }
     }
   } catch (err) {
     console.warn("Could not fetch state:", err);
   }
 }
 
-// ----------------------------------------------------
-// EVENT LISTENERS & INITIALIZATION
-// ----------------------------------------------------
+// Event Listeners
 micBtn.addEventListener("click", () => {
   if (!isListening && speechRecognizer) {
-    isListening = true;
     speechRecognizer.start();
+    showToast("Listening for voice input...", "info", 2500);
   } else if (isListening && speechRecognizer) {
     speechRecognizer.stop();
-    isListening = false;
-    setAlexaState("idle", "Ready • Say 'Alexa' or Click to Speak");
+    setVoiceState("idle", "Ready • Enter command or click mic");
   } else {
-    // If browser speech recognition is blocked or unsupported, prompt focus
     promptInput.focus();
-    setAlexaState("listening", "Listening simulation active (Type prompt)");
+    setVoiceState("listening", "Listening simulation active (Type command)");
+    showToast("Type your command in the prompt bar", "info", 2500);
   }
 });
 
@@ -466,19 +686,20 @@ promptForm.addEventListener("submit", (e) => {
   handleUserPrompt(promptInput.value);
 });
 
-// Prompt Chips Click Handlers
-document.querySelectorAll(".chip").forEach(chip => {
+document.querySelectorAll(".intent-chip").forEach(chip => {
   chip.addEventListener("click", () => {
     const prompt = chip.getAttribute("data-prompt");
     handleUserPrompt(prompt);
   });
 });
 
-clearLogBtn.addEventListener("click", () => {
-  streamLogContainer.innerHTML = '<div class="log-entry system-entry"><span class="log-time">[System]</span> Log cleared. Listening for stream events...</div>';
-});
+// Expose handlers on window
+window.handleUserPrompt = handleUserPrompt;
 
 // Boot application
+initNavTabs();
 setupSpeechRecognition();
 connectStreamableHttp();
 fetchCurrentState();
+initTelemetryChart();
+initClimateScrubber();

@@ -21,7 +21,9 @@ export const memoryStore = {
     living_room_light: { name: "Living Room Light", type: "light", state: "on", brightness: 75, color: "#00d2ff" },
     thermostat: { name: "Climate Control", type: "thermostat", state: "cooling", targetTemp: 21, currentTemp: 23 },
     front_door_lock: { name: "Smart Lock (Ring/Alexa)", type: "lock", state: "locked", battery: 94 },
-    ambient_speakers: { name: "Echo Studio Living Room", type: "media", state: "playing", track: "Ambient Chillout" }
+    ambient_speakers: { name: "Echo Studio Living Room", type: "media", state: "playing", track: "Ambient Chillout" },
+    solar_storage: { name: "Tesla Powerwall 3", type: "battery", state: "charging", batteryLevel: 84, chargeRateKw: 3.4, timeToFull: "42m" },
+    ev_charger: { name: "Aura Smart EV Wallbox", type: "ev", state: "active", powerKw: 7.2, targetPct: 90 }
   },
   todoList: [
     { id: "1", task: "Review Hackathon project submission draft", completed: false, priority: "high" },
@@ -160,6 +162,11 @@ export async function handleToolExecution(name, args) {
         device.color = value;
       } else if (action === "lock" || action === "unlock") {
         device.state = action === "lock" ? "locked" : "unlocked";
+      } else if (action === "charge" || action === "discharge") {
+        device.state = action;
+        if (value) device.chargeRateKw = parseFloat(value);
+      } else if (action === "set_mode" && value) {
+        device.mode = value;
       }
 
       return {

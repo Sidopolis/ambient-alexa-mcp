@@ -52,13 +52,18 @@ graph TD
 2. **AWS Bedrock Runtime Integration:**
    - Leverages `@aws-sdk/client-bedrock-runtime` for multi-step reasoning, autonomous planning, and tool calling.
    - Built-in zero-downtime developer fallback mode for offline testing.
-3. **Simulated Alexa+ Glassmorphic Web Experience:**
-   - Iconic reactive multi-color glowing Alexa+ halo ring.
-   - Speech recognition (Mic input) + natural Alexa speech synthesis (TTS).
-4. **Interactive Visual Surface (MCP Apps Spec):**
+3. **Simulated Alexa+ Slate Glass Voice Experience:**
+   - Editorial obsidian design (`#09090B`) with architectural dotgrid texture, crisp typography, and 5-bar voice activity waveform.
+   - Natural speech recognition (Mic input) + Alexa voice synthesis (SpeechSynthesis TTS) + Web Audio synthesized chimes.
+4. **Hierarchical Agent Planning & 21st.dev Disclosures:**
+   - Real-time hierarchical agent plan tree (`id: 2127`) showing task status (`In Flight`, `Complete`, `Queued`).
+   - Expandable AI Tool Call disclosure cards (`id: 23789`) with JSON-RPC arguments and outputs.
+5. **Multi-Tab Telemetry & Digital Twin Surface:**
+   - **Execution Trace View:** Millisecond-accurate waterfall spans (`0-480ms` calibrated ruler) for model, tool, and stream IO.
+   - **Power Grid & Telemetry:** Interactive solar/load area chart with crosshair scrubber, Tesla Powerwall 3 wave tank, and climate hub.
+   - **Device Topology:** Room-by-room Digital Twin device matrix with live bidirectional state control.
+6. **Interactive Visual Surface (MCP Apps Spec):**
    - Directly renders interactive components onto the user's screen during voice interaction (device sliders, status badges, actionable buttons).
-5. **Live Protocol Inspector:**
-   - Real-time terminal sidebar displaying bidirectional JSON-RPC frames, handshake diagnostics, latency telemetry, and token usage.
 
 ---
 
@@ -129,11 +134,11 @@ When you receive your $150 AWS Promotional Credits, configure your AWS credentia
 ## 📋 3-Minute Demo Video Walkthrough Script
 
 *For recording your submission demo video:*
-- **[0:00 - 0:30] Introduction:** Present the problem with traditional single-turn voice skills and introduce Aura+ as an autonomous agent powered by Alexa+ MCP and AWS Bedrock.
-- **[0:30 - 1:15] Voice & Autonomous Routine Demo:** Click the mic or prompt chip *"Activate Deep Focus routine"*. Show the Alexa ring glow amber (thinking) and cyan (speaking), demonstrating multi-step execution.
-- **[1:15 - 2:00] Interactive Surface (MCP Apps):** Demonstrate the dynamically rendered smart light controller card and toggle device actions on-screen.
-- **[2:00 - 2:40] MCP Protocol Inspector:** Show the real-time Streamable HTTP panel on the right with live Server-Sent Events, JSON-RPC 2.0 messages, and Bedrock latency.
-- **[2:40 - 3:00] Conclusion & DevRel Feedback:** Highlight the open-source MIT license, AWS Bedrock integration, and friction log entries submitted for Amazon's developer team.
+- **[0:00 - 0:35] Problem & Architecture:** Introduce the limitations of legacy single-turn voice skills. Explain how Aura+ implements the open **Streamable HTTP MCP specification (2025-11-25+)** coupled with **AWS Bedrock** for autonomous agentic orchestration.
+- **[0:35 - 1:15] Orchestrator Console & Voice:** Trigger the voice input or one-click routine *"Activate Deep Focus routine"*. Highlight the 5-bar audio waveform, the chime sound, the 21st.dev hierarchical Agent Plan (`id: 2127`), and expandable Tool Call disclosures (`id: 23789`).
+- **[1:15 - 1:50] Execution Trace Waterfall:** Switch to the **Execution Trace** tab. Showcase the millisecond trace waterfall (`bedrock:claude-3-5-sonnet`, `mcp:smart_home_control`, `sse:streamable_http`) with calibrated ruler and token breakdown.
+- **[1:50 - 2:25] Power Grid & Device Topology:** Switch to **Power Grid & Telemetry** to scrub the interactive solar area chart and toggle Powerwall modes. Then open **Device Topology** to demonstrate direct digital twin hardware state synchronization.
+- **[2:25 - 3:00] Open Source & Friction Log:** Conclude with the open-source MIT license, AWS Bedrock runtime adapter, and the official [FRICTION_LOG.md](FRICTION_LOG.md) submitted for Amazon's DevRel team (securing the 10% bonus).
 
 ---
 

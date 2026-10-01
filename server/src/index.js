@@ -254,7 +254,15 @@ app.post("/api/device/toggle", async (req, res) => {
 // STATIC CLIENT HOSTING (Zero Extra Dependencies Needed)
 // -------------------------------------------------------------
 const clientPath = path.join(__dirname, "../../client");
-app.use(express.static(clientPath));
+app.use(express.static(clientPath, {
+  etag: false,
+  maxAge: 0,
+  setHeaders: (res) => {
+    res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("Expires", "0");
+  }
+}));
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(clientPath, "index.html"));

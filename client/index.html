@@ -4,134 +4,548 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-  <title>Aura+ | Autonomous Alexa+ Agent & MCP Streamable HTTP Platform</title>
-  <meta name="description" content="Aura+ is a self-hosted Model Context Protocol (MCP) server & simulated Alexa+ agent powered by AWS Bedrock for the Amazon Developer Hackathon.">
-  <meta name="theme-color" content="#07090e">
+  <title>Aura+ | Autonomous Alexa+ Agent Platform</title>
+  <meta name="description" content="Aura+ is a self-hosted Model Context Protocol (MCP) server & autonomous Alexa+ agent powered by AWS Bedrock for the Amazon Developer Hackathon.">
+  <meta name="theme-color" content="#09090b">
   <meta name="color-scheme" content="dark">
   <meta name="robots" content="index, follow">
 
-  <!-- Open Graph / Facebook Meta Tags -->
+  <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Aura+ Alexa+ Agent">
-  <meta property="og:title" content="Aura+ | Autonomous Alexa+ Agent & MCP Streamable HTTP Platform">
-  <meta property="og:description" content="Self-hosted Streamable HTTP Model Context Protocol (MCP) server & simulated Alexa+ agent powered by AWS Bedrock.">
-  <meta property="og:locale" content="en_US">
+  <meta property="og:title" content="Aura+ | Autonomous Alexa+ Agent">
+  <meta property="og:description" content="Self-hosted Streamable HTTP MCP server for Alexa+ with AWS Bedrock integration.">
 
-  <!-- Twitter Meta Tags -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Aura+ | Autonomous Alexa+ Agent">
-  <meta name="twitter:description" content="Self-hosted Streamable HTTP MCP server for Alexa+ with AWS Bedrock integration.">
-
-  <!-- Inline SVG Favicon (Glowing Alexa Halo Ring) -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%2307090e' stroke='%2300d2ff' stroke-width='3' stroke-dasharray='20 10'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%239d00ff'/%3E%3C/svg%3E">
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%2309090b' stroke='%2300d2ff' stroke-width='2'/%3E%3Cpath d='M11 16h10M16 11v10' stroke='%2300d2ff' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
 
   <!-- Fonts & Stylesheet -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=4.1">
 </head>
-<body>
-  <!-- Ambient background glow layers -->
-  <div class="ambient-glow cyan-glow" aria-hidden="true"></div>
-  <div class="ambient-glow purple-glow" aria-hidden="true"></div>
+<body class="dotgrid-bg">
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
   <div class="app-layout">
-    <!-- Top Navigation Bar -->
-    <header class="top-nav" role="banner">
-      <div class="brand">
-        <div class="brand-badge" aria-label="Amazon Alexa Plus Platform">ALEXA+</div>
-        <div class="brand-title">
-          <h1>Aura<span>+</span></h1>
-          <span class="brand-sub">Autonomous MCP Agent</span>
-        </div>
+    <!-- Top Product Header -->
+    <header class="app-header" role="banner">
+      <div class="brand-group">
+        <div class="brand-badge">ALEXA+ PLATFORM</div>
+        <div class="brand-title">Aura<span>+</span></div>
+        <span class="brand-divider">/</span>
+        <span class="brand-sub">Autonomous Orchestrator</span>
       </div>
 
-      <!-- Telemetry & Specs Pill -->
-      <div class="header-badges" role="region" aria-label="Protocol Status">
-        <div class="status-pill live-pill" id="mcpStatusBadge">
-          <span class="pulsing-dot" aria-hidden="true"></span>
-          <span class="status-text">MCP Streamable HTTP (2025-11-25)</span>
+      <!-- Navigation Views -->
+      <nav class="nav-tabs" role="tablist" aria-label="Product Views">
+        <button class="nav-tab-btn active" role="tab" aria-selected="true" data-view="view-console">
+          <span class="tab-dot"></span> Orchestrator Console
+        </button>
+        <button class="nav-tab-btn" role="tab" aria-selected="false" data-view="view-trace">
+          <span class="tab-dot"></span> Execution Trace
+        </button>
+        <button class="nav-tab-btn" role="tab" aria-selected="false" data-view="view-energy">
+          <span class="tab-dot"></span> Power Grid & Telemetry
+        </button>
+        <button class="nav-tab-btn" role="tab" aria-selected="false" data-view="view-devices">
+          <span class="tab-dot"></span> Device Topology
+        </button>
+      </nav>
+
+      <!-- Protocol Status Badges -->
+      <div class="header-badges">
+        <div class="status-pill live-pill" id="mcpStatusBadge" title="MCP Specification 2025-11-25+ Streamable HTTP Transport">
+          <span class="status-indicator"></span>
+          <span>MCP Streamable HTTP</span>
         </div>
         <div class="status-pill bedrock-pill" id="bedrockPill">
-          <span class="aws-icon" aria-hidden="true">⚡</span>
-          <span>AWS Bedrock Runtime</span>
+          <span>⚡ Bedrock Claude 3.5</span>
         </div>
       </div>
     </header>
 
-    <!-- Main Workspace Grid -->
+    <!-- Main Workspace -->
     <main class="main-content" role="main">
-      <!-- Left Panel: Simulated Alexa+ Interaction Stage -->
-      <section class="stage-panel glass-card" aria-label="Alexa+ Simulated Interface">
-        <!-- Iconic Alexa+ Dynamic Multi-Color Ring -->
-        <div class="ring-container" id="alexaRingWrapper">
-          <div class="alexa-glow" aria-hidden="true"></div>
-          <div class="alexa-ring" id="alexaRing" role="status" aria-label="Alexa light ring indicator">
-            <div class="ring-core">
-              <button class="mic-toggle-btn" id="micBtn" type="button" aria-label="Click to speak to Alexa+" title="Click to Speak to Alexa+">
-                <svg class="mic-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+
+      <!-- ======================================================== -->
+      <!-- VIEW 1: ORCHESTRATOR CONSOLE (Input, Plan & Tool Calls)  -->
+      <!-- ======================================================== -->
+      <section class="app-view active" id="view-console" role="tabpanel">
+        <div class="console-grid">
+
+          <!-- Left Column: Input Control & Agent Plan -->
+          <div class="panel-box">
+            <div class="panel-header">
+              <span class="mono-eyebrow">AGENT INTERACTION BAR</span>
+              <span class="badge-mini">Natural Language & Voice</span>
+            </div>
+
+            <!-- Sleek Voice/Command Bar (No Orbs, No Gimmicks) -->
+            <form class="command-bar" id="promptForm" role="search">
+              <button class="mic-btn" id="micBtn" type="button" aria-label="Voice Input Toggle" title="Voice Input (Alexa+)">
+                <svg class="mic-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
                   <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
                   <line x1="12" y1="19" x2="12" y2="23"/>
                   <line x1="8" y1="23" x2="16" y2="23"/>
                 </svg>
               </button>
+              <input type="text" id="promptInput" placeholder="Command Alexa+ to orchestrate routines, adjust climate, or route solar..." autocomplete="off">
+              <button type="submit" class="submit-action-btn" id="sendBtn">Execute</button>
+            </form>
+
+            <!-- Waveform & State Status -->
+            <div class="voice-status-strip">
+              <div class="voice-wave-bars" id="voiceWaveBars" aria-hidden="true">
+                <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+              </div>
+              <span class="voice-state-text" id="alexaStateLabel">Ready • Enter command or click mic</span>
+            </div>
+
+            <!-- Intent Shortcuts -->
+            <div class="preset-intents">
+              <span class="mono-eyebrow">ONE-CLICK AUTONOMOUS WORKFLOWS</span>
+              <div class="intent-chips-grid">
+                <button class="intent-chip" type="button" data-prompt="Activate Deep Focus routine and set lights">
+                  <span class="chip-title">🎯 Deep Focus Routine</span>
+                  <span class="chip-sub">Dims lights, pauses noise, optimizes HVAC</span>
+                </button>
+                <button class="intent-chip" type="button" data-prompt="Adjust climate thermostat to 22 degrees">
+                  <span class="chip-title">❄️ Eco Climate Setpoint (22°C)</span>
+                  <span class="chip-sub">Pre-cools before peak grid pricing</span>
+                </button>
+                <button class="intent-chip" type="button" data-prompt="Turn on living room lights with cyan glow">
+                  <span class="chip-title">💡 Living Room Ambient</span>
+                  <span class="chip-sub">Adaptive lighting via smart_home_control</span>
+                </button>
+                <button class="intent-chip" type="button" data-prompt="Check Hackathon checklist and MCP status">
+                  <span class="chip-title">📋 Protocol Verification</span>
+                  <span class="chip-sub">MCP Spec 2025-11-25 + Bedrock validation</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Agent Plan Tree (21st.dev component id: 2127) -->
+            <div class="agent-plan-box">
+              <div class="panel-header-mini">
+                <span class="mono-eyebrow">HIERARCHICAL AGENT PLAN</span>
+                <span class="plan-status-tag" id="planStatusTag">Active Strategy</span>
+              </div>
+
+              <div class="plan-tree-container">
+                <div class="plan-task-node">
+                  <div class="task-node-header">
+                    <span class="task-icon complete">✓</span>
+                    <span class="task-title">Evaluate Grid Tariffs & Home Demand</span>
+                    <span class="task-badge">0.48/kWh</span>
+                  </div>
+                  <div class="task-node-body">
+                    <p>Sampled utility peak rates against solar inverter telemetry (4.8 kW available).</p>
+                    <div class="mcp-tool-pills">
+                      <span class="tool-pill">mcp:telemetry_query</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="plan-task-node active">
+                  <div class="task-node-header">
+                    <span class="task-icon active">●</span>
+                    <span class="task-title">Execute HVAC & Lighting Optimization</span>
+                    <span class="task-badge active">In Flight</span>
+                  </div>
+                  <div class="task-node-body">
+                    <p>Adjusting thermostat to 21.5°C and routing surplus solar into Tesla Powerwall 3.</p>
+                    <div class="mcp-tool-pills">
+                      <span class="tool-pill">mcp:smart_home_control</span>
+                      <span class="tool-pill">mcp:manage_context_memory</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="plan-task-node pending">
+                  <div class="task-node-header">
+                    <span class="task-icon pending">○</span>
+                    <span class="task-title">Synchronize Digital Twin State & SSE Feed</span>
+                    <span class="task-badge pending">Queued</span>
+                  </div>
+                  <div class="task-node-body">
+                    <p>Notify client sessions via Streamable HTTP event stream (/sse).</p>
+                    <div class="mcp-tool-pills">
+                      <span class="tool-pill">mcp:streamable_http_sse</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="alexa-state-label" id="alexaStateLabel">Ready • Say "Alexa" or Click to Speak</div>
+
+          <!-- Right Column: Conversation Stream & AI Tool Call Disclosures -->
+          <div class="panel-box">
+            <div class="panel-header">
+              <span class="mono-eyebrow">EXECUTION FEED & TOOL DISCLOSURES</span>
+              <span class="badge-mini">MCP 2025-11-25 Spec</span>
+            </div>
+
+            <!-- Conversation Stream -->
+            <div class="conversation-stream" id="conversationContainer" role="log" aria-live="polite">
+              <div class="chat-item agent">
+                <div class="chat-meta">
+                  <span class="chat-sender">Alexa+ Agent</span>
+                  <span class="chat-timestamp" id="welcomeTime"></span>
+                </div>
+                <div class="chat-bubble">
+                  Welcome to Aura+. Connected to your self-hosted MCP Server and AWS Bedrock runtime. All actions trigger verified JSON-RPC tool calls below.
+                </div>
+              </div>
+            </div>
+
+            <!-- AI Tool Call Disclosures (21st.dev component id: 23789) -->
+            <div class="tool-calls-section">
+              <div class="panel-header-mini">
+                <span class="mono-eyebrow">ACTIVE TOOL INVOCATIONS</span>
+                <span class="badge-mini">Expandable Details</span>
+              </div>
+
+              <div class="tool-calls-list" id="toolCallsList">
+                <!-- Tool Call 1: Smart Home Control -->
+                <div class="ai-tool-card" id="toolCallCard1">
+                  <div class="tool-card-summary" onclick="toggleToolCard('toolCallCard1')">
+                    <span class="tool-badge success">✓</span>
+                    <span class="tool-name">smart_home_control</span>
+                    <span class="tool-summary-text">deviceId: thermostat • set_temperature (21.5°C)</span>
+                    <span class="chevron-icon">›</span>
+                  </div>
+                  <div class="tool-card-details">
+                    <div class="detail-block">
+                      <div class="detail-label">Arguments (JSON-RPC)</div>
+                      <pre class="code-block"><code>{
+  "deviceId": "thermostat",
+  "action": "set_temperature",
+  "value": "21.5"
+}</code></pre>
+                    </div>
+                    <div class="detail-block">
+                      <div class="detail-label">Execution Result</div>
+                      <pre class="code-block result"><code>"Successfully executed 'set_temperature' on Climate Control. Current state: adjusting (21.5°C)"</code></pre>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tool Call 2: Context Memory -->
+                <div class="ai-tool-card" id="toolCallCard2">
+                  <div class="tool-card-summary" onclick="toggleToolCard('toolCallCard2')">
+                    <span class="tool-badge success">✓</span>
+                    <span class="tool-name">manage_context_memory</span>
+                    <span class="tool-summary-text">operation: read_preferences • user: Sidhant</span>
+                    <span class="chevron-icon">›</span>
+                  </div>
+                  <div class="tool-card-details">
+                    <div class="detail-block">
+                      <div class="detail-label">Arguments (JSON-RPC)</div>
+                      <pre class="code-block"><code>{
+  "operation": "read_preferences"
+}</code></pre>
+                    </div>
+                    <div class="detail-block">
+                      <div class="detail-label">Execution Result</div>
+                      <pre class="code-block result"><code>{
+  "userName": "Sidhant",
+  "preferredTemp": 22,
+  "routineActive": "evening_focus"
+}</code></pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Interactive Visual Surface (MCP Cards) -->
+            <div class="mcp-cards-section">
+              <div class="panel-header-mini">
+                <span class="mono-eyebrow">MCP APPS RENDER SURFACE</span>
+              </div>
+              <div class="cards-canvas" id="cardsCanvas">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+
         </div>
+      </section>
 
-        <!-- Real-Time Dialogue Bubble -->
-        <div class="speech-dialogue" id="speechDialogue" role="region" aria-label="Conversation Dialogue" aria-live="polite">
-          <div class="user-transcript" id="userTranscript">
-            <span class="speaker-tag">You:</span>
-            <span class="text">"Alexa, activate Deep Focus routine and adjust the lights."</span>
+      <!-- ======================================================== -->
+      <!-- VIEW 2: EXECUTION TRACE (Waterfall Spans from resources)  -->
+      <!-- ======================================================== -->
+      <section class="app-view" id="view-trace" role="tabpanel">
+        <div class="panel-box full-width">
+          <div class="panel-header">
+            <div>
+              <span class="mono-eyebrow">AGENT EXECUTION WATERFALL</span>
+              <h3>End-to-End Orchestration Trace Spans</h3>
+              <p class="panel-sub">Inspect exact millisecond latency across model reasoning, tool invocations, and memory lookups.</p>
+            </div>
+            <div class="trace-meta-pills">
+              <span class="trace-tag">Run: run_alexa_8f29</span>
+              <span class="trace-tag">Model: bedrock:claude-3-5-sonnet</span>
+              <span class="trace-tag highlight" id="traceTotalDuration">Total: 480ms</span>
+            </div>
           </div>
-          <div class="agent-response" id="agentResponse" aria-live="polite">
-            <span class="speaker-tag">Alexa+:</span>
-            <span class="text" id="responseText">"Welcome to Aura+. I am connected via Streamable HTTP to your self-hosted MCP server and AWS Bedrock. Try speaking or clicking a sample intent below."</span>
+
+          <!-- Time Ruler (Calibrated with Waterfall Bar Lane) -->
+          <div class="trace-ruler">
+            <div class="ruler-spacer"></div>
+            <div class="ruler-ticks">
+              <span>0ms</span>
+              <span>120ms</span>
+              <span>240ms</span>
+              <span>360ms</span>
+              <span>480ms</span>
+            </div>
+            <div class="ruler-status-spacer"></div>
+          </div>
+
+          <!-- Span Waterfall Bars -->
+          <div class="trace-spans-container">
+            <!-- Span 1: Bedrock Model Reasoning -->
+            <div class="trace-span-row">
+              <div class="span-label">
+                <span class="span-type-badge model">model</span>
+                <span class="span-name">bedrock:claude-3-5-sonnet</span>
+              </div>
+              <div class="span-bar-lane">
+                <div class="span-bar model-bar" style="left: 0%; width: 55%;">
+                  <span class="bar-text">264ms • 186 tokens</span>
+                </div>
+              </div>
+              <div class="span-status ok">✓ ok</div>
+            </div>
+
+            <!-- Span 2: MCP Smart Home Control -->
+            <div class="trace-span-row">
+              <div class="span-label">
+                <span class="span-type-badge tool">tool</span>
+                <span class="span-name">mcp:smart_home_control</span>
+              </div>
+              <div class="span-bar-lane">
+                <div class="span-bar tool-bar" style="left: 55%; width: 25%;">
+                  <span class="bar-text">120ms</span>
+                </div>
+              </div>
+              <div class="span-status ok">✓ ok</div>
+            </div>
+
+            <!-- Span 3: MCP Memory Storage -->
+            <div class="trace-span-row">
+              <div class="span-label">
+                <span class="span-type-badge tool">tool</span>
+                <span class="span-name">mcp:manage_context_memory</span>
+              </div>
+              <div class="span-bar-lane">
+                <div class="span-bar tool-bar" style="left: 80%; width: 12%;">
+                  <span class="bar-text">58ms</span>
+                </div>
+              </div>
+              <div class="span-status ok">✓ ok</div>
+            </div>
+
+            <!-- Span 4: SSE Stream Broadcast -->
+            <div class="trace-span-row">
+              <div class="span-label">
+                <span class="span-type-badge io">io</span>
+                <span class="span-name">sse:streamable_http</span>
+              </div>
+              <div class="span-bar-lane">
+                <div class="span-bar io-bar" style="left: 92%; width: 8%;">
+                  <span class="bar-text">38ms</span>
+                </div>
+              </div>
+              <div class="span-status ok">✓ ok</div>
+            </div>
           </div>
         </div>
+      </section>
 
-        <!-- Quick Sample Prompts -->
-        <div class="quick-prompts" role="region" aria-label="Quick Intent Suggestions">
-          <span class="quick-label">Try autonomous intents:</span>
-          <div class="prompt-chips">
-            <button class="chip" type="button" data-prompt="Activate Deep Focus routine and set lights">🎯 Deep Focus Routine</button>
-            <button class="chip" type="button" data-prompt="Turn on living room lights with cyan glow">💡 Living Room Lights</button>
-            <button class="chip" type="button" data-prompt="Adjust climate thermostat to 22 degrees">❄️ Set Climate 22°C</button>
-            <button class="chip" type="button" data-prompt="Check Hackathon checklist and MCP status">📋 Hackathon Checklist</button>
+      <!-- ======================================================== -->
+      <!-- VIEW 3: POWER GRID & TELEMETRY (Subframe Area Chart)     -->
+      <!-- ======================================================== -->
+      <section class="app-view" id="view-energy" role="tabpanel">
+        <div class="energy-layout">
+          <!-- Power Flow Area Chart -->
+          <div class="panel-box">
+            <div class="panel-header">
+              <div>
+                <span class="mono-eyebrow">GRID TELEMETRY</span>
+                <h3>Real-Time Power Telemetry & Load Balance</h3>
+              </div>
+              <div class="self-powered-badge">
+                <span class="pulse-dot"></span>
+                <span>94.2% Solar Self-Sufficiency</span>
+              </div>
+            </div>
+
+            <!-- Telemetry Summary Stats -->
+            <div class="telemetry-stat-row">
+              <div class="telemetry-stat">
+                <span class="stat-indicator cyan"></span>
+                <div>
+                  <div class="stat-label">Solar Generation</div>
+                  <div class="stat-val" id="telemetrySolarVal">4.8 kW</div>
+                </div>
+              </div>
+              <div class="telemetry-stat">
+                <span class="stat-indicator purple"></span>
+                <div>
+                  <div class="stat-label">Home Load</div>
+                  <div class="stat-val" id="telemetryLoadVal">2.1 kW</div>
+                </div>
+              </div>
+              <div class="telemetry-stat">
+                <span class="stat-indicator emerald"></span>
+                <div>
+                  <div class="stat-label">Net Grid Flow</div>
+                  <div class="stat-val positive" id="telemetryGridVal">+2.7 kW (Export)</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Interactive Area Chart -->
+            <div class="chart-container" id="chartCanvasWrapper">
+              <svg class="telemetry-svg" id="telemetrySvgChart" viewBox="0 0 680 160" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="solarGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#00d2ff" stop-opacity="0.3"/>
+                    <stop offset="100%" stop-color="#00d2ff" stop-opacity="0.0"/>
+                  </linearGradient>
+                  <linearGradient id="loadGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#9d00ff" stop-opacity="0.2"/>
+                    <stop offset="100%" stop-color="#9d00ff" stop-opacity="0.0"/>
+                  </linearGradient>
+                </defs>
+                <line x1="0" y1="40" x2="680" y2="40" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3"/>
+                <line x1="0" y1="80" x2="680" y2="80" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3"/>
+                <line x1="0" y1="120" x2="680" y2="120" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3"/>
+
+                <path id="solarAreaPath" d="M 0,140 Q 90,130 170,80 T 340,30 T 510,70 T 680,120 L 680,150 L 0,150 Z" fill="url(#solarGrad)"/>
+                <path id="solarLinePath" d="M 0,140 Q 90,130 170,80 T 340,30 T 510,70 T 680,120" fill="none" stroke="#00d2ff" stroke-width="2"/>
+
+                <path id="loadAreaPath" d="M 0,130 Q 90,120 170,110 T 340,95 T 510,105 T 680,115 L 680,150 L 0,150 Z" fill="url(#loadGrad)"/>
+                <path id="loadLinePath" d="M 0,130 Q 90,120 170,110 T 340,95 T 510,105 T 680,115" fill="none" stroke="#b054ff" stroke-width="1.8" stroke-dasharray="3 3"/>
+
+                <line id="chartScrubberLine" x1="340" y1="10" x2="340" y2="150" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="2 2" opacity="0.6"/>
+                <circle id="chartScrubberDotSolar" cx="340" cy="30" r="4" fill="#00d2ff" stroke="#ffffff" stroke-width="1.5"/>
+                <circle id="chartScrubberDotLoad" cx="340" cy="95" r="3.5" fill="#9d00ff" stroke="#ffffff" stroke-width="1.5"/>
+              </svg>
+              <div class="chart-tooltip" id="chartTooltip">
+                <span class="tooltip-time" id="tooltipTime">14:00 (Peak Generation)</span>
+                <span class="tooltip-val" id="tooltipVal">Solar: 4.8 kW • Load: 2.1 kW</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dual Telemetry Nodes: Storage & Climate -->
+          <div class="energy-dual-grid">
+            <!-- Tesla Powerwall 3 (Liquid Wave Tank) -->
+            <div class="panel-box">
+              <div class="panel-header">
+                <div>
+                  <span class="mono-eyebrow">STORAGE NODE</span>
+                  <h4>Tesla Powerwall 3</h4>
+                  <span class="panel-sub">13.5 kWh LFP • Integrated Inverter</span>
+                </div>
+                <span class="badge-mini status-green" id="batteryStatusBadge">⚡ Charging (+3.4 kW)</span>
+              </div>
+
+              <div class="battery-flex-row">
+                <div class="liquid-wave-tank" id="liquidWaveTank">
+                  <div class="liquid-wave-level" id="liquidWaveLevel" style="height: 84%;">
+                    <svg class="wave-svg wave-primary" viewBox="0 0 800 88.6" preserveAspectRatio="none">
+                      <path d="M800 56.9c-155.5 0-204.9-50-405.5-49.9-200 0-250 49.9-394.5 49.9v31.7h800v-.2-31.4z"/>
+                    </svg>
+                    <svg class="wave-svg wave-secondary" viewBox="0 0 800 88.6" preserveAspectRatio="none">
+                      <path d="M800 56.9c-155.5 0-204.9-50-405.5-49.9-200 0-250 49.9-394.5 49.9v31.7h800v-.2-31.4z"/>
+                    </svg>
+                  </div>
+                  <div class="battery-tank-overlay">
+                    <span class="battery-pct-label" id="batteryPctLabel">84%</span>
+                    <span class="battery-flow-rate" id="batteryFlowRate">+3.4 kW</span>
+                  </div>
+                </div>
+
+                <div class="battery-metrics-col">
+                  <div class="metric-line">
+                    <span class="lbl">Time to Full Charge:</span>
+                    <span class="val" id="batteryTimeToFull">42m</span>
+                  </div>
+                  <div class="metric-line">
+                    <span class="lbl">Usable Backup Reserve:</span>
+                    <span class="val" id="batteryAvailableReserve">11.3 kWh</span>
+                  </div>
+                  <div class="battery-actions">
+                    <button class="action-btn active" id="btnSelfPowered" onclick="setBatteryMode('self_powered')">Self-Powered</button>
+                    <button class="action-btn" id="btnBackupOnly" onclick="setBatteryMode('backup_only')">Backup Only</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Multi-Zone Climate Controller -->
+            <div class="panel-box">
+              <div class="panel-header">
+                <div>
+                  <span class="mono-eyebrow">CLIMATE ORCHESTRATION</span>
+                  <h4>Multi-Zone Climate Hub</h4>
+                  <span class="panel-sub">Heat Pump & Inverter System</span>
+                </div>
+                <span class="badge-mini status-cyan" id="climateModeBadge">Comfort Zone</span>
+              </div>
+
+              <div class="climate-body">
+                <div class="climate-readout">
+                  <div>
+                    <span class="lbl">Target Setpoint:</span>
+                    <div class="temp-readout">
+                      <span class="temp-val" id="currentTempDisplay">21.5</span><span class="temp-unit">°C</span>
+                    </div>
+                  </div>
+                  <div class="zone-pills">
+                    <span class="pill cool" id="zoneCoolPill">Cool 16-20°</span>
+                    <span class="pill comfort active" id="zoneComfortPill">Comfort 20-24°</span>
+                    <span class="pill warm" id="zoneWarmPill">Warm 24-30°</span>
+                  </div>
+                </div>
+
+                <div class="slider-box">
+                  <span>❄️</span>
+                  <div class="slider-track-wrap">
+                    <div class="slider-grad-bar"></div>
+                    <input type="range" class="stepped-range" id="climateRangeInput" min="16" max="30" step="0.5" value="21.5">
+                  </div>
+                  <span>🔥</span>
+                </div>
+
+                <div class="climate-footer">
+                  <span class="eco-tag" id="ecoHintText">🌱 Eco saves ~14% HVAC power</span>
+                  <button class="eco-btn" type="button" onclick="applyEcoComfortPreset()">Apply 21°C Preset</button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+      </section>
 
-        <!-- Custom Prompt Input -->
-        <form class="prompt-input-bar" id="promptForm" role="search">
-          <input type="text" id="promptInput" placeholder="Type a command or ask Alexa+ to execute a workflow..." autocomplete="off" aria-label="Enter prompt or command for Alexa+">
-          <button type="submit" class="send-btn" id="sendBtn" title="Send to Agent" aria-label="Send prompt to Alexa+">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
-              <line x1="22" y1="2" x2="11" y2="13"></line>
-              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-            </svg>
-          </button>
-        </form>
-
-        <!-- Dynamic Visual Display (MCP Apps: Cards & Carousels) -->
-        <div class="visual-cards-container" role="region" aria-label="Interactive Visual Surface">
-          <div class="cards-header">
-            <h3>Interactive Visual Surface <span class="badge-mcp-app">MCP Apps Spec</span></h3>
-            <span class="cards-subtitle">Rich multi-modal components rendered directly by MCP tool execution</span>
-          </div>
-          <div class="cards-canvas" id="cardsCanvas">
-            <!-- Dynamically injected via visualCards.js -->
-          </div>
-        </div>
-
-        <!-- Connected Smart Device Topology (Live State Grid) -->
-        <div class="devices-grid-section" role="region" aria-label="Connected Smart Device Topology">
-          <div class="cards-header">
-            <h3>Connected Device Matrix <span class="badge-mcp-app">Digital Twin</span></h3>
-            <span class="cards-subtitle">Real-time status synchronized with MCP smart_home_control & routines</span>
+      <!-- ======================================================== -->
+      <!-- VIEW 4: DEVICE TOPOLOGY (Digital Twin)                   -->
+      <!-- ======================================================== -->
+      <section class="app-view" id="view-devices" role="tabpanel">
+        <div class="panel-box full-width">
+          <div class="panel-header">
+            <div>
+              <span class="mono-eyebrow">HARDWARE MATRIX</span>
+              <h3>Connected Digital Twin Nodes</h3>
+              <p class="panel-sub">Live telemetry synchronized with MCP smart_home_control and active routines.</p>
+            </div>
           </div>
           <div class="device-matrix-grid" id="deviceMatrixGrid">
             <!-- Dynamically populated via app.js -->
@@ -139,77 +553,25 @@
         </div>
       </section>
 
-      <!-- Right Panel: Live MCP Protocol & Streamable HTTP Inspector -->
-      <aside class="inspector-panel glass-card" aria-label="MCP Protocol and Telemetry Inspector">
-        <div class="inspector-header">
-          <div class="title-group">
-            <div class="terminal-dots" aria-hidden="true">
-              <span class="dot red"></span>
-              <span class="dot yellow"></span>
-              <span class="dot green"></span>
-            </div>
-            <h2>MCP Stream Inspector</h2>
-          </div>
-          <button class="clear-log-btn" id="clearLogBtn" type="button" title="Clear log stream" aria-label="Clear Stream Inspector Log">Clear</button>
-        </div>
-
-        <div class="telemetry-bar" role="region" aria-label="Telemetry Metrics">
-          <div class="telemetry-metric">
-            <span class="metric-label">TRANSPORT</span>
-            <span class="metric-val highlight">Streamable HTTP</span>
-          </div>
-          <div class="telemetry-metric">
-            <span class="metric-label">SPEC VER</span>
-            <span class="metric-val">2025-11-25</span>
-          </div>
-          <div class="telemetry-metric">
-            <span class="metric-label">BEDROCK LATENCY</span>
-            <span class="metric-val" id="telemetryLatency">48ms</span>
-          </div>
-          <div class="telemetry-metric">
-            <span class="metric-label">TOKENS</span>
-            <span class="metric-val" id="telemetryTokens">164</span>
-          </div>
-        </div>
-
-        <!-- Real-Time Streamable HTTP JSON-RPC Event Log -->
-        <div class="stream-log-container" id="streamLogContainer" role="log" aria-label="MCP Protocol Stream Log" aria-live="polite" aria-relevant="additions">
-          <div class="log-entry system-entry">
-            <span class="log-time">[System]</span>
-            <span class="log-body">Connected to Streamable HTTP endpoint: <code>/sse</code> (Keep-Alive Active)</span>
-          </div>
-        </div>
-
-        <!-- Active MCP Registered Tools -->
-        <div class="tools-inventory" role="region" aria-label="Registered MCP Tools">
-          <h4>Active MCP Server Tools</h4>
-          <div class="tool-tags" id="toolTags">
-            <span class="tool-tag" title="smart_home_control">⚡ smart_home_control</span>
-            <span class="tool-tag" title="execute_multi_step_routine">🔄 execute_multi_step_routine</span>
-            <span class="tool-tag" title="manage_context_memory">🧠 manage_context_memory</span>
-            <span class="tool-tag" title="render_interactive_card">🖼️ render_interactive_card</span>
-          </div>
-        </div>
-      </aside>
     </main>
 
-    <!-- Hackathon Track Footer -->
+    <!-- App Footer -->
     <footer class="app-footer" role="contentinfo">
       <div class="footer-left">
         <span>Built for <strong>Amazon Developer Hackathon</strong></span>
-        <span class="footer-separator">•</span>
+        <span class="sep">•</span>
         <span>Primary Track: <strong>Alexa+</strong></span>
-        <span class="footer-separator">•</span>
+        <span class="sep">•</span>
         <span>Mini-Challenges: <strong>AWS Builder & Open Source</strong></span>
       </div>
       <div class="footer-right">
-        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub Repository (MIT)</a>
-        <span class="footer-separator">•</span>
-        <a href="/sse" target="_blank" rel="noopener noreferrer" class="footer-link">Direct SSE Stream</a>
+        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="link">GitHub Repository (MIT)</a>
+        <span class="sep">•</span>
+        <a href="/sse" target="_blank" rel="noopener noreferrer" class="link">Streamable HTTP SSE Stream</a>
       </div>
     </footer>
   </div>
 
-  <script type="module" src="app.js"></script>
+  <script type="module" src="app.js?v=4.0"></script>
 </body>
 </html>
