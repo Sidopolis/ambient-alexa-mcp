@@ -1,0 +1,936 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data: blob:; media-src data: blob:; script-src 'unsafe-inline' https://code.iconify.design; connect-src https://api.iconify.design https://api.simplesvg.com https://api.unisvg.com; frame-src 'none'; object-src 'none'; form-action 'none'; base-uri 'none'">
+<meta name="referrer" content="no-referrer">
+
+<meta name="referrer" content="no-referrer">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slate Glass Voice — Design System</title>
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --background:#FFFFFF;
+  --background-inverse:#000000;
+  --surface-glass:rgba(0,0,0,0.3);
+  --surface-dark-panel:#09090B;
+  --text-primary:#000000;
+  --text-on-dark:#FFFAEA;
+  --text-ink-alt:#111013;
+  --accent:#00CD8F;
+  --border-hairline:rgba(255,255,255,0.14);
+  --dark-band-1:#001818;
+  --dark-band-2:#181818;
+  --nav-glass:rgba(255,255,255,0.12);
+
+  --r-control:8px;
+  --r-control-tight:4px;
+  --r-card:12px;
+  --r-square:4px;
+  --r-pill:9999px;
+
+  --sp-base:8px;
+  --sp-gap:16px;
+  --sp-gap-lg:24px;
+  --sp-micro:4px;
+  --control-pad:10px;
+  --section-padding:96px;
+
+  --avantt:"Manrope",Helvetica,Inter,sans-serif;
+  --season:"Manrope",Helvetica,Inter,sans-serif;
+  --mono:"Geist Mono",ui-monospace,monospace;
+
+  --ease-std:cubic-bezier(0.4,0,0.2,1);
+  --maxw:1296px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--background);color:var(--text-primary);
+  font-family:var(--season);font-size:16px;font-weight:400;line-height:1.4;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,p{margin:0}
+a{color:inherit}
+img{max-width:100%;display:block}
+.wrap{max-width:var(--maxw);margin:0 auto;padding-left:24px;padding-right:24px}
+.mono-eyebrow{
+  font-family:var(--mono);font-size:13px;font-weight:500;
+  letter-spacing:0.08em;text-transform:uppercase;
+}
+.section-pad{padding-top:var(--section-padding);padding-bottom:var(--section-padding)}
+.disp{font-family:var(--avantt);font-weight:600;font-size:80px;line-height:0.9;letter-spacing:-4px}
+.headline{font-family:var(--avantt);font-weight:500;font-size:40px;line-height:1;letter-spacing:-2.3px}
+.label-num{font-family:var(--avantt);font-weight:500;font-size:40px;line-height:1;letter-spacing:-1.6px}
+.body-md{font-family:var(--avantt);font-weight:500;font-size:16px;line-height:1.4}
+iconify-icon{display:inline-block;line-height:1}
+
+/* HERO critical */
+#hero{position:relative;min-height:100vh;overflow:hidden;background:#181818;color:var(--text-on-dark)}
+.hero-frame{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(120% 90% at 30% 30%,#3a332c 0%,#221d18 45%,#0c0a08 100%);
+  filter:blur(2px);transform:scale(1.05);
+}
+.hero-scrim{position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,0.15) 0%,rgba(0,0,0,0.45) 100%)}
+.hero-inner{position:relative;z-index:2;display:flex;flex-direction:column;justify-content:flex-end;min-height:100vh;padding-bottom:120px;padding-top:180px}
+.hero-h1{max-width:16ch;color:#FFFAEA}
+.hero-support{margin-top:24px;max-width:44ch;color:#FFFAEA;font-family:var(--avantt);font-weight:500;font-size:18px}
+.hero-cta-row{margin-top:32px}
+.btn-hero-primary{
+  display:inline-flex;align-items:center;gap:8px;
+  background:#FFFFFF;color:#000000;border:none;
+  border-radius:6px;height:40px;padding:0 20px;
+  font-family:var(--avantt);font-weight:600;font-size:15px;cursor:pointer;
+  transition:background-color 0.2s ease-out;
+}
+.btn-hero-primary:hover{background:#e6e6e6}
+.console-row{display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-top:28px}
+.glass-select{
+  display:inline-flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,0.1);color:#FFFFFF;
+  border:1px solid var(--border-hairline);
+  height:50px;padding:0 16px;border-radius:8px;
+  font-family:var(--avantt);font-weight:500;font-size:15px;cursor:pointer;
+  backdrop-filter:blur(40px);transition:background-color 0.2s ease-out;
+}
+.glass-select:hover{background:rgba(255,255,255,0.16)}
+.call-pill{
+  display:inline-flex;align-items:center;gap:8px;
+  background:#111013;color:#FFFAEA;border:1px solid var(--border-hairline);
+  height:50px;padding:0 22px;border-radius:9999px;
+  font-family:var(--avantt);font-weight:500;font-size:15px;cursor:pointer;
+  transition:background-color 0.2s ease-out;
+}
+.call-pill:hover{background:#000}
+.console-caption{margin-top:12px;color:rgba(255,250,234,0.7);font-family:var(--avantt);font-weight:500;font-size:14px}
+
+/* announcement + nav critical */
+.announce{
+  position:relative;width:100%;overflow:hidden;
+  background:#003b2a;color:#FFFFFF;
+  display:flex;align-items:center;justify-content:center;
+  height:38px;font-family:var(--avantt);font-weight:500;font-size:14px;z-index:60;
+}
+.announce .streak{
+  position:absolute;inset:0;
+  background:linear-gradient(105deg,#003b2a 0%,#00cd8f 35%,#7affd8 50%,#00cd8f 62%,#003b2a 100%);
+  background-size:220% 100%;opacity:0.9;animation:streak 6s linear infinite;
+}
+@keyframes streak{0%{background-position:0% 0}100%{background-position:220% 0}}
+.announce .a-inner{position:relative;z-index:2;display:flex;align-items:center;gap:16px;width:100%;max-width:var(--maxw);padding:0 24px;justify-content:center}
+.announce a{text-decoration:underline;margin-left:auto;color:#fff;font-weight:600}
+nav.glass-nav{
+  position:sticky;top:0;z-index:50;height:72px;
+  background:var(--nav-glass);backdrop-filter:blur(40px);
+  border-bottom:1px solid var(--border-hairline);
+}
+.nav-inner{max-width:var(--maxw);margin:0 auto;height:72px;display:flex;align-items:center;gap:28px;padding:0 24px}
+.logo{display:flex;align-items:center;gap:8px;font-family:var(--avantt);font-weight:600;font-size:22px;letter-spacing:-1.6px;color:#000}
+.logo .wing{color:#000;transform:rotate(-8deg)}
+.nav-links{display:flex;align-items:center;gap:24px;margin:0 auto}
+.nav-link{background:transparent;border:none;color:#111013;font-family:var(--avantt);font-weight:500;font-size:15px;display:inline-flex;align-items:center;gap:4px;cursor:pointer;padding:0;height:36px}
+.nav-link:hover{opacity:0.65}
+.btn-login{
+  background:transparent;border:1px solid rgba(0,0,0,0.35);color:#111013;
+  height:36px;padding:8px 14px;border-radius:8px;font-family:var(--avantt);font-weight:500;font-size:14px;cursor:pointer;
+  transition:background-color 0.2s ease-out;
+}
+.btn-login:hover{background:rgba(0,0,0,0.06)}
+.btn-nav-cta{
+  background:var(--accent);color:#111013;border:none;
+  height:40px;padding:0 16px;border-radius:4px;font-family:var(--avantt);font-weight:600;font-size:14px;cursor:pointer;
+  transition:background-color 0.2s ease-out;
+}
+.btn-nav-cta:hover{background:#00b880}
+@media(max-width:900px){.nav-links{display:none}}
+@media(max-width:768px){
+  .disp{font-size:52px;letter-spacing:-2.6px}
+  #hero .hero-inner{padding-top:140px;padding-bottom:80px}
+}
+@media(max-width:640px){.disp{font-size:40px;letter-spacing:-1.8px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="announce">
+  <span class="streak" aria-hidden="true"></span>
+  <span class="a-inner">
+    <span>Voice agents that sound human — now with realtime call transfer.</span>
+    <a href="#">Read the release</a>
+  </span>
+</div>
+
+<nav class="glass-nav" aria-label="Primary">
+  <div class="nav-inner">
+    <a class="logo" href="#hero" aria-label="Vapi home">
+      <iconify-icon class="wing" icon="lucide:bird" width="24" aria-hidden="true"></iconify-icon>
+      Vapi
+    </a>
+    <div class="nav-links">
+      <button class="nav-link">Product <iconify-icon icon="lucide:chevron-down" width="15" aria-hidden="true"></iconify-icon></button>
+      <button class="nav-link">Solutions <iconify-icon icon="lucide:chevron-down" width="15" aria-hidden="true"></iconify-icon></button>
+      <button class="nav-link">Docs</button>
+      <button class="nav-link">Pricing</button>
+      <button class="nav-link">Customers</button>
+    </div>
+    <button class="btn-login">Login</button>
+    <button class="btn-nav-cta">Start building</button>
+  </div>
+</nav>
+
+<header id="hero">
+  <div class="hero-frame" aria-hidden="true"></div>
+  <div class="hero-scrim" aria-hidden="true"></div>
+  <div class="wrap hero-inner">
+    <span class="mono-eyebrow" style="color:rgba(255,250,234,0.85)">VOICE AI PLATFORM</span>
+    <h1 class="disp hero-h1" style="margin-top:20px">Give your product a voice worth answering.</h1>
+    <p class="hero-support">Build, test, and ship voice agents that hold real conversations — deployed to production in an afternoon, not a quarter.</p>
+    <div class="hero-cta-row">
+      <button class="btn-hero-primary">Start building <iconify-icon icon="lucide:arrow-right" width="16" aria-hidden="true"></iconify-icon></button>
+    </div>
+    <div class="console-row" role="group" aria-label="Live call console">
+      <button class="glass-select">
+        <iconify-icon icon="lucide:phone" width="16" aria-hidden="true"></iconify-icon>
+        Choose an agent
+        <iconify-icon icon="lucide:chevron-down" width="16" aria-hidden="true"></iconify-icon>
+      </button>
+      <button class="call-pill">
+        <iconify-icon icon="lucide:phone-call" width="16" aria-hidden="true"></iconify-icon>
+        Call the demo
+      </button>
+    </div>
+    <p class="console-caption">Live console — talk to a Vapi agent right now, no signup.</p>
+  </div>
+</header>
+
+<style data-section-styles="palette">
+#palette{background:#fff}
+.pal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:24px;margin-top:48px}
+.swatch{border:1px solid #ececec;border-radius:12px;overflow:hidden}
+.swatch .chip{height:110px;position:relative}
+.checker{background-image:linear-gradient(45deg,#ddd 25%,transparent 25%),linear-gradient(-45deg,#ddd 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#ddd 75%),linear-gradient(-45deg,transparent 75%,#ddd 75%);background-size:16px 16px;background-position:0 0,0 8px,8px -8px,-8px 0}
+.swatch .meta{padding:14px 16px}
+.swatch .name{font-family:var(--avantt);font-weight:600;font-size:15px}
+.swatch .val{font-family:var(--mono);font-size:12px;color:#555;margin-top:4px}
+.swatch .note{font-size:13px;color:#666;margin-top:8px;line-height:1.4}
+.role-head{margin:48px 0 8px;font-family:var(--mono);font-size:13px;letter-spacing:0.08em;text-transform:uppercase;color:#888}
+.sec-eyebrow{color:#888}
+.sec-h{margin-top:12px}
+</style>
+<section id="palette" class="section-pad">
+  <div class="wrap">
+    <span class="mono-eyebrow sec-eyebrow">01 — PALETTE</span>
+    <h2 class="headline sec-h">A light field, a rationed emerald.</h2>
+
+    <div class="role-head">Surfaces</div>
+    <div class="pal-grid">
+      <div class="swatch"><div class="chip" style="background:#FFFFFF;border-bottom:1px solid #eee"></div><div class="meta"><div class="name">Background</div><div class="val">#FFFFFF</div><div class="note">Dominant canvas for all mid-page bands.</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#000000"></div><div class="meta"><div class="name">Background Inverse</div><div class="val">#000000</div><div class="note">Structural black — footer, rail, and dark CTA.</div></div></div>
+      <div class="swatch"><div class="chip checker"><div style="position:absolute;inset:0;background:rgba(0,0,0,0.3);backdrop-filter:blur(4px)"></div></div><div class="meta"><div class="name">Surface Glass</div><div class="val">rgba(0,0,0,0.3)</div><div class="note">Dashboard panels with blur(40px) chrome.</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#09090B"></div><div class="meta"><div class="name">Dark Panel</div><div class="val">#09090B</div><div class="note">Near-black photographic media surfaces.</div></div></div>
+    </div>
+
+    <div class="role-head">Text</div>
+    <div class="pal-grid">
+      <div class="swatch"><div class="chip" style="background:#fff;border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:center"><span style="color:#000;font-family:var(--avantt);font-weight:600;font-size:28px;letter-spacing:-1px">Ag</span></div><div class="meta"><div class="name">Text Primary</div><div class="val">#000000</div><div class="note">Ink on white sections.</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#111013;display:flex;align-items:center;justify-content:center"><span style="color:#FFFAEA;font-family:var(--avantt);font-weight:600;font-size:28px;letter-spacing:-1px">Ag</span></div><div class="meta"><div class="name">Text on Dark</div><div class="val">#FFFAEA</div><div class="note">Warm ink over photography and black.</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#fff;border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:center"><span style="color:#111013;font-family:var(--avantt);font-weight:600;font-size:28px;letter-spacing:-1px">Ag</span></div><div class="meta"><div class="name">Ink Alt</div><div class="val">#111013</div><div class="note">Used on the emerald navbar CTA.</div></div></div>
+    </div>
+
+    <div class="role-head">Accent</div>
+    <div class="pal-grid">
+      <div class="swatch"><div class="chip" style="background:#00CD8F;display:flex;align-items:center;justify-content:center"><span style="color:#111013;font-family:var(--avantt);font-weight:600;font-size:22px;letter-spacing:-0.5px">CTA</span></div><div class="meta"><div class="name">Emerald Accent</div><div class="val">#00CD8F</div><div class="note">Rationed to two filled controls — navbar CTA and one closing button. Never a surface tint.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<style data-section-styles="type-scale">
+#type-scale{background:#fff}
+.spec{border-top:1px solid #ececec;padding:40px 0;display:grid;grid-template-columns:1fr 260px;gap:32px;align-items:baseline}
+.spec .metrics{font-family:var(--mono);font-size:12px;color:#666;line-height:1.9}
+.weight-ramp{display:flex;flex-wrap:wrap;gap:32px;margin-top:20px}
+.weight-ramp span{font-family:var(--avantt);font-size:44px;letter-spacing:-2px;line-height:1}
+@media(max-width:768px){.spec{grid-template-columns:1fr}.spec .disp{font-size:44px;letter-spacing:-2px}}
+</style>
+<section id="type-scale" class="section-pad">
+  <div class="wrap">
+    <span class="mono-eyebrow sec-eyebrow">02 — TYPE SCALE</span>
+    <h2 class="headline sec-h">avantt, compressed. Geist Mono, whispered.</h2>
+
+    <div class="spec">
+      <div class="disp">Answer every caller</div>
+      <div class="metrics">display-lg<br>avantt · 80px · 600<br>line-height 0.9<br>tracking -4px</div>
+    </div>
+    <div class="spec">
+      <div class="headline">Ship a voice agent in an afternoon</div>
+      <div class="metrics">headline-md<br>avantt · 40px · 500<br>line-height 1<br>tracking -2.3px</div>
+    </div>
+    <div class="spec">
+      <div class="label-num">98.6%</div>
+      <div class="metrics">label-md<br>avantt · 40px · 500<br>line-height 1<br>tracking -1.6px</div>
+    </div>
+    <div class="spec">
+      <div class="body-md" style="max-width:52ch">UI-adjacent copy runs on avantt at a tighter 500 weight — support lines, card labels, and console captions where the display face needs to carry through.</div>
+      <div class="metrics">body-md<br>avantt · 16px · 500<br>line-height 1.4</div>
+    </div>
+    <div class="spec">
+      <div style="font-family:var(--season);font-weight:400;font-size:16px;line-height:1.4;max-width:52ch">Prose blocks run on seasonSans at 16px regular — the quiet reading voice underneath the display type, used for testimonials and longer explanatory paragraphs.</div>
+      <div class="metrics">body-runtime<br>seasonSans · 16px · 400<br>line-height 1.4</div>
+    </div>
+    <div class="spec">
+      <div class="mono-eyebrow" style="font-size:13px">ENTERPRISE READY</div>
+      <div class="metrics">accent-mono-label<br>Geist Mono · 13px · 500<br>tracking 0.08em · UPPERCASE</div>
+    </div>
+
+    <div style="border-top:1px solid #ececec;padding-top:40px;margin-top:8px">
+      <div class="mono-eyebrow" style="color:#888">WEIGHT RAMP · avantt</div>
+      <div class="weight-ramp">
+        <span style="font-weight:400">Aa 400</span>
+        <span style="font-weight:500">Aa 500</span>
+        <span style="font-weight:600">Aa 600</span>
+        <span style="font-weight:700">Aa 700</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style data-section-styles="components">
+#components{background:#fff}
+.comp-block{border-top:1px solid #ececec;padding:64px 0}
+.comp-title{font-family:var(--avantt);font-weight:600;font-size:26px;letter-spacing:-1px}
+.comp-desc{color:#666;margin-top:8px;max-width:60ch;font-size:15px}
+.spec-card{
+  margin-top:24px;font-family:var(--mono);font-size:12px;color:#555;line-height:1.9;
+  background:#f7f7f7;border-radius:12px;padding:16px 18px;border:1px solid #ececec;
+}
+.spec-card b{color:#111}
+.instance{margin-top:32px}
+.meta-count{font-family:var(--mono);font-size:12px;color:#888;letter-spacing:0.06em;text-transform:uppercase;margin-top:6px}
+
+/* button matrix */
+.matrix{width:100%;border-collapse:collapse;margin-top:24px}
+.matrix th{font-family:var(--mono);font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:#888;text-align:left;padding:10px 14px;font-weight:500}
+.matrix td{padding:14px;border-top:1px solid #ececec;vertical-align:middle}
+.matrix .rowlabel{font-family:var(--avantt);font-weight:600;font-size:14px}
+.state-disabled{opacity:0.4;pointer-events:none}
+
+/* preview surfaces */
+.dark-preview{background:#181818;border-radius:12px;padding:36px}
+
+/* alternating rows */
+.alt-row{display:grid;grid-template-columns:1fr 1.4fr;gap:48px;align-items:center;margin-top:32px}
+.alt-row.rev{grid-template-columns:1.4fr 1fr}
+.media-card{
+  border-radius:12px;overflow:hidden;position:relative;min-height:320px;
+  background:radial-gradient(120% 120% at 70% 20%,#33291f 0%,#1a1512 60%,#0c0a08 100%);
+  padding:24px;color:#FFFAEA;
+}
+.stat-tiles{display:flex;gap:12px;flex-wrap:wrap}
+.stat-tile{background:rgba(255,255,255,0.06);border:1px solid var(--border-hairline);border-radius:8px;padding:12px 16px;min-width:120px}
+.stat-tile .n{font-family:var(--avantt);font-weight:600;font-size:28px;letter-spacing:-1.2px}
+.stat-tile .l{font-size:11px;color:rgba(255,250,234,0.65);margin-top:2px;font-family:var(--mono);letter-spacing:0.05em;text-transform:uppercase}
+.sparkline{margin-top:16px;height:44px;display:flex;align-items:flex-end;gap:4px}
+.sparkline i{flex:1;background:rgba(0,205,143,0.55);border-radius:2px 2px 0 0}
+.agent-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.agent-cards .ac{background:rgba(255,255,255,0.05);border:1px solid var(--border-hairline);border-radius:8px;padding:10px}
+.agent-cards .ac .dot{width:8px;height:8px;border-radius:9999px;background:var(--accent);display:inline-block;margin-right:6px}
+.agent-cards .ac span{font-size:12px;color:rgba(255,250,234,0.8)}
+
+/* glass dashboard */
+.glass-panel{
+  position:relative;border-radius:12px;padding:16px;
+  background:rgba(0,0,0,0.3);backdrop-filter:blur(40px);
+  border:1px solid var(--border-hairline);color:#FFFAEA;overflow:hidden;min-height:280px;
+}
+.glass-panel .topfade{position:absolute;top:0;left:0;right:0;height:80px;background:linear-gradient(rgb(31,31,35) 40px,rgba(0,0,0,0) 100%);pointer-events:none}
+.gp-photo{background:radial-gradient(100% 140% at 20% 0%,#2a2a30 0%,#111013 70%);border-radius:8px;padding:20px;position:relative}
+
+/* enterprise grid */
+.ent-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 64px}
+.ent-item{padding:48px 0 0;border-radius:0}
+.ent-item .ic{color:#000}
+.ent-item h4{font-family:var(--avantt);font-weight:600;font-size:20px;letter-spacing:-0.6px;margin-top:14px}
+.ent-item p{color:#666;font-size:15px;margin-top:8px;max-width:40ch}
+@media(max-width:768px){.ent-grid{grid-template-columns:1fr}.alt-row,.alt-row.rev{grid-template-columns:1fr}}
+
+/* integration rail */
+.rail-band{background:#001818;border-radius:16px;padding:56px 40px;color:#FFFAEA;overflow:hidden}
+.rail-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.btn-outline-dark{background:transparent;border:1px solid var(--border-hairline);color:#FFFAEA;height:40px;padding:0 18px;border-radius:8px;font-family:var(--avantt);font-weight:500;font-size:14px;cursor:pointer;transition:background-color 0.2s ease-out}
+.btn-outline-dark:hover{background:rgba(255,255,255,0.08)}
+.rail{display:flex;gap:16px;overflow-x:auto;padding:32px 4px 8px;scroll-snap-type:x mandatory}
+.icon-tile{flex:0 0 auto;width:96px;height:96px;border-radius:12px;background:rgba(255,255,255,0.06);border:1px solid var(--border-hairline);display:flex;align-items:center;justify-content:center;scroll-snap-align:start;backdrop-filter:blur(40px)}
+.icon-tile iconify-icon{color:#FFFAEA}
+
+/* case study large */
+.cs-large{display:grid;grid-template-columns:1fr 1fr;border-radius:12px;overflow:hidden;background:#0c0a08;color:#FFFAEA;min-height:360px}
+.cs-large .left{padding:40px}
+.cs-large .right{position:relative;background:radial-gradient(120% 120% at 60% 30%,#3a2f24 0%,#140f0b 100%)}
+.cs-large .right .scrim{position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,0.12) 0%,rgba(0,0,0,0.18) 100%)}
+.play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.play button{width:64px;height:64px;border-radius:9999px;background:rgba(255,255,255,0.9);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#000}
+.cs-cap{position:absolute;bottom:16px;right:16px;z-index:2;font-family:var(--mono);font-size:12px;color:#FFFAEA;background:rgba(0,0,0,0.4);padding:6px 10px;border-radius:8px}
+.cs-avatar{width:36px;height:36px;border-radius:9999px;background:#3a2f24;display:inline-block}
+
+/* case study pair */
+.cs-pair{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px}
+.cs-card{position:relative;border-radius:12px;padding:28px;min-height:260px;background:radial-gradient(120% 120% at 30% 20%,#2b241d 0%,#100c09 70%);color:#FFFAEA;display:flex;flex-direction:column}
+.cs-card .stat{font-family:var(--avantt);font-weight:600;font-size:34px;letter-spacing:-1.6px;margin-top:auto}
+.tag-chips{position:absolute;bottom:20px;left:28px;display:flex;gap:8px}
+.chip-tag{background:rgba(0,0,0,0.35);border:1px solid var(--border-hairline);color:#FFFAEA;border-radius:9999px;padding:5px 12px;font-size:12px;font-family:var(--avantt);font-weight:500}
+@media(max-width:768px){.cs-pair,.cs-large{grid-template-columns:1fr}}
+
+/* stat row */
+.stat-row{display:grid;grid-template-columns:repeat(5,1fr);margin-top:24px}
+.stat-col{padding:0 24px;border-left:1px solid #e5e5e5}
+.stat-col:first-child{border-left:none;padding-left:0}
+.stat-col .num{font-family:var(--avantt);font-weight:600;font-size:40px;letter-spacing:-1.6px;line-height:1}
+.stat-col .cap{color:#666;font-size:13px;margin-top:10px}
+@media(max-width:768px){.stat-row{grid-template-columns:1fr 1fr}.stat-col{border-left:none;padding:16px 0}}
+
+/* editorial band */
+.editorial{padding:60px 72px 36px;border-radius:0}
+.editorial h3{font-family:var(--avantt);font-weight:600;font-size:34px;letter-spacing:-1.4px;max-width:20ch}
+.editorial p{color:#666;margin-top:16px;max-width:60ch}
+@media(max-width:640px){.editorial{padding:40px 24px 24px}}
+
+/* quote strip */
+.quote-band{display:grid;grid-template-columns:1.2fr 1fr;gap:56px;align-items:center;margin-top:24px}
+.quote-band .q{font-family:var(--avantt);font-weight:500;font-size:22px;letter-spacing:-0.6px;line-height:1.35}
+.quote-band .q b{font-weight:700}
+.qhead{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.qhead .av{width:40px;height:40px;border-radius:9999px;background:#ddd}
+.qhead .nm{font-family:var(--mono);font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:#888}
+.logo-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.logo-grid .lg{height:64px;border:1px solid #ececec;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#999}
+@media(max-width:768px){.quote-band{grid-template-columns:1fr}}
+
+/* glass utility buttons preview */
+.util-preview{display:flex;gap:20px;flex-wrap:wrap;margin-top:24px}
+.btn-glass-util{background:rgba(255,255,255,0.1);color:#fff;border:1px solid var(--border-hairline);height:36px;padding:8px 14px;border-radius:8px;font-family:var(--avantt);font-weight:500;font-size:14px;cursor:pointer;transition:background-color 0.2s ease-out;backdrop-filter:blur(40px)}
+.btn-glass-util:hover{background:rgba(255,255,255,0.16)}
+.btn-glass-block{background:rgba(255,255,255,0.1);color:#fff;border:1px solid var(--border-hairline);height:50px;padding:16px;border-radius:0;font-family:var(--avantt);font-weight:500;font-size:14px;cursor:pointer;transition:background-color 0.2s ease-out;display:inline-flex;align-items:center}
+.btn-glass-block:hover{background:rgba(255,255,255,0.16)}
+</style>
+<section id="components" class="section-pad">
+  <div class="wrap">
+    <span class="mono-eyebrow sec-eyebrow">03 — COMPONENTS</span>
+    <h2 class="headline sec-h">The full inventory.</h2>
+
+    <!-- Glass Navbar -->
+    <div class="comp-block" data-tier-a-component="navbar-glass">
+      <div class="comp-title">Glass Navbar</div>
+      <div class="meta-count">×1 · 72px tall · 10 items</div>
+      <p class="comp-desc">Sticky bar floating over the hero: frosted 12% white fill with blur(40px), a hairline border, five nav links (two with dropdown carets), a ghost Login, and the only saturated control in the bar.</p>
+      <div class="instance" style="background:#181818;border-radius:12px;padding:24px">
+        <div style="background:var(--nav-glass);backdrop-filter:blur(40px);border:1px solid var(--border-hairline);border-radius:8px;height:72px;display:flex;align-items:center;gap:20px;padding:0 20px">
+          <span class="logo" style="color:#fff"><iconify-icon icon="lucide:bird" width="22" aria-hidden="true"></iconify-icon>Vapi</span>
+          <span style="margin:0 auto;display:flex;gap:20px">
+            <button class="nav-link" style="color:#FAFAFA">Product <iconify-icon icon="lucide:chevron-down" width="14" aria-hidden="true"></iconify-icon></button>
+            <button class="nav-link" style="color:#FAFAFA">Solutions <iconify-icon icon="lucide:chevron-down" width="14" aria-hidden="true"></iconify-icon></button>
+            <button class="nav-link" style="color:#FAFAFA">Docs</button>
+            <button class="nav-link" style="color:#FAFAFA">Pricing</button>
+            <button class="nav-link" style="color:#FAFAFA">Customers</button>
+          </span>
+          <button class="btn-login" style="border-color:var(--border-hairline);color:#FAFAFA">Login</button>
+          <button class="btn-nav-cta">Start building</button>
+        </div>
+      </div>
+      <div class="spec-card">--nav-glass <b>rgba(255,255,255,0.12)</b> · backdrop <b>blur(40px)</b> · border <b>hairline #FFFFFF/.14</b> · height <b>72px</b> · cta fill <b>accent #00CD8F</b> radius <b>r-square 4</b> height <b>40</b> · motion <b>bg 0.2s ease-out</b></div>
+    </div>
+
+    <!-- Announcement Bar -->
+    <div class="comp-block" data-tier-a-component="announcement-bar">
+      <div class="comp-title">Announcement Bar</div>
+      <div class="meta-count">×1 · full-width · green permitted</div>
+      <p class="comp-desc">A thin band above the navbar carrying a moving diagonal green light-streak texture — bespoke, not a solid fill — with an underlined link CTA at the right end.</p>
+      <div class="instance announce" style="position:relative;height:38px;border-radius:8px">
+        <span class="streak" aria-hidden="true"></span>
+        <span class="a-inner"><span>New: realtime call transfer is live.</span><a href="#">Read the release</a></span>
+      </div>
+      <div class="spec-card">texture <b>green light-leak (bespoke)</b> · type <b>avantt 14 · 500</b> · link <b>underlined</b> · height <b>38</b> · green scope <b>announcement + CTA band only</b></div>
+    </div>
+
+    <!-- Hero primary + console -->
+    <div class="comp-block" data-tier-a-component="button-hero-primary">
+      <div class="comp-title">Hero Primary Button</div>
+      <div class="meta-count">×1 · near-white solid · ~6px corners</div>
+      <p class="comp-desc">The single filled control beneath the hero headline — the highest-contrast element on the first screen. Solid near-white with dark text, distinct from every glass control.</p>
+      <div class="instance dark-preview">
+        <button class="btn-hero-primary">Start building <iconify-icon icon="lucide:arrow-right" width="16" aria-hidden="true"></iconify-icon></button>
+      </div>
+      <div class="spec-card">fill <b>#FFFFFF</b> · text <b>#000000</b> · radius <b>~6px</b> · height <b>40</b> · type <b>avantt 15 · 600</b> · guardrail <b>never glass values</b></div>
+    </div>
+
+    <div class="comp-block" data-tier-a-component="hero-console-control-row">
+      <div class="comp-title">Hero Console Control Row</div>
+      <div class="meta-count">×1 · live-console pairing</div>
+      <p class="comp-desc">A glass dropdown/select paired with a filled dark pill call trigger, muted-white caption below — reads as a live console, not a marketing banner.</p>
+      <div class="instance dark-preview">
+        <div class="console-row" style="margin-top:0">
+          <button class="glass-select"><iconify-icon icon="lucide:phone" width="16" aria-hidden="true"></iconify-icon> Choose an agent <iconify-icon icon="lucide:chevron-down" width="16" aria-hidden="true"></iconify-icon></button>
+          <button class="call-pill"><iconify-icon icon="lucide:phone-call" width="16" aria-hidden="true"></iconify-icon> Call the demo</button>
+        </div>
+        <p class="console-caption">Live console — talk to a Vapi agent right now.</p>
+      </div>
+      <div class="spec-card">select <b>glass rgba(255,255,255,0.1)</b> radius <b>r-control 8</b> · trigger <b>#111013 · pill</b> · caption <b>muted white · avantt 14</b></div>
+    </div>
+
+    <!-- Button matrix (glass + nav + console utility) -->
+    <div class="comp-block" data-tier-a-component="button-glass-utility">
+      <div class="comp-title">Button Matrix</div>
+      <p class="comp-desc">Every documented fill treatment across the states the source supports. The document records no focus treatment, so no focus column is shown.</p>
+      <div class="dark-preview" style="margin-top:24px;overflow-x:auto">
+      <table class="matrix">
+        <thead><tr><th>Variant</th><th>Rest</th><th>Hover</th><th>Disabled</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="rowlabel" style="color:#fff">Navbar CTA (emerald)</td>
+            <td><button class="btn-nav-cta">Start</button></td>
+            <td><button class="btn-nav-cta" style="background:#00b880">Start</button></td>
+            <td><button class="btn-nav-cta state-disabled">Start</button></td>
+          </tr>
+          <tr>
+            <td class="rowlabel" style="color:#fff">Nav Solid CTA (white)</td>
+            <td><button class="btn-hero-primary" style="height:36px;border-radius:8px">Start</button></td>
+            <td><button class="btn-hero-primary" style="height:36px;border-radius:8px;background:#e6e6e6">Start</button></td>
+            <td><button class="btn-hero-primary state-disabled" style="height:36px;border-radius:8px">Start</button></td>
+          </tr>
+          <tr>
+            <td class="rowlabel" style="color:#fff">Glass Utility (36px/8r)</td>
+            <td><button class="btn-glass-util">Configure</button></td>
+            <td><button class="btn-glass-util" style="background:rgba(255,255,255,0.16)">Configure</button></td>
+            <td><button class="btn-glass-util state-disabled">Configure</button></td>
+          </tr>
+          <tr>
+            <td class="rowlabel" style="color:#fff">Glass Console Block (50px/0r)</td>
+            <td><button class="btn-glass-block">Deploy</button></td>
+            <td><button class="btn-glass-block" style="background:rgba(255,255,255,0.16)">Deploy</button></td>
+            <td><button class="btn-glass-block state-disabled">Deploy</button></td>
+          </tr>
+          <tr>
+            <td class="rowlabel" style="color:#fff">Nav Link (ghost)</td>
+            <td><button class="nav-link" style="color:#FAFAFA">Docs</button></td>
+            <td><button class="nav-link" style="color:#FAFAFA;opacity:0.65">Docs</button></td>
+            <td><button class="nav-link state-disabled" style="color:#FAFAFA">Docs</button></td>
+          </tr>
+          <tr>
+            <td class="rowlabel" style="color:#fff">Login (outline)</td>
+            <td><button class="btn-login" style="border-color:var(--border-hairline);color:#FAFAFA">Login</button></td>
+            <td><button class="btn-login" style="border-color:var(--border-hairline);color:#FAFAFA;background:rgba(255,255,255,0.08)">Login</button></td>
+            <td><button class="btn-login state-disabled" style="border-color:var(--border-hairline);color:#FAFAFA">Login</button></td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="util-preview"></div>
+      <div class="spec-card">glass-util <b>rgba(255,255,255,0.1)</b> · radius <b>r-control 8</b> · height <b>36</b> · pad <b>8 14</b> · hover <b>rgba(255,255,255,0.16)</b> · motion <b>bg 0.2s ease-out</b></div>
+    </div>
+
+    <div class="comp-block" data-tier-a-component="button-glass-console-block">
+      <div class="comp-title">Glass Console Block Button</div>
+      <div class="meta-count">×1 · 50px · 0px radius</div>
+      <p class="comp-desc">A block-height console control. Its square corners distinguish it from the 8px-radius utility button.</p>
+      <div class="instance dark-preview">
+        <button class="btn-glass-block">Deploy agent</button>
+      </div>
+      <div class="spec-card">fill <b>rgba(255,255,255,0.1)</b> hover <b>rgba(255,255,255,0.16)</b> · radius <b>0px</b> · height <b>50</b> · pad <b>16</b> · text <b>#FFFFFF</b></div>
+    </div>
+
+    <!-- Quote / logo strip -->
+    <div class="comp-block" data-tier-a-component="quote-logo-strip-band">
+      <div class="comp-title">Quote / Logo-Strip Band</div>
+      <div class="meta-count">×1 · white background</div>
+      <p class="comp-desc">One testimonial paired beside a 2×2 grid of monochrome partner marks — appears once, directly under the hero.</p>
+      <div class="instance quote-band">
+        <div>
+          <div class="qhead"><span class="av"></span><span class="nm">Dana Okafor · VP Support, Northwind</span></div>
+          <p class="q">"We replaced an eight-week IVR project with <b>a Vapi agent shipped in an afternoon</b>. Callers can't tell the difference — and neither can our metrics."</p>
+        </div>
+        <div class="logo-grid">
+          <div class="lg"><iconify-icon icon="lucide:box" width="28" aria-hidden="true"></iconify-icon></div>
+          <div class="lg"><iconify-icon icon="lucide:hexagon" width="28" aria-hidden="true"></iconify-icon></div>
+          <div class="lg"><iconify-icon icon="lucide:circle" width="28" aria-hidden="true"></iconify-icon></div>
+          <div class="lg"><iconify-icon icon="lucide:triangle" width="28" aria-hidden="true"></iconify-icon></div>
+        </div>
+      </div>
+      <div class="spec-card">avatar <b>r-pill</b> · name <b>Geist Mono 13 caps</b> · quote <b>avantt 22 · 500</b> · logos <b>monochrome</b> · surface <b>#FFFFFF</b></div>
+    </div>
+
+    <!-- Alternating media rows x2 -->
+    <div class="comp-block" data-tier-a-component="alternating-media-row">
+      <div class="comp-title">Alternating Media Rows</div>
+      <div class="meta-count">×2 · one wide card per row · 12px radius</div>
+      <p class="comp-desc">Text column beside a single dashboard-screenshot card on a warm dark surface — stat tiles and sparklines across the top, three mini agent-status cards below. Slides into view on scroll.</p>
+
+      <div class="instance alt-row reveal">
+        <div>
+          <span class="mono-eyebrow" style="color:#888">OBSERVABILITY</span>
+          <h3 class="headline" style="font-size:32px;letter-spacing:-1.6px;margin-top:14px">See every call as it happens.</h3>
+          <p class="comp-desc">Live transcripts, latency, and sentiment stream into one console. Nothing about a conversation is a black box.</p>
+        </div>
+        <div class="media-card">
+          <div class="stat-tiles">
+            <div class="stat-tile"><div class="n">312ms</div><div class="l">Latency</div></div>
+            <div class="stat-tile"><div class="n">98.6%</div><div class="l">Resolved</div></div>
+            <div class="stat-tile"><div class="n">1.4k</div><div class="l">Live now</div></div>
+          </div>
+          <div class="sparkline" aria-hidden="true"><i style="height:40%"></i><i style="height:70%"></i><i style="height:55%"></i><i style="height:90%"></i><i style="height:65%"></i><i style="height:80%"></i><i style="height:50%"></i><i style="height:95%"></i></div>
+          <div class="agent-cards">
+            <div class="ac"><span class="dot"></span><span>Support · live</span></div>
+            <div class="ac"><span class="dot"></span><span>Sales · live</span></div>
+            <div class="ac"><span class="dot"></span><span>Triage · live</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="instance alt-row rev reveal">
+        <div class="media-card">
+          <div class="stat-tiles">
+            <div class="stat-tile"><div class="n">47</div><div class="l">Languages</div></div>
+            <div class="stat-tile"><div class="n">99.99%</div><div class="l">Uptime</div></div>
+          </div>
+          <div class="sparkline" aria-hidden="true"><i style="height:60%"></i><i style="height:45%"></i><i style="height:85%"></i><i style="height:70%"></i><i style="height:95%"></i><i style="height:50%"></i><i style="height:75%"></i></div>
+          <div class="agent-cards">
+            <div class="ac"><span class="dot"></span><span>Booking</span></div>
+            <div class="ac"><span class="dot"></span><span>Recovery</span></div>
+            <div class="ac"><span class="dot"></span><span>Outbound</span></div>
+          </div>
+        </div>
+        <div>
+          <span class="mono-eyebrow" style="color:#888">SCALE</span>
+          <h3 class="headline" style="font-size:32px;letter-spacing:-1.6px;margin-top:14px">From one caller to a million.</h3>
+          <p class="comp-desc">The same agent handles a single test call and a nationwide launch — routing, transfer, and fallback built in from day one.</p>
+        </div>
+      </div>
+      <div class="spec-card">card fill <b>warm dark surface</b> · radius <b>r-card 12</b> · tiles <b>r-control 8</b> · entrance <b>scroll fade/slide · transform 0.4s ease</b></div>
+    </div>
+
+    <!-- Glass dashboard panel -->
+    <div class="comp-block" data-tier-a-component="dashboard-glass-panel">
+      <div class="comp-title">Glass Dashboard Showcase Panel</div>
+      <div class="meta-count">×1 · near-full-bleed · blur(40px)</div>
+      <p class="comp-desc">One wide glass card per row — rgba(0,0,0,0.3) fill, hairline border, and a tiny top-edge fade inside the panel.</p>
+      <div class="instance dark-preview">
+        <div class="glass-panel">
+          <div class="topfade" aria-hidden="true"></div>
+          <div class="gp-photo">
+            <div class="mono-eyebrow" style="color:rgba(255,250,234,0.7)">AGENT STUDIO</div>
+            <div class="stat-tiles" style="margin-top:16px">
+              <div class="stat-tile"><div class="n">Sarah</div><div class="l">Voice model</div></div>
+              <div class="stat-tile"><div class="n">GPT-4o</div><div class="l">Reasoning</div></div>
+              <div class="stat-tile"><div class="n">120ms</div><div class="l">TTFB</div></div>
+            </div>
+            <div class="agent-cards" style="margin-top:16px">
+              <div class="ac"><span class="dot"></span><span>Transfer node</span></div>
+              <div class="ac"><span class="dot"></span><span>Voicemail</span></div>
+              <div class="ac"><span class="dot"></span><span>End call</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="spec-card">fill <b>rgba(0,0,0,0.3)</b> · backdrop <b>blur(40px)</b> · radius <b>r-card 12</b> · pad <b>16</b> · topfade <b>rgb(31,31,35)→transparent</b> · border <b>hairline</b></div>
+    </div>
+
+    <!-- Enterprise capability grid -->
+    <div class="comp-block" data-tier-a-component="enterprise-capability-grid">
+      <div class="comp-title">Enterprise Capability Grid</div>
+      <div class="meta-count">×1 · 2-column list · transparent · 0px corners</div>
+      <p class="comp-desc">A two-column icon-label list, no card chrome, square corners preserved — reads as a plain list, not bounded cards.</p>
+      <div class="instance ent-grid">
+        <div class="ent-item"><iconify-icon class="ic" icon="lucide:shield-check" width="28" aria-hidden="true"></iconify-icon><h4>SOC 2 Type II</h4><p>Audited controls across the platform, with data residency options by region.</p></div>
+        <div class="ent-item"><iconify-icon class="ic" icon="lucide:git-branch" width="28" aria-hidden="true"></iconify-icon><h4>Versioned agents</h4><p>Every prompt, model, and route change is tracked, diffable, and rollback-ready.</p></div>
+        <div class="ent-item"><iconify-icon class="ic" icon="lucide:phone-forwarded" width="28" aria-hidden="true"></iconify-icon><h4>Warm transfer</h4><p>Hand a live caller to a human with full context, no repeated questions.</p></div>
+        <div class="ent-item"><iconify-icon class="ic" icon="lucide:activity" width="28" aria-hidden="true"></iconify-icon><h4>Realtime metrics</h4><p>Latency, resolution, and sentiment streamed to your own observability stack.</p></div>
+      </div>
+      <div class="spec-card">bg <b>transparent</b> · radius <b>0px (square)</b> · row pad <b>96 0 0</b> · icons <b>monochrome</b> · label <b>avantt 20 · 600</b></div>
+    </div>
+
+    <!-- Integration icon rail -->
+    <div class="comp-block" data-tier-a-component="integration-icon-rail">
+      <div class="comp-title">Integration Icon Rail</div>
+      <div class="meta-count">×1 · black band · horizontal scroll</div>
+      <p class="comp-desc">A scrolling row of square glass icon tiles on a full-bleed black band — one of only three black zones — with a left eyebrow, heading, and one outline button.</p>
+      <div class="instance rail-band">
+        <div class="rail-head">
+          <div>
+            <span class="mono-eyebrow" style="color:rgba(255,250,234,0.7)">INTEGRATIONS</span>
+            <h3 class="headline" style="font-size:32px;letter-spacing:-1.6px;margin-top:12px;color:#FFFAEA">Plug into your whole stack.</h3>
+          </div>
+          <button class="btn-outline-dark">Browse all</button>
+        </div>
+        <div class="rail" tabindex="0" aria-label="Integrations, scrollable">
+          <div class="icon-tile"><iconify-icon icon="lucide:slack" width="32" aria-hidden="true"></iconify-icon></div>
+          <div class="icon-tile"><iconify-icon icon="lucide:database" width="32" aria-hidden="true"></iconify-icon></div>
+          <div class="icon-tile"><iconify-icon icon="lucide:webhook" width="32" aria-hidden="true"></iconify-icon></div>
+          <div class="icon-tile"><iconify-icon icon="lucide:cloud" width="32" aria-hidden="true"></iconify-icon></div>
+          <div class="icon-tile"><iconify-icon icon="lucide:credit-card" width="32" aria-hidden="true"></iconify-icon></div>
+          <div class="icon-tile"><iconify-icon icon="lucide:calendar" width="32" aria-hidden="true"></iconify-icon></div>
+          <div class="icon-tile"><iconify-icon icon="lucide:mail" width="32" aria-hidden="true"></iconify-icon></div>
+        </div>
+      </div>
+      <div class="spec-card">band <b>#001818</b> · tile <b>glass · r-card 12 · hairline</b> · glyph <b>monochrome</b> · button <b>outline · r-control 8</b> · pattern <b>horizontal scroll</b></div>
+    </div>
+
+    <!-- Large case study -->
+    <div class="comp-block" data-tier-a-component="case-study-media-card-large">
+      <div class="comp-title">Large Case-Study Media Card</div>
+      <div class="meta-count">×1 · full-width · 12px radius</div>
+      <p class="comp-desc">Left half text, right half photographic image with its own bottom scrim, a play affordance, and a bottom-right caption overlay.</p>
+      <div class="instance cs-large">
+        <div class="left">
+          <div class="logo" style="color:#FFFAEA;font-size:20px">Northwind</div>
+          <span class="mono-eyebrow" style="color:rgba(255,250,234,0.7);display:block;margin-top:24px">CASE STUDY</span>
+          <p class="q" style="font-family:var(--avantt);font-weight:500;font-size:24px;letter-spacing:-0.8px;margin-top:16px;color:#FFFAEA">"Our first Vapi agent answered 40,000 calls in its opening week with a 4.7 satisfaction score."</p>
+          <div style="display:flex;align-items:center;gap:12px;margin-top:28px">
+            <span class="cs-avatar"></span>
+            <span style="font-family:var(--mono);font-size:12px;color:rgba(255,250,234,0.8);text-transform:uppercase;letter-spacing:0.06em">Dana Okafor · VP Support</span>
+          </div>
+        </div>
+        <div class="right">
+          <div class="scrim" aria-hidden="true"></div>
+          <div class="play"><button aria-label="Play case study video"><iconify-icon icon="lucide:play" width="24" aria-hidden="true"></iconify-icon></button></div>
+          <span class="cs-cap">Northwind support floor</span>
+        </div>
+      </div>
+      <div class="spec-card">radius <b>r-card 12</b> · scrim <b>rgba(0,0,0,0.12)→0.18 (image only)</b> · surface <b>dark photographic</b> · caption <b>Geist Mono 12</b></div>
+    </div>
+
+    <!-- Case study pair -->
+    <div class="comp-block" data-tier-a-component="case-study-card-pair">
+      <div class="comp-title">Case-Study Card Pair (2-Up)</div>
+      <div class="meta-count">×2 · equal-width dark cards</div>
+      <p class="comp-desc">Two equal-width photographic cards with a small logo, a one-line stat headline, an outline button, and pill tag chips bottom-left.</p>
+      <div class="instance cs-pair">
+        <div class="cs-card">
+          <div class="logo" style="color:#FFFAEA;font-size:16px"><iconify-icon icon="lucide:hexagon" width="20" aria-hidden="true"></iconify-icon> Ardent</div>
+          <div class="stat">-62% handle time</div>
+          <button class="btn-outline-dark" style="margin-top:16px;width:fit-content">Read case study</button>
+          <div class="tag-chips"><span class="chip-tag">Support</span><span class="chip-tag">Fintech</span></div>
+        </div>
+        <div class="cs-card">
+          <div class="logo" style="color:#FFFAEA;font-size:16px"><iconify-icon icon="lucide:box" width="20" aria-hidden="true"></iconify-icon> Meridian</div>
+          <div class="stat">3.2M calls / mo</div>
+          <button class="btn-outline-dark" style="margin-top:16px;width:fit-content">Read case study</button>
+          <div class="tag-chips"><span class="chip-tag">Outbound</span></div>
+        </div>
+      </div>
+      <div class="spec-card">2 equal cards · surface <b>dark photographic</b> · radius <b>r-card 12</b> · chip <b>dark translucent · pill · hairline</b> · button <b>outline</b></div>
+    </div>
+
+    <!-- Stat / numeral row -->
+    <div class="comp-block" data-tier-a-component="stat-numeral-row">
+      <div class="comp-title">Stat / Numeral Row</div>
+      <div class="meta-count">×1 · 5 columns · white · hairline dividers</div>
+      <p class="comp-desc">Five left-aligned numeral columns on plain white, separated by thin vertical hairlines. Slides into view on scroll.</p>
+      <div class="instance stat-row reveal">
+        <div class="stat-col"><div class="num">1B+</div><div class="cap">Minutes handled</div></div>
+        <div class="stat-col"><div class="num">98.6%</div><div class="cap">First-call resolution</div></div>
+        <div class="stat-col"><div class="num">47</div><div class="cap">Languages</div></div>
+        <div class="stat-col"><div class="num">312ms</div><div class="cap">Median latency</div></div>
+        <div class="stat-col"><div class="num">99.99%</div><div class="cap">Platform uptime</div></div>
+      </div>
+      <div class="spec-card">numerals <b>avantt 40 · 500 · ls -1.6</b> · caption <b>13 muted</b> · dividers <b>hairline</b> · bg <b>#FFFFFF</b> · entrance <b>scroll</b></div>
+    </div>
+
+    <!-- Editorial band card -->
+    <div class="comp-block" data-tier-a-component="editorial-text-band-card">
+      <div class="comp-title">Editorial Text-Band Card</div>
+      <div class="meta-count">×1 · transparent · 0px corners</div>
+      <p class="comp-desc">A full-width transparent editorial band with square corners — never rounded like the glass panels.</p>
+      <div class="instance editorial">
+        <h3>Voice is the interface people already know how to use.</h3>
+        <p>No app to download, no menu to learn — every customer already has the training. Slate Glass Voice treats that familiarity as the product's biggest advantage.</p>
+      </div>
+      <div class="spec-card">bg <b>transparent</b> · radius <b>0px (square)</b> · pad <b>60 72 36</b> · heading <b>avantt · ls -1.4</b></div>
+    </div>
+
+  </div>
+</section>
+
+<style data-section-styles="surface-depth">
+#surface-depth{background:#f7f7f7}
+.depth-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:24px;margin-top:48px}
+.depth-card{background:#fff;padding:28px;border:1px solid #ececec}
+.depth-card .lab{font-family:var(--mono);font-size:12px;color:#888;margin-top:16px;letter-spacing:0.05em}
+.depth-card h4{font-family:var(--avantt);font-weight:600;font-size:16px;margin-bottom:14px}
+.shadow-demo{height:80px;background:#fff;border-radius:12px;box-shadow:rgb(204,204,204) 0px 0px 2px 2px;margin-top:6px}
+</style>
+<section id="surface-depth" class="section-pad">
+  <div class="wrap">
+    <span class="mono-eyebrow sec-eyebrow">04 — SURFACE & DEPTH</span>
+    <h2 class="headline sec-h">Radii held tight, shadow held soft.</h2>
+    <div class="depth-grid">
+      <div class="depth-card" style="border-radius:4px"><h4>Control tight</h4><div style="height:64px;background:#eee;border-radius:4px"></div><div class="lab">r-control-tight · 4px</div></div>
+      <div class="depth-card" style="border-radius:8px"><h4>Control</h4><div style="height:64px;background:#eee;border-radius:8px"></div><div class="lab">r-control · 8px</div></div>
+      <div class="depth-card" style="border-radius:12px"><h4>Card</h4><div style="height:64px;background:#eee;border-radius:12px"></div><div class="lab">r-card · 12px</div></div>
+      <div class="depth-card" style="border-radius:0"><h4>Square</h4><div style="height:64px;background:#eee;border-radius:0"></div><div class="lab">square · 0/4px editorial</div></div>
+      <div class="depth-card" style="border-radius:12px"><h4>Pill</h4><div style="height:64px;background:#eee;border-radius:9999px"></div><div class="lab">pill · 9999px</div></div>
+      <div class="depth-card" style="border-radius:12px"><h4>Ambient shadow</h4><div class="shadow-demo"></div><div class="lab">rgb(204,204,204) 0 0 2px 2px</div></div>
+    </div>
+  </div>
+</section>
+
+<style data-section-styles="motion">
+#motion{background:#fff}
+.motion-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:24px;margin-top:48px}
+.motion-card{border:1px solid #ececec;border-radius:12px;padding:24px}
+.motion-card h4{font-family:var(--avantt);font-weight:600;font-size:16px}
+.motion-card .lab{font-family:var(--mono);font-size:12px;color:#888;margin-top:8px}
+.mover{width:52px;height:52px;border-radius:8px;background:#00CD8F;margin-top:20px}
+.motion-card button{margin-top:16px;background:#000;color:#fff;border:none;border-radius:8px;height:36px;padding:0 16px;font-family:var(--avantt);font-weight:500;font-size:13px;cursor:pointer}
+.m1.play{transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);transform:translateX(120px)}
+.m2.play{transition:transform 0.2s cubic-bezier(0.4,0,0.2,1);transform:scale(1.4)}
+.m3.play{transition:transform 0.4s ease;transform:translateX(120px) rotate(6deg)}
+</style>
+<section id="motion" class="section-pad">
+  <div class="wrap">
+    <span class="mono-eyebrow sec-eyebrow">05 — MOTION</span>
+    <h2 class="headline sec-h">Quiet curves, replayable.</h2>
+    <div class="motion-grid">
+      <div class="motion-card"><h4>State change</h4><div class="lab">all 0.3s cubic-bezier(0.4,0,0.2,1)</div><div class="mover m1"></div><button data-m="m1">Replay</button></div>
+      <div class="motion-card"><h4>Pressed micro-move</h4><div class="lab">transform 0.2s cubic-bezier(0.4,0,0.2,1)</div><div class="mover m2"></div><button data-m="m2">Replay</button></div>
+      <div class="motion-card"><h4>Panel transition</h4><div class="lab">transform 0.4s ease</div><div class="mover m3"></div><button data-m="m3">Replay</button></div>
+    </div>
+  </div>
+</section>
+
+<style data-section-styles="composition">
+#composition{background:#f0f0f0}
+.mock{max-width:1100px;margin:48px auto 0;border-radius:16px;overflow:hidden;box-shadow:rgb(204,204,204) 0 0 2px 2px;background:#fff}
+.mock-hero{position:relative;min-height:420px;background:radial-gradient(120% 100% at 30% 30%,#3a332c 0%,#221d18 50%,#0c0a08 100%);color:#FFFAEA;display:flex;flex-direction:column;justify-content:flex-end;padding:40px}
+.mock-hero .scrim{position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,0.15) 0%,rgba(0,0,0,0.45) 100%)}
+.mock-hero>*{position:relative;z-index:2}
+.mock-nav{position:absolute;top:0;left:0;right:0;z-index:3;height:60px;display:flex;align-items:center;gap:16px;padding:0 24px;background:var(--nav-glass);backdrop-filter:blur(40px);border-bottom:1px solid var(--border-hairline)}
+.mock-nav .logo{color:#fff;font-size:18px}
+.mock-cards{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:32px}
+.mock-cards .mc{background:radial-gradient(120% 120% at 30% 20%,#2b241d 0%,#100c09 70%);border-radius:12px;padding:24px;color:#FFFAEA;min-height:160px}
+.mock-cta{background:#001c14;position:relative;overflow:hidden;padding:48px;text-align:center;color:#fff}
+.mock-cta .streak{position:absolute;inset:0;background:linear-gradient(105deg,#001c14 0%,#00cd8f 40%,#7affd8 50%,#00cd8f 60%,#001c14 100%);opacity:0.55}
+.mock-cta>*{position:relative;z-index:2}
+@media(max-width:640px){.mock-cards{grid-template-columns:1fr}}
+</style>
+<section id="composition" class="section-pad">
+  <div class="wrap">
+    <span class="mono-eyebrow sec-eyebrow">06 — IN COMPOSITION</span>
+    <h2 class="headline sec-h">The whole thing, held together.</h2>
+    <div class="mock">
+      <div class="mock-hero">
+        <div class="scrim" aria-hidden="true"></div>
+        <div class="mock-nav">
+          <span class="logo"><iconify-icon icon="lucide:bird" width="18" aria-hidden="true"></iconify-icon>Vapi</span>
+          <button class="btn-nav-cta" style="margin-left:auto">Start building</button>
+        </div>
+        <span class="mono-eyebrow" style="color:rgba(255,250,234,0.85)">VOICE AI PLATFORM</span>
+        <h3 class="disp" style="font-size:52px;letter-spacing:-2.6px;margin-top:12px;max-width:14ch">Give your product a voice.</h3>
+        <div class="console-row" style="margin-top:20px">
+          <button class="btn-hero-primary">Start building</button>
+          <button class="call-pill" style="height:40px">Call the demo</button>
+        </div>
+      </div>
+      <div class="mock-cards">
+        <div class="mc"><span class="mono-eyebrow" style="color:rgba(255,250,234,0.7)">OBSERVABILITY</span><div class="label-num" style="font-size:30px;margin-top:12px">98.6%</div><p style="color:rgba(255,250,234,0.8);font-size:14px;margin-top:8px">First-call resolution across every deployed agent.</p></div>
+        <div class="mc"><span class="mono-eyebrow" style="color:rgba(255,250,234,0.7)">SCALE</span><div class="label-num" style="font-size:30px;margin-top:12px">1B+</div><p style="color:rgba(255,250,234,0.8);font-size:14px;margin-top:8px">Minutes of conversation handled to date.</p></div>
+      </div>
+      <div class="mock-cta">
+        <span class="streak" aria-hidden="true"></span>
+        <h3 class="disp" style="font-size:40px;letter-spacing:-2px">Ready to give it a voice?</h3>
+        <div style="display:flex;gap:12px;justify-content:center;margin-top:24px">
+          <button class="btn-nav-cta" style="height:44px;padding:0 22px;border-radius:6px">Start building</button>
+          <button class="btn-hero-primary" style="height:44px;border-radius:6px">Talk to sales</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style data-section-styles="footer">
+#cta-outer{background:#001c14;position:relative;overflow:hidden;color:#fff}
+#cta-outer .streak{position:absolute;inset:0;background:linear-gradient(105deg,#001c14 0%,#00cd8f 38%,#7affd8 50%,#00cd8f 62%,#001c14 100%);background-size:220% 100%;opacity:0.5;animation:streak 8s linear infinite}
+#cta-outer .inner{position:relative;z-index:2;text-align:center}
+#cta-outer .btns{display:flex;gap:16px;justify-content:center;margin-top:32px;flex-wrap:wrap}
+.cta-emerald{background:#00CD8F;color:#111013;border:none;height:48px;padding:0 26px;border-radius:6px;font-family:var(--avantt);font-weight:600;font-size:16px;cursor:pointer;transition:background-color 0.2s ease-out}
+.cta-emerald:hover{background:#00b880}
+.cta-white{background:#fff;color:#000;border:none;height:48px;padding:0 26px;border-radius:6px;font-family:var(--avantt);font-weight:600;font-size:16px;cursor:pointer;transition:background-color 0.2s ease-out}
+.cta-white:hover{background:#e6e6e6}
+footer#footer{background:#000;color:#FFFAEA}
+.foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px;padding-top:24px}
+.foot-col h5{font-family:var(--mono);font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,250,234,0.6);margin-bottom:16px}
+.foot-col a{display:block;color:#FFFAEA;text-decoration:none;font-family:var(--avantt);font-weight:500;font-size:15px;margin-bottom:12px;opacity:0.85}
+.foot-col a:hover{opacity:1}
+.foot-bottom{display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,0.12);margin-top:48px;padding-top:24px;flex-wrap:wrap;gap:16px}
+.foot-bottom .legal{font-size:13px;color:rgba(255,250,234,0.6)}
+.foot-social{display:flex;gap:16px}
+.foot-social a{color:#FFFAEA;opacity:0.8}
+.foot-social a:hover{opacity:1}
+.credit{font-size:13px;color:rgba(255,250,234,0.55);margin-top:8px}
+@media(max-width:768px){.foot-grid{grid-template-columns:1fr 1fr}}
+</style>
+<section id="cta-outer" class="section-pad" data-tier-a-component="cta-band">
+  <span class="streak" aria-hidden="true"></span>
+  <div class="wrap inner">
+    <span class="mono-eyebrow" style="color:rgba(255,255,255,0.85)">GET STARTED</span>
+    <h2 class="disp" style="font-size:64px;letter-spacing:-3px;margin-top:16px">Give it a voice.<br>Ship it today.</h2>
+    <div class="btns">
+      <button class="cta-emerald">Start building</button>
+      <button class="cta-white">Talk to sales</button>
+    </div>
+  </div>
+</section>
+
+<footer id="footer" class="section-pad" data-tier-a-component="footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-col">
+        <span class="logo" style="color:#FFFAEA;font-size:22px"><iconify-icon icon="lucide:bird" width="24" aria-hidden="true"></iconify-icon>Vapi</span>
+        <p class="credit" style="margin-top:16px;max-width:34ch">Voice agents that sound human — built, tested, and shipped from one console.</p>
+      </div>
+      <div class="foot-col">
+        <h5>Product</h5>
+        <a href="#">Overview</a><a href="#">Agent Studio</a><a href="#">Integrations</a><a href="#">Pricing</a><a href="#">Changelog</a><a href="#">Status</a><a href="#">Security</a>
+      </div>
+      <div class="foot-col">
+        <h5>Company</h5>
+        <a href="#">About</a><a href="#">Customers</a><a href="#">Docs</a><a href="#">Blog</a><a href="#">Careers</a><a href="#">Contact</a><a href="#">Privacy</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <div>
+        <div class="legal">© 2024 Vapi. All rights reserved.</div>
+        <div class="credit">Design system captured and rendered by superdesign.dev · <a href="https://vapi.ai" style="color:inherit">vapi.ai</a></div>
+      </div>
+      <div class="foot-social">
+        <a href="#" aria-label="X / Twitter"><iconify-icon icon="lucide:twitter" width="20" aria-hidden="true"></iconify-icon></a>
+        <a href="#" aria-label="GitHub"><iconify-icon icon="lucide:github" width="20" aria-hidden="true"></iconify-icon></a>
+        <a href="#" aria-label="LinkedIn"><iconify-icon icon="lucide:linkedin" width="20" aria-hidden="true"></iconify-icon></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('#motion button[data-m]').forEach(function(b){
+  b.addEventListener('click',function(){
+    var el=document.querySelector('.'+b.dataset.m);
+    el.classList.remove('play');void el.offsetWidth;el.classList.add('play');
+  });
+});
+if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){if(e.isIntersecting){e.target.style.transition='opacity 0.6s ease, transform 0.6s ease';e.target.style.opacity='1';e.target.style.transform='none';io.unobserve(e.target);}});
+  },{threshold:0.15});
+  document.querySelectorAll('.reveal').forEach(function(el){
+    el.style.opacity='0';el.style.transform='translateY(24px)';io.observe(el);
+    setTimeout(function(){if(el.style.opacity==='0'){el.style.opacity='1';el.style.transform='none';}},1200);
+  });
+}
+</script>
+</body>
+</html>

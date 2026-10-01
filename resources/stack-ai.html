@@ -1,0 +1,717 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data: blob:; media-src data: blob:; script-src 'unsafe-inline' https://code.iconify.design; connect-src https://api.iconify.design https://api.simplesvg.com https://api.unisvg.com; frame-src 'none'; object-src 'none'; form-action 'none'; base-uri 'none'">
+<meta name="referrer" content="no-referrer">
+
+<meta name="referrer" content="no-referrer">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blueprint-white — Design System</title>
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --background:#FFFFFF;
+  --surface:#F7F7F7;
+  --surface-alt:#FAFAFA;
+  --surface-dark:#1D1D1D;
+  --text-primary:#000000;
+  --text-secondary:#595959;
+  --text-muted:#A7A7A7;
+  --border:#E3E3E3;
+  --border-dark:#303030;
+  --accent-link:#0000EE;
+  --accent-mint:#CCDDFA;
+  --r-control:8px;
+  --r-card:12px;
+  --r-card-lg:16px;
+  --r-pill:810px;
+  --r-avatar:447px;
+  --base:4px; --gap-sm:8px; --gap:12px; --gap-md:16px; --gap-lg:32px;
+  --font-display:"Aspekta","Inter",sans-serif;
+  --font-body:"Inter",sans-serif;
+  --font-mono:"DM Mono",monospace;
+  --font-serif:"Times New Roman",Georgia,serif;
+  --shadow-panel:rgba(0,0,0,0.25) 0px 0.54px 1.19px -1.25px, rgba(0,0,0,0.22) 0px 2.06px 4.53px -2.5px, rgba(0,0,0,0.09) 0px 9px 19.8px -3.75px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--background);color:var(--text-primary);font-family:var(--font-body);font-size:14px;font-weight:500;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,p{margin:0}
+a{color:var(--accent-link);text-decoration:none}
+img{max-width:100%;display:block}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+section{padding:96px 0}
+.eyebrow{font-family:var(--font-body);font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-secondary);display:inline-block;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.display{font-family:var(--font-display);font-weight:500;font-size:72px;line-height:1.06;letter-spacing:-2.2px}
+.headline{font-family:var(--font-display);font-weight:300;font-size:58px;line-height:1.1;letter-spacing:-1.7px}
+.subhead{font-family:var(--font-body);font-size:20px;font-weight:500;line-height:1.5;color:var(--text-secondary)}
+.serif-accent{font-family:var(--font-serif);font-style:italic}
+.dotgrid{background-image:radial-gradient(var(--border) 1px,transparent 1px);background-size:16px 16px}
+.btn{font-family:var(--font-body);font-weight:500;font-size:14px;border:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary-hero{background:#000;color:#fff;border-radius:var(--r-control);height:44px;padding:12px 24px}
+.btn-secondary-hero{background:var(--surface);color:#000;border-radius:var(--r-control);height:44px;padding:12px 24px;border:1px solid var(--border)}
+.btn-nav-cta{background:var(--surface-dark);color:#fff;border-radius:var(--r-control);height:40px;padding:0 18px}
+/* announcement + nav */
+.announce{background:var(--surface-dark);color:#fff;text-align:center;font-size:13px;padding:8px 16px;display:flex;align-items:center;justify-content:center;gap:8px}
+.announce a{color:#fff;display:inline-flex;align-items:center;gap:4px}
+.nav{border-bottom:1px solid var(--border);background:var(--background);position:sticky;top:0;z-index:50}
+.nav-inner{display:flex;align-items:center;height:68px;gap:28px}
+.logo{display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:500;font-size:20px;letter-spacing:-0.5px}
+.logo .mark{width:24px;height:24px;border:1.5px solid #000;border-radius:6px;display:grid;place-items:center}
+.nav-items{display:flex;gap:22px;margin-left:12px}
+.nav-items a{color:var(--text-primary);font-size:14px;font-weight:500;display:inline-flex;align-items:center;gap:4px}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:18px}
+.nav-right .login{color:var(--text-primary);font-weight:500;font-size:14px}
+@media(max-width:768px){.nav-items{display:none}.display{font-size:52px;letter-spacing:-1.5px}.headline{font-size:40px;letter-spacing:-1px}}
+@media(max-width:640px){.display{font-size:40px;letter-spacing:-1px}.subhead{font-size:17px}}
+</style>
+</head>
+<body>
+
+<div class="announce" role="banner">
+  <span>Introducing agentic workflows for regulated teams.</span>
+  <a href="#components">Read More <iconify-icon icon="lucide:arrow-right" aria-hidden="true"></iconify-icon></a>
+</div>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <div class="logo"><span class="mark"><iconify-icon icon="lucide:box" aria-hidden="true"></iconify-icon></span>Blueprint</div>
+    <nav class="nav-items" aria-label="Primary">
+      <a href="#components">Product <iconify-icon icon="lucide:chevron-down" aria-hidden="true"></iconify-icon></a>
+      <a href="#composition">Solutions <iconify-icon icon="lucide:chevron-down" aria-hidden="true"></iconify-icon></a>
+      <a href="#palette">Pricing</a>
+      <a href="#type-scale">Docs</a>
+      <a href="#motion">Company</a>
+    </nav>
+    <div class="nav-right">
+      <a class="login" href="#footer">Login</a>
+      <button class="btn btn-nav-cta">Get a Demo</button>
+    </div>
+  </div>
+</header>
+
+<style data-section-styles="hero">
+#hero{padding:80px 0 96px;background:var(--background);text-align:center;overflow:hidden}
+#hero .display{max-width:14ch;margin:0 auto}
+#hero .subhead{max-width:52ch;margin:24px auto 0}
+.hero-cta{display:flex;gap:12px;justify-content:center;margin-top:32px}
+.hero-panel{position:relative;margin:64px auto 0;max-width:1040px;border:1px solid var(--border);border-radius:var(--r-card);background:var(--surface-alt);box-shadow:var(--shadow-panel);overflow:hidden}
+.hero-panel::before{content:"";position:absolute;inset:0;background-image:radial-gradient(var(--border) 1px,transparent 1px);background-size:16px 16px;opacity:.5;pointer-events:none}
+.hero-panel::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(270deg,rgba(29,29,29,0.5) 0%,rgba(102,102,102,0) 10%,rgba(0,0,0,0) 90%,rgba(29,29,29,0.5) 100%)}
+.panel-ui{position:relative;padding:28px;display:grid;grid-template-columns:200px 1fr;gap:16px;text-align:left}
+.panel-list{background:#fff;border:1px solid var(--border);border-radius:var(--r-control);padding:8px}
+.panel-item{display:flex;align-items:center;gap:8px;padding:10px;border-radius:6px;font-size:13px;color:var(--text-secondary)}
+.panel-item.active{background:var(--surface);color:#000;font-weight:600}
+.panel-main{background:#fff;border:1px solid var(--border);border-radius:var(--r-control);padding:20px}
+.panel-row{height:12px;border-radius:6px;background:var(--surface);margin-bottom:12px}
+.panel-row.s{width:60%}.panel-row.m{width:80%}
+@media(max-width:640px){.panel-ui{grid-template-columns:1fr}}
+</style>
+<main>
+<section id="hero" aria-label="Hero">
+  <div class="wrap">
+    <h1 class="display">Build workflows that <span class="serif-accent">think</span> for you.</h1>
+    <p class="subhead">A near-white, technical canvas for connecting providers, orchestrating agents, and shipping automation your compliance team will actually approve.</p>
+    <div class="hero-cta">
+      <button class="btn btn-primary-hero">Get started</button>
+      <button class="btn btn-secondary-hero">View the docs</button>
+    </div>
+    <div class="hero-panel dotgrid" role="img" aria-label="Application screenshot: provider selection interface">
+      <div class="panel-ui">
+        <div class="panel-list">
+          <div class="panel-item"><iconify-icon icon="lucide:database" aria-hidden="true"></iconify-icon>Datasets</div>
+          <div class="panel-item active"><iconify-icon icon="lucide:workflow" aria-hidden="true"></iconify-icon>Providers</div>
+          <div class="panel-item"><iconify-icon icon="lucide:key-round" aria-hidden="true"></iconify-icon>Secrets</div>
+          <div class="panel-item"><iconify-icon icon="lucide:activity" aria-hidden="true"></iconify-icon>Runs</div>
+        </div>
+        <div class="panel-main">
+          <div class="panel-row m"></div>
+          <div class="panel-row s"></div>
+          <div class="panel-row m"></div>
+          <div class="panel-row s"></div>
+          <div class="panel-row m"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style data-section-styles="palette">
+#palette{background:var(--surface-alt)}
+.sec-head{margin-bottom:48px}
+.sec-head h2{margin-top:16px}
+.pal-group{margin-bottom:48px}
+.pal-group h3{font-family:var(--font-display);font-weight:300;font-size:24px;letter-spacing:-0.5px;margin-bottom:20px}
+.sw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.sw{border:1px solid var(--border);border-radius:var(--r-card);overflow:hidden;background:#fff}
+.sw-chip{height:88px}
+.checker{background-image:linear-gradient(45deg,#ddd 25%,transparent 25%),linear-gradient(-45deg,#ddd 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#ddd 75%),linear-gradient(-45deg,transparent 75%,#ddd 75%);background-size:16px 16px;background-position:0 0,0 8px,8px -8px,-8px 0}
+.sw-meta{padding:14px 16px}
+.sw-meta .val{font-family:var(--font-mono);font-size:13px;color:var(--text-primary)}
+.sw-meta .use{font-size:13px;color:var(--text-secondary);margin-top:6px}
+</style>
+<section id="palette" aria-label="Palette">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">the ink</span>
+      <h2 class="headline">Structural grayscale, one blue.</h2>
+    </div>
+
+    <div class="pal-group">
+      <h3>Surfaces</h3>
+      <div class="sw-grid">
+        <div class="sw"><div class="sw-chip" style="background:#FFFFFF;border-bottom:1px solid var(--border)"></div><div class="sw-meta"><div class="val">#FFFFFF</div><div class="use">Page canvas — ~80% of rendered pixels.</div></div></div>
+        <div class="sw"><div class="sw-chip" style="background:#F7F7F7"></div><div class="sw-meta"><div class="val">#F7F7F7</div><div class="use">Card & panel surface tier.</div></div></div>
+        <div class="sw"><div class="sw-chip" style="background:#FAFAFA;border-bottom:1px solid var(--border)"></div><div class="sw-meta"><div class="val">#FAFAFA</div><div class="use">Secondary alt surface.</div></div></div>
+        <div class="sw"><div class="sw-chip" style="background:#1D1D1D"></div><div class="sw-meta"><div class="val">#1D1D1D</div><div class="use">Contained dark band — security & CTA only.</div></div></div>
+      </div>
+    </div>
+
+    <div class="pal-group">
+      <h3>Text</h3>
+      <div class="sw-grid">
+        <div class="sw"><div class="sw-chip" style="background:#000000"></div><div class="sw-meta"><div class="val">#000000</div><div class="use">Headlines & primary ink.</div></div></div>
+        <div class="sw"><div class="sw-chip" style="background:#595959"></div><div class="sw-meta"><div class="val">#595959</div><div class="use">Secondary copy.</div></div></div>
+        <div class="sw"><div class="sw-chip" style="background:#A7A7A7"></div><div class="sw-meta"><div class="val">#A7A7A7</div><div class="use">Muted labels & captions.</div></div></div>
+        <div class="sw"><div class="sw-chip" style="background:#E3E3E3"></div><div class="sw-meta"><div class="val">#E3E3E3</div><div class="use">Hairline borders — elevation stand-in.</div></div></div>
+      </div>
+    </div>
+
+    <div class="pal-group">
+      <h3>Accents</h3>
+      <div class="sw-grid">
+        <div class="sw"><div class="sw-chip" style="background:#0000EE"></div><div class="sw-meta"><div class="val">#0000EE</div><div class="use">Link / interactive ink — rationed to text only.</div></div></div>
+        <div class="sw"><div class="sw-chip checker"><div style="height:100%;background:rgba(204,221,250,0.5)"></div></div><div class="sw-meta"><div class="val">#CCDDFA</div><div class="use">Faint hover / highlight wash.</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style data-section-styles="type-scale">
+#type-scale{background:var(--background)}
+.spec{border-top:1px solid var(--border);padding:32px 0;display:grid;grid-template-columns:1fr 240px;gap:24px;align-items:baseline}
+.spec .meta{font-family:var(--font-mono);font-size:12px;color:var(--text-secondary);line-height:1.7}
+.wt-ramp{display:flex;gap:24px;flex-wrap:wrap;margin-top:12px}
+.wt-ramp span{font-family:var(--font-display);font-size:40px;letter-spacing:-1px}
+@media(max-width:768px){.spec{grid-template-columns:1fr}}
+</style>
+<section id="type-scale" aria-label="Type scale">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">the voice</span>
+      <h2 class="headline">Aspekta leads, Inter supports.</h2>
+    </div>
+    <div class="spec">
+      <div class="display">Orchestrate everything</div>
+      <div class="meta">display-lg · Aspekta<br>72px / 500 / 1.06<br>tracking -2.2px</div>
+    </div>
+    <div class="spec">
+      <div class="headline">A quieter section voice</div>
+      <div class="meta">headline-md · Aspekta<br>58px / 300 / 1.1<br>tracking -1.7px</div>
+    </div>
+    <div class="spec">
+      <div style="font-size:20px;font-weight:500;line-height:1.5">Emphasized body — connect a provider once and the workflow reuses it everywhere.</div>
+      <div class="meta">body-lg · Inter<br>20px / 500 / 1.5</div>
+    </div>
+    <div class="spec">
+      <div style="font-size:18px;font-weight:400;letter-spacing:-0.2px;line-height:1.35">Label text sits between prose and UI chrome.</div>
+      <div class="meta">label-md · Inter<br>18px / 400 / 1.35<br>tracking -0.2px</div>
+    </div>
+    <div class="spec">
+      <div style="font-size:14px;font-weight:500;line-height:1.6;max-width:52ch">Dense body copy carries the technical detail. Every automation you build runs against the same audited connectors, with a <span class="serif-accent">single sparing serif accent</span> to mark the clause that matters.</div>
+      <div class="meta">body-md · Inter<br>14px / 500 / 1.6</div>
+    </div>
+    <div class="spec">
+      <div style="font-family:var(--font-mono);font-size:14px">SOC2 · ISO27001 · 001</div>
+      <div class="meta">label-mono · DM Mono<br>numeric & index tags</div>
+    </div>
+    <div class="spec">
+      <div>
+        <div style="font-size:13px;color:var(--text-secondary)">Weight ramp</div>
+        <div class="wt-ramp">
+          <span style="font-weight:300">Aa 300</span>
+          <span style="font-weight:400">Aa 400</span>
+          <span style="font-weight:500">Aa 500</span>
+        </div>
+      </div>
+      <div class="meta">Aspekta variable<br>300 / 400 / 500</div>
+    </div>
+  </div>
+</section>
+
+<style data-section-styles="components">
+#components{background:var(--surface-alt)}
+.comp{margin-bottom:80px}
+.comp-head{display:flex;align-items:baseline;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:24px}
+.comp-head h3{font-family:var(--font-display);font-weight:300;font-size:32px;letter-spacing:-1px}
+.comp-head .count{font-family:var(--font-mono);font-size:12px;color:var(--text-muted)}
+.spec-card{font-family:var(--font-mono);font-size:11.5px;line-height:1.7;color:var(--text-secondary);background:#fff;border:1px solid var(--border);border-radius:var(--r-control);padding:12px 14px;margin-top:16px}
+.spec-card b{color:var(--text-primary);font-weight:500}
+.demo{background:#fff;border:1px solid var(--border);border-radius:var(--r-card);padding:32px}
+.card-feature{background:#fff;border-radius:var(--r-card);padding:32px;border:1px solid var(--border)}
+.card-sub{color:var(--text-secondary);font-size:14px;margin-top:6px}
+/* nav demo */
+.demo-nav{display:flex;align-items:center;height:68px;gap:24px;border:1px solid var(--border);border-radius:var(--r-card);padding:0 20px;background:#fff}
+/* button matrix */
+.matrix{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:var(--r-card);overflow:hidden}
+.matrix th,.matrix td{padding:16px;text-align:left;border-bottom:1px solid var(--border);border-right:1px solid var(--border);font-size:12px;font-family:var(--font-mono);vertical-align:middle}
+.matrix th{color:var(--text-secondary);font-weight:400}
+.matrix td:last-child,.matrix th:last-child{border-right:none}
+.matrix tr:last-child td{border-bottom:none}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+.btn-primary-hero.hoverstate{background:#1D1D1D}
+.btn-secondary-hero.hoverstate{background:#EDEDED}
+.btn-nav-cta.hoverstate{background:#000}
+.btn-ghost{background:transparent;color:#000;border-radius:40px;height:64px;padding:0 24px}
+.btn-ghost.hoverstate{background:var(--surface)}
+/* workflow */
+.wf-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-card);padding:28px;position:relative;overflow:hidden;margin-bottom:20px}
+.wf-diagram{position:relative;height:180px;margin-top:20px;background-image:radial-gradient(var(--border) 1px,transparent 1px);background-size:16px 16px;border-radius:var(--r-control)}
+.node{position:absolute;background:#fff;border:1px solid var(--border);border-radius:var(--r-control);padding:10px 14px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px}
+.wf-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+/* 2up */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:768px){.grid2{grid-template-columns:1fr}}
+.chat-row{display:flex;gap:10px;margin-bottom:12px;align-items:flex-start}
+.avatar{width:28px;height:28px;border-radius:var(--r-avatar);background:var(--surface);border:1px solid var(--border);flex:none;display:grid;place-items:center;color:var(--text-secondary)}
+.bubble{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-control);padding:8px 12px;font-size:13px;color:var(--text-secondary)}
+.pill-approve{background:#0e7c66;color:#fff;border:none;border-radius:var(--r-pill);padding:4px 14px;font-size:12px;font-weight:600}
+.pill-disapprove{background:#c0392b;color:#fff;border:none;border-radius:var(--r-pill);padding:4px 14px;font-size:12px;font-weight:600}
+.honey{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:16px 0}
+.hex{width:56px;height:56px;background:var(--surface);border:1px solid var(--border);display:grid;place-items:center;color:var(--text-secondary);clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0 50%)}
+.hex.ring{border:2px solid var(--accent-link);color:#000}
+/* security band */
+.security-band{background:var(--surface-dark);border-radius:var(--r-card-lg);padding:48px 32px;margin-top:8px}
+.cred-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:768px){.cred-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.cred-grid{grid-template-columns:1fr}}
+.cred-card{background:var(--surface-dark);border:1px solid var(--border-dark);border-radius:var(--r-card);padding:24px;color:#fff;position:relative;overflow:hidden}
+.hatch{height:12px;margin:-24px -24px 20px;background:repeating-linear-gradient(45deg,#303030,#303030 3px,transparent 3px,transparent 8px)}
+.seal{width:44px;height:44px;border-radius:var(--r-avatar);border:1px solid var(--border-dark);display:grid;place-items:center;margin:0 auto 16px;color:#fff}
+.cred-card h4{text-align:center;font-family:var(--font-display);font-weight:500;font-size:18px}
+.cred-card p{text-align:center;color:var(--text-muted);font-size:13px;margin-top:8px}
+.cred-foot{display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--border-dark)}
+.cred-foot .cat{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted)}
+.cred-foot .idx{font-family:var(--font-mono);font-size:13px;color:#fff}
+/* chips */
+.chip-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+@media(max-width:768px){.chip-row{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.chip-row{grid-template-columns:1fr}}
+.chip{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-control);padding:12px 16px}
+.chip .lbl{font-weight:600;font-size:14px;margin-top:8px}
+.chip .desc{color:var(--text-muted);font-size:12px;margin-top:4px}
+/* testimonial rail */
+.rail-wrap{position:relative}
+.rail{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px}
+.frame{flex:none;width:280px;height:360px;border-radius:var(--r-card);position:relative;overflow:hidden;scroll-snap-align:start;background:linear-gradient(135deg,#3a3a3a,#767676);filter:grayscale(1)}
+.frame .who{position:absolute;left:16px;bottom:16px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.6)}
+.frame .who .n{font-weight:600;font-size:15px}
+.frame .who .t{font-size:12px;opacity:.85}
+.frame .fbtn{position:absolute;right:16px;bottom:16px;width:36px;height:36px;border-radius:var(--r-avatar);background:#fff;border:none;display:grid;place-items:center;cursor:pointer}
+.rail-nav{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:var(--r-avatar);background:#fff;border:1px solid var(--border);display:grid;place-items:center;cursor:pointer;z-index:2}
+.rail-nav.prev{left:-12px}.rail-nav.next{right:-12px}
+/* cta band */
+.cta-band{background:var(--surface-dark);border-radius:var(--r-card-lg);padding:56px 48px;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;color:#fff}
+@media(max-width:768px){.cta-band{grid-template-columns:1fr}}
+.cta-band .eyebrow{color:#fff;border-color:var(--border-dark)}
+.cta-band h3{font-family:var(--font-display);font-weight:300;font-size:44px;line-height:1.1;letter-spacing:-1.5px;margin:20px 0 12px}
+.cta-band p{color:var(--text-muted);margin-bottom:24px}
+.btn-white{background:#fff;color:#000;border-radius:var(--r-control);height:44px;padding:12px 24px}
+.badge-stage{position:relative;aspect-ratio:1;border-radius:var(--r-card);background:#161616 radial-gradient(circle at 2px 2px,#2a2a2a 1px,transparent 1px);background-size:12px 12px;display:grid;place-items:center}
+.badge-3d{width:120px;height:120px;border-radius:24px;background:radial-gradient(21% 21% at 80.2% 19.6%,rgba(255,255,255,0.25) 0%,rgba(18,18,18,0) 100%),radial-gradient(50% 50% at 96.6% 3%,rgb(255,255,255) 0%,rgb(107,129,156) 59.6%,rgb(87,88,89) 100%),linear-gradient(145deg,#4a4a4a,#1d1d1d);display:grid;place-items:center;color:#fff}
+/* eyebrow section */
+.demo-eyebrow{padding:0}
+@media(max-width:640px){.matrix{display:block;overflow-x:auto;white-space:nowrap}}
+</style>
+<section id="components" aria-label="Components">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">what we do best</span>
+      <h2 class="headline">The full inventory.</h2>
+    </div>
+
+    <!-- Navbar -->
+    <div class="comp" data-tier-a-component="navbar">
+      <div class="comp-head"><h3>Navbar</h3><span class="count">×1</span></div>
+      <div class="demo-nav">
+        <div class="logo"><span class="mark"><iconify-icon icon="lucide:box" aria-hidden="true"></iconify-icon></span>Blueprint</div>
+        <div class="nav-items" style="display:flex">
+          <a href="#">Product <iconify-icon icon="lucide:chevron-down" aria-hidden="true"></iconify-icon></a>
+          <a href="#">Solutions <iconify-icon icon="lucide:chevron-down" aria-hidden="true"></iconify-icon></a>
+          <a href="#">Pricing</a><a href="#">Docs</a><a href="#">Company</a>
+        </div>
+        <div class="nav-right"><a class="login" href="#">Login</a><button class="btn btn-nav-cta">Get a Demo</button></div>
+      </div>
+      <div class="spec-card"><b>--navbar</b> · height <b>68</b> · logo left / 5 items / login + cta right<br><b>--btn-nav-cta</b> fill surface-dark · text #FFF · radius r-control · height 40</div>
+    </div>
+
+    <!-- Announcement strip -->
+    <div class="comp" data-tier-a-component="announcement-strip">
+      <div class="comp-head"><h3>Announcement strip</h3><span class="count">×1</span></div>
+      <div class="announce" style="border-radius:var(--r-control)">
+        <span>Introducing agentic workflows for regulated teams.</span>
+        <a href="#">Read More <iconify-icon icon="lucide:arrow-right" aria-hidden="true"></iconify-icon></a>
+      </div>
+      <div class="spec-card"><b>--announce</b> fill surface-dark · text #FFF · type body-md · centered row · arrow affordance</div>
+    </div>
+
+    <!-- Button matrix -->
+    <div class="comp" data-tier-a-component="hero-primary-button">
+      <div class="comp-head"><h3>Buttons — variant × state</h3><span class="count">4 variants</span></div>
+      <table class="matrix">
+        <thead><tr><th>variant</th><th>rest</th><th>hover</th><th>disabled</th></tr></thead>
+        <tbody>
+          <tr data-tier-a-component="hero-primary-button">
+            <td>primary-hero</td>
+            <td><button class="btn btn-primary-hero">Get started</button></td>
+            <td><button class="btn btn-primary-hero hoverstate">Get started</button></td>
+            <td><button class="btn btn-primary-hero" disabled>Get started</button></td>
+          </tr>
+          <tr data-tier-a-component="hero-secondary-button">
+            <td>secondary-hero</td>
+            <td><button class="btn btn-secondary-hero">View the docs</button></td>
+            <td><button class="btn btn-secondary-hero hoverstate">View the docs</button></td>
+            <td><button class="btn btn-secondary-hero" disabled>View the docs</button></td>
+          </tr>
+          <tr>
+            <td>nav-cta</td>
+            <td><button class="btn btn-nav-cta">Get a Demo</button></td>
+            <td><button class="btn btn-nav-cta hoverstate">Get a Demo</button></td>
+            <td><button class="btn btn-nav-cta" disabled>Get a Demo</button></td>
+          </tr>
+          <tr data-tier-a-component="button-utility-ghost">
+            <td>utility-ghost</td>
+            <td><button class="btn btn-ghost">Learn more</button></td>
+            <td><button class="btn btn-ghost hoverstate">Learn more</button></td>
+            <td><button class="btn btn-ghost" disabled>Learn more</button></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="spec-card">
+        <b>--btn-primary-hero</b> fill #000 · text #FFF · radius r-control · height 44 · padding 12/24<br>
+        <b>--btn-secondary-hero</b> fill surface · text #000 · border 1px border · height 44<br>
+        <b>--btn-nav-cta</b> fill surface-dark · text #FFF · height 40<br>
+        <b>--btn-utility-ghost</b> fill transparent · text #000 · radius 40 · height 64 · padding 0<br>
+        disabled: text-opacity ladder (muted) · no documented focus ring
+      </div>
+    </div>
+
+    <!-- Hero secondary explicit family -->
+    <div class="comp" data-tier-a-component="hero-secondary-button">
+      <div class="comp-head"><h3>Hero CTA row</h3><span class="count">primary + secondary</span></div>
+      <div class="demo" style="display:flex;gap:12px">
+        <button class="btn btn-primary-hero">Get started</button>
+        <button class="btn btn-secondary-hero">View the docs</button>
+      </div>
+      <div class="spec-card"><b>--btn-secondary-hero</b> fill surface · text #000 · radius r-control · height 44 · 1px border — not a glass control</div>
+    </div>
+
+    <!-- Utility ghost explicit -->
+    <div class="comp" data-tier-a-component="button-utility-ghost">
+      <div class="comp-head"><h3>Utility ghost button</h3><span class="count">×1 · utility context</span></div>
+      <div class="demo"><button class="btn btn-ghost">Skip to workflow <iconify-icon icon="lucide:arrow-right" aria-hidden="true"></iconify-icon></button></div>
+      <div class="spec-card"><b>--btn-utility-ghost</b> fill transparent · radius 40 · height 64 · padding 0 — never substitutes for hero primary</div>
+    </div>
+
+    <!-- Section eyebrow -->
+    <div class="comp" data-tier-a-component="section-eyebrow">
+      <div class="comp-head"><h3>Labeled section eyebrow</h3><span class="count">×1</span></div>
+      <div class="demo"><span class="eyebrow">what we do best</span></div>
+      <div class="spec-card"><b>--eyebrow</b> type body-md 12/600 uppercase · thin rule underline border-bottom 1px border</div>
+    </div>
+
+    <!-- Hero product panel -->
+    <div class="comp" data-tier-a-component="hero-product-panel">
+      <div class="comp-head"><h3>Hero product panel</h3><span class="count">×1</span></div>
+      <div class="hero-panel dotgrid" role="img" aria-label="Application UI screenshot with provider list" style="margin:0;box-shadow:var(--shadow-panel)">
+        <div class="panel-ui">
+          <div class="panel-list">
+            <div class="panel-item active"><iconify-icon icon="lucide:workflow" aria-hidden="true"></iconify-icon>Providers</div>
+            <div class="panel-item"><iconify-icon icon="lucide:key-round" aria-hidden="true"></iconify-icon>Secrets</div>
+            <div class="panel-item"><iconify-icon icon="lucide:activity" aria-hidden="true"></iconify-icon>Runs</div>
+          </div>
+          <div class="panel-main"><div class="panel-row m"></div><div class="panel-row s"></div><div class="panel-row m"></div></div>
+        </div>
+      </div>
+      <div class="spec-card"><b>--hero-panel</b> radius r-card · border 1px · shadow multi-layer recipe · dot-grid ground · directional edge scrim</div>
+    </div>
+
+    <!-- Logo strip -->
+    <div class="comp" data-tier-a-component="logo-strip">
+      <div class="comp-head"><h3>Logo strip / proof band</h3><span class="count">8 + 5</span></div>
+      <div class="demo" style="text-align:center">
+        <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:24px;filter:grayscale(1);opacity:.55">
+          <iconify-icon icon="lucide:hexagon" style="font-size:34px"></iconify-icon>
+          <iconify-icon icon="lucide:triangle" style="font-size:34px"></iconify-icon>
+          <iconify-icon icon="lucide:circle" style="font-size:34px"></iconify-icon>
+          <iconify-icon icon="lucide:square" style="font-size:34px"></iconify-icon>
+          <iconify-icon icon="lucide:pentagon" style="font-size:34px"></iconify-icon>
+          <iconify-icon icon="lucide:octagon" style="font-size:34px"></iconify-icon>
+          <iconify-icon icon="lucide:diamond" style="font-size:34px"></iconify-icon>
+          <iconify-icon icon="lucide:star" style="font-size:34px"></iconify-icon>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:48px;margin-top:24px;filter:grayscale(1);opacity:.55">
+          <iconify-icon icon="lucide:cloud" style="font-size:30px"></iconify-icon>
+          <iconify-icon icon="lucide:cpu" style="font-size:30px"></iconify-icon>
+          <iconify-icon icon="lucide:server" style="font-size:30px"></iconify-icon>
+          <iconify-icon icon="lucide:shield" style="font-size:30px"></iconify-icon>
+          <iconify-icon icon="lucide:globe" style="font-size:30px"></iconify-icon>
+        </div>
+      </div>
+      <div class="spec-card"><b>--logo-strip</b> grayscale marks on #FFF · no cards / borders · two rows</div>
+    </div>
+
+    <!-- Workflow illustration cards -->
+    <div class="comp" data-tier-a-component="workflow-illustration-card">
+      <div class="comp-head"><h3>Workflow illustration cards</h3><span class="count">×2</span></div>
+      <div class="wf-card">
+        <h4 style="font-family:var(--font-display);font-weight:500;font-size:22px;letter-spacing:-0.5px">Connect once, reuse everywhere</h4>
+        <p class="card-sub">Providers register to a single audited registry that every workflow can draw from.</p>
+        <div class="wf-diagram">
+          <svg class="wf-svg"><path d="M110 60 C 160 60, 180 90, 240 90" stroke="#A7A7A7" fill="none" stroke-width="1.5"/><path d="M110 60 C 160 60, 180 130, 240 130" stroke="#A7A7A7" fill="none" stroke-width="1.5"/></svg>
+          <div class="node" style="left:20px;top:44px"><iconify-icon icon="lucide:database" aria-hidden="true"></iconify-icon>Source</div>
+          <div class="node" style="left:240px;top:74px"><iconify-icon icon="lucide:workflow" aria-hidden="true"></iconify-icon>Agent</div>
+          <div class="node" style="left:240px;top:114px"><iconify-icon icon="lucide:send" aria-hidden="true"></iconify-icon>Output</div>
+        </div>
+      </div>
+      <div class="wf-card">
+        <h4 style="font-family:var(--font-display);font-weight:500;font-size:22px;letter-spacing:-0.5px">Approvals in the loop</h4>
+        <p class="card-sub">Route any step to a human reviewer without breaking the flow.</p>
+        <div class="wf-diagram">
+          <svg class="wf-svg"><path d="M100 90 C 160 90, 180 90, 240 90" stroke="#A7A7A7" fill="none" stroke-width="1.5"/><path d="M330 90 C 380 90, 400 90, 440 90" stroke="#A7A7A7" fill="none" stroke-width="1.5"/></svg>
+          <div class="node" style="left:16px;top:74px"><iconify-icon icon="lucide:play" aria-hidden="true"></iconify-icon>Trigger</div>
+          <div class="node" style="left:238px;top:74px"><iconify-icon icon="lucide:user-check" aria-hidden="true"></iconify-icon>Review</div>
+          <div class="node" style="left:438px;top:74px"><iconify-icon icon="lucide:check" aria-hidden="true"></iconify-icon>Done</div>
+        </div>
+      </div>
+      <div class="spec-card"><b>--wf-card</b> fill surface · radius r-card · border 1px · faint dot-grid · node-and-edge diagram 60–70% height</div>
+    </div>
+
+    <!-- 2-up card row -->
+    <div class="comp" data-tier-a-component="2up-card-row">
+      <div class="comp-head"><h3>2-up card row</h3><span class="count">×2</span></div>
+      <div class="grid2">
+        <div class="card-feature">
+          <h4 style="font-family:var(--font-display);font-weight:500;font-size:20px">Every decision, logged</h4>
+          <p class="card-sub" style="margin-bottom:16px">Transcripts capture who approved what.</p>
+          <div class="chat-row"><div class="avatar"><iconify-icon icon="lucide:user" aria-hidden="true"></iconify-icon></div><div class="bubble">Requesting access to the finance connector.</div></div>
+          <div class="chat-row"><div class="avatar"><iconify-icon icon="lucide:bot" aria-hidden="true"></iconify-icon></div><div class="bubble">Awaiting reviewer decision.</div></div>
+          <div style="display:flex;gap:8px;margin-top:8px"><button class="pill-approve">Approve</button><button class="pill-disapprove">Disapprove</button></div>
+        </div>
+        <div class="card-feature">
+          <h4 style="font-family:var(--font-display);font-weight:500;font-size:20px">A provider for everything</h4>
+          <p class="card-sub" style="margin-bottom:8px">Hundreds of connectors in one honeycomb.</p>
+          <div class="honey">
+            <div class="hex"><iconify-icon icon="lucide:cloud" aria-hidden="true"></iconify-icon></div>
+            <div class="hex"><iconify-icon icon="lucide:database" aria-hidden="true"></iconify-icon></div>
+            <div class="hex ring"><iconify-icon icon="lucide:star" aria-hidden="true"></iconify-icon></div>
+            <div class="hex"><iconify-icon icon="lucide:mail" aria-hidden="true"></iconify-icon></div>
+            <div class="hex"><iconify-icon icon="lucide:cpu" aria-hidden="true"></iconify-icon></div>
+            <div class="hex"><iconify-icon icon="lucide:globe" aria-hidden="true"></iconify-icon></div>
+            <div class="hex"><iconify-icon icon="lucide:server" aria-hidden="true"></iconify-icon></div>
+          </div>
+        </div>
+      </div>
+      <div class="spec-card"><b>--card-feature</b> fill #FFF · radius r-card · border 1px · equal width · Approve pill teal / Disapprove pill red · honeycomb ring accent-link</div>
+    </div>
+
+    <!-- Security credential cards -->
+    <div class="comp" data-tier-a-component="security-credential-card">
+      <div class="comp-head"><h3>Security credential cards</h3><span class="count">×4 · dark band</span></div>
+      <div class="security-band">
+        <div class="cred-grid">
+          <div class="cred-card"><div class="hatch"></div><div class="seal"><iconify-icon icon="lucide:shield-check" aria-hidden="true"></iconify-icon></div><h4>SOC 2 Type II</h4><p>Audited controls, renewed annually.</p><div class="cred-foot"><span class="cat">Compliance</span><span class="idx">001</span></div></div>
+          <div class="cred-card"><div class="hatch"></div><div class="seal"><iconify-icon icon="lucide:lock" aria-hidden="true"></iconify-icon></div><h4>ISO 27001</h4><p>Information security management.</p><div class="cred-foot"><span class="cat">Standard</span><span class="idx">002</span></div></div>
+          <div class="cred-card"><div class="hatch"></div><div class="seal"><iconify-icon icon="lucide:file-check" aria-hidden="true"></iconify-icon></div><h4>HIPAA</h4><p>Healthcare data safeguards.</p><div class="cred-foot"><span class="cat">Compliance</span><span class="idx">003</span></div></div>
+          <div class="cred-card"><div class="hatch"></div><div class="seal"><iconify-icon icon="lucide:globe-lock" aria-hidden="true"></iconify-icon></div><h4>GDPR</h4><p>Data residency & consent.</p><div class="cred-foot"><span class="cat">Regulation</span><span class="idx">004</span></div></div>
+        </div>
+      </div>
+      <div class="spec-card"><b>--card-security-dark</b> fill surface-dark · radius r-card · border 1px border-dark · padding 24 · hatch strip · mono index label-mono</div>
+    </div>
+
+    <!-- Use-case chips -->
+    <div class="comp" data-tier-a-component="use-case-chip-row">
+      <div class="comp-head"><h3>Use-case chip row</h3><span class="count">×5</span></div>
+      <div class="chip-row">
+        <div class="chip"><iconify-icon icon="lucide:file-text" aria-hidden="true"></iconify-icon><div class="lbl">Document intake</div><div class="desc">Parse and route filings.</div></div>
+        <div class="chip"><iconify-icon icon="lucide:message-square" aria-hidden="true"></iconify-icon><div class="lbl">Support triage</div><div class="desc">Classify and assign tickets.</div></div>
+        <div class="chip"><iconify-icon icon="lucide:bar-chart" aria-hidden="true"></iconify-icon><div class="lbl">Reporting</div><div class="desc">Compile weekly digests.</div></div>
+        <div class="chip"><iconify-icon icon="lucide:search" aria-hidden="true"></iconify-icon><div class="lbl">Research</div><div class="desc">Summarize source sets.</div></div>
+        <div class="chip"><iconify-icon icon="lucide:shield" aria-hidden="true"></iconify-icon><div class="lbl">Compliance</div><div class="desc">Flag policy breaches.</div></div>
+      </div>
+      <div class="spec-card"><b>--card-chip</b> fill surface · radius r-control · border 1px · padding 12/16 · uniform width · icon + label + muted desc</div>
+    </div>
+
+    <!-- Testimonial rail -->
+    <div class="comp" data-tier-a-component="testimonial-headshot-rail">
+      <div class="comp-head"><h3>Testimonial / headshot rail</h3><span class="count">horizontal scroll</span></div>
+      <div class="rail-wrap">
+        <button class="rail-nav prev" data-rail="prev" aria-label="Previous testimonial"><iconify-icon icon="lucide:chevron-left" aria-hidden="true"></iconify-icon></button>
+        <div class="rail" id="testRail">
+          <div class="frame"><div class="who"><div class="n">Dana Ellis</div><div class="t">VP Ops, Northwind</div></div><button class="fbtn" aria-label="Read Dana's story"><iconify-icon icon="lucide:arrow-up-right" aria-hidden="true"></iconify-icon></button></div>
+          <div class="frame"><div class="who"><div class="n">Marcus Reed</div><div class="t">CTO, Fieldline</div></div><button class="fbtn" aria-label="Read Marcus's story"><iconify-icon icon="lucide:arrow-up-right" aria-hidden="true"></iconify-icon></button></div>
+          <div class="frame"><div class="who"><div class="n">Priya Nair</div><div class="t">Head of Risk, Acme</div></div><button class="fbtn" aria-label="Read Priya's story"><iconify-icon icon="lucide:arrow-up-right" aria-hidden="true"></iconify-icon></button></div>
+          <div class="frame"><div class="who"><div class="n">Sam Okoye</div><div class="t">Eng Lead, Rivet</div></div><button class="fbtn" aria-label="Read Sam's story"><iconify-icon icon="lucide:arrow-up-right" aria-hidden="true"></iconify-icon></button></div>
+        </div>
+        <button class="rail-nav next" data-rail="next" aria-label="Next testimonial"><iconify-icon icon="lucide:chevron-right" aria-hidden="true"></iconify-icon></button>
+      </div>
+      <div class="spec-card"><b>--rail</b> grayscale portrait frames radius r-card · name overlay #FFF · per-frame arrow avatar radius · flanking nav arrows</div>
+    </div>
+
+    <!-- CTA band -->
+    <div class="comp" data-tier-a-component="cta-band-dark">
+      <div class="comp-head"><h3>CTA band (dark)</h3><span class="count">×1</span></div>
+      <div class="cta-band">
+        <div>
+          <span class="eyebrow">ready when you are</span>
+          <h3>Ship your first<br>workflow today.</h3>
+          <p>Connect a provider, build a flow, and route it for approval in an afternoon.</p>
+          <button class="btn btn-white">Get a Demo</button>
+        </div>
+        <div class="badge-stage"><div class="badge-3d"><iconify-icon icon="lucide:box" style="font-size:40px" aria-hidden="true"></iconify-icon></div></div>
+      </div>
+      <div class="spec-card"><b>--cta-band-dark</b> fill surface-dark · radius r-card-lg · white button radius r-control · perforated dot texture · specular radial highlights &lt;1%</div>
+    </div>
+  </div>
+</section>
+
+<style data-section-styles="surface-depth">
+#surface-depth{background:var(--background)}
+.depth-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+@media(max-width:768px){.depth-grid{grid-template-columns:1fr}}
+.depth-card{background:#fff;padding:28px;border:1px solid var(--border)}
+.depth-card .lbl{font-family:var(--font-mono);font-size:12px;color:var(--text-secondary);margin-top:16px}
+.depth-card h4{font-family:var(--font-display);font-weight:500;font-size:18px}
+</style>
+<section id="surface-depth" aria-label="Surface and depth">
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">elevation</span><h2 class="headline">Borders, not shadows.</h2></div>
+    <div class="depth-grid">
+      <div class="depth-card" style="border-radius:var(--r-control)"><h4>Control radius</h4><p class="card-sub">Buttons, chips, inputs.</p><div class="lbl">r-control · 8px · 1px border</div></div>
+      <div class="depth-card" style="border-radius:var(--r-card)"><h4>Card radius</h4><p class="card-sub">Feature & workflow panels.</p><div class="lbl">r-card · 12px · 1px border</div></div>
+      <div class="depth-card" style="border-radius:var(--r-card-lg)"><h4>Large radius</h4><p class="card-sub">Full-bleed dark bands.</p><div class="lbl">r-card-lg · 16px</div></div>
+      <div class="depth-card" style="border-radius:var(--r-card);box-shadow:var(--shadow-panel);border:1px solid var(--border)"><h4>Ambient panel shadow</h4><p class="card-sub">Reserved for the hero product panel only.</p><div class="lbl">shadow-panel · multi-layer</div></div>
+      <div class="depth-card" style="border-radius:var(--r-pill);text-align:center"><h4>Pill</h4><p class="card-sub">Approve / status pills.</p><div class="lbl">r-pill · fully rounded</div></div>
+      <div class="depth-card" style="border-radius:var(--r-card)"><div style="width:48px;height:48px;border-radius:var(--r-avatar);background:var(--surface);border:1px solid var(--border)"></div><h4 style="margin-top:16px">Avatar</h4><div class="lbl">r-avatar · circular</div></div>
+    </div>
+  </div>
+</section>
+
+<style data-section-styles="motion">
+#motion{background:var(--surface-alt)}
+.motion-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+@media(max-width:640px){.motion-grid{grid-template-columns:1fr}}
+.motion-card{background:#fff;border:1px solid var(--border);border-radius:var(--r-card);padding:28px}
+.motion-demo{height:64px;display:flex;align-items:center;margin:16px 0}
+.mover{width:44px;height:44px;border-radius:var(--r-control);background:#000}
+.mover.go{animation:slide 1.2s cubic-bezier(.22,1,.36,1)}
+@keyframes slide{0%{transform:translateX(0)}50%{transform:translateX(240px)}100%{transform:translateX(0)}}
+.glass-demo{position:relative;height:120px;border-radius:var(--r-card);background-image:radial-gradient(var(--border) 1px,transparent 1px);background-size:16px 16px;overflow:hidden}
+.glass-panel{position:absolute;inset:24px;background:rgba(255,255,255,0.6);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:var(--r-control);display:grid;place-items:center;font-size:13px;color:var(--text-secondary)}
+.replay{font-family:var(--font-mono);font-size:12px;color:var(--accent-link);background:none;border:none;cursor:pointer;padding:0}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<section id="motion" aria-label="Motion">
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">micro-interaction</span><h2 class="headline">Quiet, viewport-timed.</h2></div>
+    <div class="motion-grid">
+      <div class="motion-card">
+        <h4 style="font-family:var(--font-display);font-weight:500;font-size:18px">Scroll reveal ease</h4>
+        <div class="motion-demo"><div class="mover" id="mover"></div></div>
+        <button class="replay" id="replayBtn">Replay · cubic-bezier(.22,1,.36,1) 1.2s</button>
+      </div>
+      <div class="motion-card">
+        <h4 style="font-family:var(--font-display);font-weight:500;font-size:18px">Glass overlay</h4>
+        <div class="glass-demo"><div class="glass-panel">backdrop-filter: blur(10px)</div></div>
+        <div class="spec-card" style="margin-top:12px">blur(10px) backdrop · dropdown / tooltip surfaces</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style data-section-styles="composition">
+#composition{background:var(--background)}
+.mock{border:1px solid var(--border);border-radius:var(--r-card-lg);overflow:hidden;background:#fff}
+.mock-nav{display:flex;align-items:center;height:60px;padding:0 24px;border-bottom:1px solid var(--border);gap:20px}
+.mock-hero{text-align:center;padding:56px 24px}
+.mock-hero .display{font-size:44px;letter-spacing:-1.5px}
+.mock-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:0 24px 32px}
+@media(max-width:768px){.mock-cards{grid-template-columns:1fr}.mock-hero .display{font-size:32px}}
+.mock-card{border:1px solid var(--border);border-radius:var(--r-card);padding:20px}
+.mock-cta{background:var(--surface-dark);color:#fff;padding:40px 24px;text-align:center}
+.mock-cta h3{font-family:var(--font-display);font-weight:300;font-size:28px;letter-spacing:-1px;margin-bottom:16px}
+</style>
+<section id="composition" aria-label="In composition">
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">it holds together</span><h2 class="headline">The system, assembled.</h2></div>
+    <div class="mock">
+      <div class="mock-nav">
+        <div class="logo"><span class="mark"><iconify-icon icon="lucide:box" aria-hidden="true"></iconify-icon></span>Blueprint</div>
+        <div style="margin-left:auto;display:flex;gap:16px;align-items:center"><a href="#" style="color:#000;font-size:13px">Login</a><button class="btn btn-nav-cta" style="height:36px">Get a Demo</button></div>
+      </div>
+      <div class="mock-hero">
+        <h3 class="display">Automation your <span class="serif-accent">auditors</span> approve.</h3>
+        <p class="subhead" style="font-size:16px;margin:16px auto 24px;max-width:44ch">Build once against audited connectors. Ship everywhere.</p>
+        <div style="display:flex;gap:12px;justify-content:center"><button class="btn btn-primary-hero">Get started</button><button class="btn btn-secondary-hero">View docs</button></div>
+      </div>
+      <div class="mock-cards">
+        <div class="mock-card"><iconify-icon icon="lucide:workflow" style="font-size:24px"></iconify-icon><h4 style="font-family:var(--font-display);font-weight:500;font-size:17px;margin-top:10px">Orchestrate</h4><p class="card-sub">Chain agents into flows.</p></div>
+        <div class="mock-card"><iconify-icon icon="lucide:shield-check" style="font-size:24px"></iconify-icon><h4 style="font-family:var(--font-display);font-weight:500;font-size:17px;margin-top:10px">Certify</h4><p class="card-sub">SOC 2, ISO, HIPAA.</p></div>
+        <div class="mock-card"><iconify-icon icon="lucide:activity" style="font-size:24px"></iconify-icon><h4 style="font-family:var(--font-display);font-weight:500;font-size:17px;margin-top:10px">Observe</h4><p class="card-sub">Every run logged.</p></div>
+      </div>
+      <div class="mock-cta">
+        <h3>Start building today.</h3>
+        <button class="btn btn-white" style="background:#fff;color:#000;border-radius:var(--r-control);height:44px;padding:12px 24px">Get a Demo</button>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<style data-section-styles="footer">
+#footer{background:var(--surface-alt);border-top:1px solid var(--border);padding:64px 0 40px}
+.foot-top{display:grid;grid-template-columns:1.5fr repeat(5,1fr);gap:24px}
+@media(max-width:768px){.foot-top{grid-template-columns:1fr 1fr}}
+.foot-col h5{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px}
+.foot-col a{display:block;color:var(--text-secondary);font-size:13px;padding:4px 0}
+.foot-bottom{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:48px;padding-top:24px;border-top:1px solid var(--border);font-size:12px;color:var(--text-muted)}
+.status-pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:var(--r-pill);padding:4px 12px;font-size:12px;color:var(--text-secondary)}
+.status-dot{width:8px;height:8px;border-radius:var(--r-avatar);background:#0e7c66}
+.foot-social{margin-left:auto;display:flex;gap:14px;font-size:18px;color:var(--text-secondary)}
+</style>
+<footer id="footer">
+  <div class="wrap">
+    <div class="foot-top">
+      <div><div class="logo"><span class="mark"><iconify-icon icon="lucide:box" aria-hidden="true"></iconify-icon></span>Blueprint</div><p class="card-sub" style="margin-top:12px;max-width:26ch">Technical automation, quietly certified.</p></div>
+      <div class="foot-col"><h5>Solutions</h5><a href="#">Workflows</a><a href="#">Providers</a><a href="#">Approvals</a></div>
+      <div class="foot-col"><h5>Resources</h5><a href="#">Docs</a><a href="#">Guides</a><a href="#">Changelog</a></div>
+      <div class="foot-col"><h5>Support</h5><a href="#">Help center</a><a href="#">Status</a><a href="#">Contact</a></div>
+      <div class="foot-col"><h5>Company</h5><a href="#">About</a><a href="#">Careers</a><a href="#">Blog</a></div>
+      <div class="foot-col"><h5>Legal</h5><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Security</a></div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2024 Blueprint. Source: <a href="https://www.stackai.com/">stackai.com</a></span>
+      <span>Made by <iconify-icon icon="lucide:sparkle" aria-hidden="true"></iconify-icon> the team</span>
+      <span class="status-pill"><span class="status-dot"></span>All systems operational</span>
+      <span class="foot-social"><iconify-icon icon="lucide:twitter" aria-label="Twitter"></iconify-icon><iconify-icon icon="lucide:github" aria-label="GitHub"></iconify-icon><iconify-icon icon="lucide:linkedin" aria-label="LinkedIn"></iconify-icon></span>
+    </div>
+    <p style="margin-top:24px;font-size:12px;color:var(--text-muted)">Design system captured and rendered by superdesign.dev</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var mover=document.getElementById('mover'),btn=document.getElementById('replayBtn');
+  if(btn&&mover){btn.addEventListener('click',function(){mover.classList.remove('go');void mover.offsetWidth;mover.classList.add('go');});}
+  var rail=document.getElementById('testRail');
+  document.querySelectorAll('[data-rail]').forEach(function(b){
+    b.addEventListener('click',function(){rail.scrollBy({left:b.dataset.rail==='next'?300:-300,behavior:'smooth'});});
+  });
+})();
+</script>
+</body>
+</html>

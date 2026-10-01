@@ -1,0 +1,608 @@
+// --- Component ---
+"use client";
+
+import { ArrowRight } from "@aliimam/icons";
+
+import { Button } from "@/components/ui/button";
+
+const Stats2 = () => {
+  return (
+    <section className="py-32">
+      <div className="container">
+        <div className="grid gap-8 md:grid-cols-3">
+          <div className="grid gap-4 md:col-span-3 lg:grid-cols-3">
+            <div className="bg-secondary flex h-60 flex-col justify-between rounded-lg p-6">
+              <div className="mb-4">
+                <p className="text-muted-foreground text-sm">
+                  Streamlined design workflows
+                </p>
+              </div>
+              <div>
+                <h3 className="text-6xl font-semibold">82%</h3>
+                <p className="text-foreground/80 text-base">
+                  of manual design tasks eliminated
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-secondary flex h-60 flex-col justify-between rounded-lg p-6">
+              <div className="mb-4">
+                <p className="text-muted-foreground text-sm">
+                  Design precision
+                </p>
+              </div>
+              <div>
+                <h3 className="text-6xl font-semibold">99.9%</h3>
+                <p className="text-foreground/80 text-base">
+                  design consistency achieved
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-secondary flex h-60 flex-col justify-between rounded-lg p-6">
+              <div className="mb-4">
+                <p className="text-muted-foreground text-sm">
+                  Scalable design projects
+                </p>
+              </div>
+              <div>
+                <h3 className="text-6xl font-semibold">520K+</h3>
+                <p className="text-foreground/80 text-base">
+                  total design assets created
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col justify-center p-6 py-20 text-center">
+          <div>
+            <h2 className="mb-4 text-3xl font-medium md:text-5xl">
+              Built for creativity, loved for efficiency
+            </h2>
+            <p className="text-muted-foreground mb-6 text-lg">
+              The design platform modern creative teams rely on
+            </p>
+          </div>
+          <div className="flex flex-col items-center gap-4">
+            <Button className="mt-4 h-14 px-10">Start designing free</Button>
+            <p className="text-muted-foreground text-xs">
+              10-project trial, no credit card required
+            </p>
+            <a className="flex items-center gap-2 text-sm text-blue-500 hover:text-blue-600">
+              <span>★ ★ ★ ★ ★</span>
+              <span className="text-primary text-md">Google reviews</span>
+              <ArrowRight className="h-4 w-4" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export { Stats2 };
+
+
+// --- Demo ---
+import { Stats2 } from "@/components/ui/stats-2";
+
+export default function DemoOne() {
+  return <Stats2 />;
+}
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+// --- Component ---
+import React from "react";
+
+export const BoldStats = () => {
+  return (
+    <section className="bg-background flex flex-col justify-center">
+      <div className="flex flex-col gap-20 py-16 max-w-7xl mx-auto px-5 w-full">
+        <div className="md:flex justify-between items-center border-b border-border pb-5 gap-8">
+          <div className="flex flex-col md:flex-row items-baseline gap-4">
+            <span className="md:text-8xl text-8xl lg:text-9xl font-medium tracking-tighter text-foreground shrink-0">
+              10B+
+            </span>
+            <div className="max-w-xs">
+              <h3 className="text-xl font-semibold tracking-tight">
+                API Calls Monthly
+              </h3>
+              <p className="text-sm text-muted-foreground text-pretty">
+                Serving the world's most demanding applications with zero
+                latency.
+              </p>
+            </div>
+          </div>
+          <img
+            src="https://images.unsplash.com/photo-1604076984203-587c92ab2e58?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            alt="supportive img"
+            className="sm:w-96 w-full h-52 object-cover rounded-lg shrink-0 mt-6 md:mt-0"
+          />
+        </div>
+
+        <div className="flex justify-between items-center gap-5">
+          <div>
+            <p className="md:text-5xl text-4xl font-medium tracking-tighter text-foreground mb-2 ">
+              0.1ms
+            </p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+              P99 Latency
+            </p>
+          </div>
+          <div>
+            <p className="md:text-5xl text-4xl font-medium tracking-tighter text-foreground mb-2 ">
+              142
+            </p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+              Global Regions
+            </p>
+          </div>
+          <div>
+            <p className="md:text-5xl text-4xl font-medium tracking-tighter text-foreground mb-2 ">
+              24/7
+            </p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+              Human Support
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default BoldStats;
+
+
+// --- Demo ---
+import { BoldStats } from "@/components/ui/stats-bold";
+
+export default function Default() {
+  return (
+    <div className="bg-background text-foreground">
+      <BoldStats />
+    </div>
+  );
+}
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+// --- Component ---
+"use client";
+import React from "react";
+
+export const StatsBento = () => {
+  return (
+    <section className="min-h-screen bg-background flex flex-col justify-center">
+      <div className="grid grid-cols-1 md:grid-cols-6 md:grid-rows-2 gap-4 max-w-7xl mx-auto">
+        {/* Primary Stat */}
+        <div className="md:col-span-3 md:row-span-2 bg-primary rounded-3xl p-10 flex flex-col justify-between overflow-hidden relative">
+          <div className="absolute bottom-0 left-0 right-0 top-0 bg-[repeating-linear-gradient(45deg,#808080_0px_1px,transparent_1px_10px)] opacity-30 mask-[radial-gradient(ellipse_80%_50%_at_100%_0%,#000_70%,transparent_110%)] pointer-events-none"></div>
+          <div>
+            <span className="inline-block px-3 py-1 bg-primary-foreground/10 rounded-full text-[10px] font-semibold text-primary-foreground/60 uppercase tracking-widest mb-6">
+              Market Share
+            </span>
+            <h3 className="text-6xl tracking-tighter text-primary-foreground ">
+              64%
+            </h3>
+          </div>
+          <p className="text-primary-foreground/60 text-sm max-w-xs">
+            Dominating the cloud-native infrastructure market for venture-backed
+            startups.
+          </p>
+        </div>
+
+        {/* Secondary Stat A */}
+        <div className="md:col-span-3 bg-muted rounded-3xl p-8 border border-border flex items-center justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">
+              Growth
+            </p>
+            <p className="text-3xl text-foreground ">+240%</p>
+          </div>
+          <div className="flex gap-1 items-end h-8">
+            {[10, 20, 40, 30, 60, 50, 80, 70, 90, 100, 110].map((h, i) => (
+              <div
+                key={i}
+                className="w-1.5 bg-foreground rounded-full"
+                style={{ height: `${h}%` }}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Tertiary Stat B */}
+        <div className="md:col-span-1 bg-card rounded-3xl p-6 border border-border flex flex-col justify-center text-center">
+          <p className="text-2xl text-foreground">12</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+            Awards
+          </p>
+        </div>
+
+        {/* Tertiary Stat C */}
+        <div className="md:col-span-2 bg-muted rounded-3xl p-6 flex items-center gap-4">
+          <div className="size-10 text-2xl rounded-full bg-background text-foreground flex items-center justify-center shrink-0 shadow-sm font-semibold">
+            ★
+          </div>
+          <div>
+            <p className="text-sm text-foreground leading-none">4.9 / 5.0</p>
+            <p className="text-xs font-semibold text-muted-foreground mt-1">
+              G2 Peer Reviews
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default StatsBento;
+
+
+// --- Demo ---
+import StatsBento from "@/components/ui/stats-bento";
+
+export default function StatsBentoDemo() {
+  return <StatsBento />;
+}
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+// --- Component ---
+'use client'
+import { cn } from '@/lib/utils'
+import React, { useRef } from 'react'
+import { ClippedAreaChart } from '@/components/ui/advanced-stats-utils/charts'
+import { TimelineAnimation } from '@/components/ui/advanced-stats-utils/timeline-animation'
+
+const kpis = [
+  { label: 'Total Revenue', value: '$2.4M', change: '+12.5%', status: 'up' },
+  {
+    label: 'Active Subscriptions',
+    value: '14,205',
+    change: '+4.2%',
+    status: 'up',
+  },
+  {
+    label: 'Avg. Response Time',
+    value: '184ms',
+    change: '-8.1%',
+    status: 'down',
+  },
+  { label: 'Churn Rate', value: '1.2%', change: '-0.4%', status: 'down' },
+]
+
+export default function AdvancedStats() {
+  const timelineRef = useRef<HTMLDivElement>(null)
+
+  return (
+    <section
+      ref={timelineRef}
+      className="flex flex-col gap-8 py-4 bg-white min-h-screen justify-center md:px-0 px-5 font-dmSans"
+    >
+      <div className="max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Chart Section */}
+          <TimelineAnimation
+            animationNum={1}
+            timelineRef={timelineRef}
+            className="lg:col-span-2 p-8 rounded-3xl bg-zinc-50 border border-zinc-200"
+          >
+            <ClippedAreaChart />
+          </TimelineAnimation>
+
+          {/* Breakdown Section */}
+          <div>
+            <div className="flex flex-col gap-4">
+              <TimelineAnimation
+                animationNum={2}
+                timelineRef={timelineRef}
+                className="p-6 rounded-3xl h-full bg-zinc-900 text-white flex flex-col justify-between shadow-lg"
+              >
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-2">
+                    Primary Goal
+                  </p>
+                  <h4 className="text-xl font-bold tracking-tight">
+                    Enterprise Adoption
+                  </h4>
+                </div>
+                <div className="mt-8">
+                  <div className="flex justify-between items-end mb-2">
+                    <span className="text-3xl font-semibold tracking-tighter ">
+                      82%
+                    </span>
+                    <span className="text-xs font-medium text-zinc-400 mb-1">
+                      Target: 90%
+                    </span>
+                  </div>
+                  <div className="w-full h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                    <div className="h-full bg-white w-[82%] rounded-full" />
+                  </div>
+                </div>
+              </TimelineAnimation>
+
+              <TimelineAnimation
+                animationNum={3}
+                timelineRef={timelineRef}
+                className="p-6 rounded-3xl h-full bg-zinc-50 border border-zinc-200"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="size-8 rounded-lg bg-zinc-50 flex items-center justify-center border border-zinc-100">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      className="w-6 h-6"
+                      color="#000000"
+                      fill="none"
+                      stroke="#141B34"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M15 8C15 9.65685 13.6569 11 12 11C10.3431 11 9 9.65685 9 8C9 6.34315 10.3431 5 12 5C13.6569 5 15 6.34315 15 8Z" />
+                      <path d="M16 4C17.6569 4 19 5.34315 19 7C19 8.22309 18.2681 9.27523 17.2183 9.7423" />
+                      <path d="M13.7143 14H10.2857C7.91876 14 5.99998 15.9188 5.99998 18.2857C5.99998 19.2325 6.76749 20 7.71426 20H16.2857C17.2325 20 18 19.2325 18 18.2857C18 15.9188 16.0812 14 13.7143 14Z" />
+                      <path d="M17.7143 13C20.0812 13 22 14.9188 22 17.2857C22 18.2325 21.2325 19 20.2857 19" />
+                      <path d="M8 4C6.34315 4 5 5.34315 5 7C5 8.22309 5.73193 9.27523 6.78168 9.7423" />
+                      <path d="M3.71429 19C2.76751 19 2 18.2325 2 17.2857C2 14.9188 3.91878 13 6.28571 13" />
+                    </svg>
+                  </div>
+                  <h4 className="font-bold text-zinc-900">User Growth</h4>
+                </div>
+                <p className="text-sm text-zinc-500">
+                  Organic acquisition is up{' '}
+                  <span className="text-zinc-900 font-semibold">24%</span>{' '}
+                  compared to previous quarter.
+                </p>
+              </TimelineAnimation>
+            </div>
+          </div>
+        </div>
+
+        {/* KPI Row */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6">
+          {kpis.map((kpi, index) => (
+            <TimelineAnimation
+              animationNum={4 + index}
+              timelineRef={timelineRef}
+              key={kpi.label}
+              className={cn(
+                'p-6 rounded-2xl border bg-zinc-50 border-zinc-200 transition-colors',
+                kpi.status === 'up'
+                  ? 'hover:border-emerald-400 hover:bg-emerald-50'
+                  : 'hover:border-rose-400 hover:bg-rose-50'
+              )}
+            >
+              <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-2">
+                {kpi.label}
+              </p>
+              <div className="flex items-baseline justify-between">
+                <p className="text-2xl font-black text-zinc-900  tracking-tighter">
+                  {kpi.value}
+                </p>
+                <span
+                  className={cn(
+                    'text-xs font-bold  px-1.5 py-0.5 rounded',
+                    kpi.status === 'up'
+                      ? 'text-emerald-600 bg-emerald-50'
+                      : 'text-rose-600 bg-rose-50'
+                  )}
+                >
+                  {kpi.change}
+                </span>
+              </div>
+            </TimelineAnimation>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+
+// --- Demo ---
+import AdvancedStats from '@/components/ui/advanced-stats'
+
+export default function Default() {
+  return <AdvancedStats />
+}
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+// --- Component ---
+"use client";
+
+import NumberFlow from "@number-flow/react";
+import { motion } from "framer-motion";
+import { CirclePercent } from "lucide-react";
+import React from "react";
+
+import { cn } from "@/lib/utils";
+
+const css = `
+.candy-bg {
+    background-color: hsl(0 0% 96%, 2%);
+    background-image: linear-gradient(
+      135deg,
+      hsl(0 0% 96%) 25%,
+      transparent 25.5%,
+      transparent 50%,
+      hsl(0 0% 96%) 50.5%,
+      hsl(0 0% 96%) 75%,
+      transparent 75.5%,
+      transparent
+    );
+    background-size: 10px 10px;
+  }`;
+
+const Stats = () => {
+  return (
+    <section className="py-32">
+      <style>{css}</style>
+      <div className="gradient container">
+        <div className="mx-auto max-w-2xl text-center">
+          <h1 className="lg::text-6xl w-full font-calSans text-5xl font-medium">
+            We don't believe in talk we Deliver Results
+          </h1>
+          <p className="my-4 tracking-tight text-muted-foreground lg:px-15 lg:text-lg">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde
+            perferendis deserunt quis excepturi reiciendis nulla?
+          </p>
+        </div>
+        <div className="relative mx-auto mt-20 flex h-112 max-w-4xl items-center justify-center gap-2">
+          {[
+            { value: 35, label: "competitor 1", delay: 0.2 },
+            { value: 25, label: "competitor 2", delay: 0.4 },
+            {
+              value: 99,
+              label: "shadcnblocks",
+              className: "bg-sky-400",
+              showToolTip: true,
+              delay: 0.6,
+            },
+            { value: 37, label: "competitor 4", delay: 0.8 },
+          ].map((props, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.5,
+                delay: index * 0.2,
+                type: "spring",
+                damping: 10,
+              }}
+              className="h-full w-full"
+            >
+              <BarChart {...props} />
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export { Stats };
+
+const BarChart = ({
+  value,
+  label,
+  className = "",
+  showToolTip = false,
+  delay = 0,
+}: {
+  value: number;
+  label: string;
+  className?: string;
+  showToolTip?: boolean;
+  delay?: number;
+}) => {
+  return (
+    <div className="group relative h-full w-full">
+      <div className="candy-bg relative h-full w-full overflow-hidden rounded-[40px]">
+        <motion.div
+          initial={{ opacity: 0, y: 100, height: 0 }}
+          animate={{ opacity: 1, y: 0, height: `${value}%` }}
+          transition={{ duration: 0.5, type: "spring", damping: 20, delay }}
+          className={cn(
+            "absolute bottom-0 mt-auto w-full rounded-[40px] bg-primary/80 p-3 text-white",
+            className,
+          )}
+        >
+          <div className="relative flex h-15 w-full items-center justify-center gap-2 rounded-full bg-muted/20 tracking-tighter">
+            <NumberFlow value={value} suffix="%" />
+          </div>
+        </motion.div>
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 100, height: 0 }}
+        animate={{ opacity: 1, y: 0, height: `${value}%` }}
+        transition={{ duration: 0.5, type: "spring", damping: 15, delay }}
+        className="absolute bottom-0 w-full"
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 100 }}
+          animate={{ opacity: showToolTip ? 1 : 0, y: showToolTip ? 0 : 100 }}
+          transition={{ duration: 0.5, type: "spring", damping: 15, delay }}
+          className={cn(
+            "absolute -top-9 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl bg-muted-foreground px-2 py-1 text-white",
+            className,
+          )}
+        >
+          <div
+            className={cn(
+              "absolute -bottom-9 left-1/2 size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-muted-foreground transition-all duration-300 ease-in-out",
+              className,
+            )}
+          />
+          <svg
+            className={cn(
+              "absolute -bottom-2 left-1/2 -translate-x-1/2",
+              className.includes("bg-sky-400")
+                ? "text-sky-400"
+                : "text-muted-foreground",
+            )}
+            width="10"
+            height="10"
+            viewBox="0 0 10 10"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3.83855 8.41381C4.43827 9.45255 5.93756 9.45255 6.53728 8.41381L9.65582 3.01233C10.2555 1.97359 9.50589 0.675159 8.30646 0.675159H2.06937C0.869935 0.675159 0.120287 1.97359 0.720006 3.01233L3.83855 8.41381Z"
+              fill="currentColor"
+            />
+          </svg>
+          conversions
+        </motion.div>
+      </motion.div>
+      <p className="mx-auto mt-2 w-fit tracking-tight text-muted-foreground/80">
+        {label}
+      </p>
+    </div>
+  );
+};
+
+// --- Demo ---
+import { Stats } from "@/components/ui/statistics-card";
+
+export default function DemoOne() {
+  return <Stats />;
+}
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+

@@ -1,0 +1,2234 @@
+'use client'
+
+/**
+ * Draggable Widget Grid
+ *
+ * A grid of widgets that can be rearranged by dragging. The layout is a
+ * sequence plus a size per widget; an exact tiler turns the sequence into a
+ * gap-free rectangle at any column count, and Motion animates every change.
+ *
+ * - Mouse and pen drag immediately. Touch uses a long press, so the page can
+ *   still be scrolled.
+ * - Keyboard: focus a widget, hold Alt and use the arrow keys.
+ * - Styling uses theme tokens (`bg-card`, `ring-border`, `text-foreground`),
+ *   so it follows light and dark themes.
+ */
+
+import {
+	memo,
+	useCallback,
+	useEffect,
+	useId,
+	useLayoutEffect,
+	useMemo,
+	useRef,
+	useState,
+	type CSSProperties,
+	type KeyboardEvent as ReactKeyboardEvent,
+	type PointerEvent as ReactPointerEvent,
+	type ReactNode,
+} from 'react'
+import { MotionConfig, motion, useDragControls } from 'motion/react'
+
+/* ------------------------------------------------------------------ *
+ * Types
+ * ------------------------------------------------------------------ */
+
+/** Column × row span: `sm` 1×1, `wide` 2×1, `tall` 1×2, `lg` 2×2. */
+export type WidgetSize = 'sm' | 'wide' | 'tall' | 'lg'
+
+export interface WidgetItem {
+	/** Stable, unique id. */
+	id: string
+	size: WidgetSize
+	/** Accessible name for the widget. */
+	label?: string
+}
+
+export interface DraggableWidgetGridProps {
+	/** Initial arrangement. The grid manages the order after mount. */
+	items?: WidgetItem[]
+	/** Called with the new order after a drop or a keyboard move. */
+	onChange?: (items: WidgetItem[]) => void
+	/** Renders a widget's content. */
+	renderItem?: (item: WidgetItem, size: WidgetSize) => ReactNode
+	/** Enables dragging and keyboard moves. */
+	editable?: boolean
+	/** Upper bound for the number of columns. */
+	maxColumns?: number
+	/** Target cell width in px; the column count is derived from it. */
+	cellSize?: number
+	/** Gap between widgets in px. */
+	gap?: number
+	/** Corner radius of a widget in px. */
+	radius?: number
+	className?: string
+}
+
+const SPANS: { [K in WidgetSize]: { col: number; row: number } } = {
+	sm: { col: 1, row: 1 },
+	wide: { col: 2, row: 1 },
+	tall: { col: 1, row: 2 },
+	lg: { col: 2, row: 2 },
+}
+
+const SIZE_LABELS: { [K in WidgetSize]: string } = {
+	sm: 'Small',
+	wide: 'Wide',
+	tall: 'Tall',
+	lg: 'Large',
+}
+
+const DEFAULT_ITEMS: WidgetItem[] = [
+	{ id: 'widget-1', size: 'wide' },
+	{ id: 'widget-2', size: 'sm' },
+	{ id: 'widget-3', size: 'sm' },
+	{ id: 'widget-4', size: 'sm' },
+	{ id: 'widget-5', size: 'wide' },
+	{ id: 'widget-6', size: 'sm' },
+	{ id: 'widget-7', size: 'sm' },
+	{ id: 'widget-8', size: 'wide' },
+	{ id: 'widget-9', size: 'sm' },
+]
+
+const useIsoLayoutEffect =
+	typeof window === 'undefined' ? useEffect : useLayoutEffect
+
+function sizeOf(w: number, h: number): WidgetSize {
+	if (w >= 2 && h >= 2) return 'lg'
+	if (w >= 2) return 'wide'
+	if (h >= 2) return 'tall'
+	return 'sm'
+}
+
+/* ------------------------------------------------------------------ *
+ * Layout
+ * ------------------------------------------------------------------ */
+
+interface Placement {
+	id: string
+	col: number
+	row: number
+	w: number
+	h: number
+}
+
+interface Box {
+	col: number
+	row: number
+	w: number
+	h: number
+}
+
+const overlaps = (a: Box, b: Box) =>
+	a.col < b.col + b.w &&
+	b.col < a.col + a.w &&
+	a.row < b.row + b.h &&
+	b.row < a.row + a.h
+
+const contains = (outer: Box, inner: Box) =>
+	inner.col >= outer.col &&
+	inner.row >= outer.row &&
+	inner.col + inner.w <= outer.col + outer.w &&
+	inner.row + inner.h <= outer.row + outer.h
+
+function spanOf(item: WidgetItem, columns: number) {
+	return { w: Math.min(SPANS[item.size].col, columns), h: SPANS[item.size].row }
+}
+
+/**
+ * Places every widget. Tries an exact tiling first (no gaps, no stretching);
+ * falls back to a row packer that grows widgets to close gaps.
+ */
+function layout(items: WidgetItem[], columns: number): Placement[] {
+	if (columns < 1 || items.length === 0) return []
+	return tile(items, columns) ?? pack(items, columns)
+}
+
+const TILING_BUDGET = 20000
+
+/**
+ * Exact tiling. The first empty cell in reading order takes the earliest
+ * widget that fits there and still lets the rest be placed.
+ */
+function tile(items: WidgetItem[], columns: number): Placement[] | null {
+	const spans = items.map((item) => spanOf(item, columns))
+	const area = spans.reduce((n, s) => n + s.w * s.h, 0)
+	const rows = Math.ceil(area / columns)
+	const grid: boolean[] = new Array(rows * columns).fill(false)
+	const used: boolean[] = new Array(items.length).fill(false)
+	const out: Placement[] = []
+	let budget = TILING_BUDGET
+
+	const fits = (w: number, h: number, r: number, c: number) => {
+		if (c + w > columns || r + h > rows) return false
+		for (let y = r; y < r + h; y++)
+			for (let x = c; x < c + w; x++) if (grid[y * columns + x]) return false
+		return true
+	}
+	const mark = (w: number, h: number, r: number, c: number, v: boolean) => {
+		for (let y = r; y < r + h; y++)
+			for (let x = c; x < c + w; x++) grid[y * columns + x] = v
+	}
+
+	const place = (count: number): boolean => {
+		if (count === items.length) return true
+		if (--budget < 0) return false
+		const i = grid.indexOf(false)
+		if (i < 0) return false
+		const r = Math.floor(i / columns)
+		const c = i % columns
+		// Widgets of the same shape are interchangeable at this cell.
+		const tried = new Set([] as string[])
+		for (let k = 0; k < items.length; k++) {
+			if (used[k]) continue
+			const { w, h } = spans[k]
+			const shape = `${w}x${h}`
+			if (tried.has(shape) || !fits(w, h, r, c)) continue
+			tried.add(shape)
+			used[k] = true
+			mark(w, h, r, c, true)
+			out.push({ id: items[k].id, col: c, row: r, w, h })
+			if (place(count + 1)) return true
+			out.pop()
+			mark(w, h, r, c, false)
+			used[k] = false
+		}
+		return false
+	}
+
+	return place(0) ? out : null
+}
+
+/** Fallback: fill rows in order, then widen widgets to close each row. */
+function pack(items: WidgetItem[], columns: number): Placement[] {
+	const out: Placement[] = []
+	let row = 0
+	let queue = items.map((item) => ({ id: item.id, ...spanOf(item, columns) }))
+
+	while (queue.length > 0) {
+		const height = Math.max(...queue.slice(0, columns).map((q) => q.h))
+		const cells: boolean[] = new Array(height * columns).fill(false)
+		const band: Placement[] = []
+		const rest: typeof queue = []
+
+		for (const q of queue) {
+			let spot = -1
+			for (let i = 0; i < cells.length && spot < 0; i++) {
+				const r = Math.floor(i / columns)
+				const c = i % columns
+				if (c + q.w > columns || r + q.h > height) continue
+				let free = true
+				for (let y = r; y < r + q.h && free; y++)
+					for (let x = c; x < c + q.w && free; x++)
+						if (cells[y * columns + x]) free = false
+				if (free) spot = i
+			}
+			if (spot < 0 || rest.length > 0) {
+				rest.push(q)
+				continue
+			}
+			const r = Math.floor(spot / columns)
+			const c = spot % columns
+			for (let y = r; y < r + q.h; y++)
+				for (let x = c; x < c + q.w; x++) cells[y * columns + x] = true
+			band.push({ id: q.id, col: c, row: r, w: q.w, h: q.h })
+		}
+
+		// Grow widgets right, then down, into any cell left empty.
+		for (let i = 0; i < cells.length; i++) {
+			if (cells[i]) continue
+			const r = Math.floor(i / columns)
+			const c = i % columns
+			const left = band.find(
+				(p) => p.col + p.w === c && p.row <= r && p.row + p.h > r && p.h === 1,
+			)
+			const above = band.find(
+				(p) => p.row + p.h === r && p.col === c && p.w === 1,
+			)
+			const grow = left ?? above
+			if (!grow) continue
+			if (grow === left) grow.w += 1
+			else grow.h += 1
+			cells[i] = true
+		}
+
+		out.push(...band.map((p) => ({ ...p, row: p.row + row })))
+		row += height
+		queue = rest
+	}
+	return out
+}
+
+/** Reorders `items` to match the reading order of their layout. */
+function canonical(items: WidgetItem[], columns: number): WidgetItem[] {
+	const places = layout(items, columns)
+	if (places.length !== items.length) return items
+	const byId = new Map(items.map((item) => [item.id, item]))
+	const sorted = [...places]
+		.sort((a, b) => a.row - b.row || a.col - b.col)
+		.map((p) => byId.get(p.id) as WidgetItem)
+	if (sorted.every((item, i) => item === items[i])) return items
+	// Only adopt the reading order when it produces the same layout.
+	const at = new Map(places.map((p) => [p.id, p]))
+	const same = layout(sorted, columns).every((p) => {
+		const q = at.get(p.id)
+		return q && q.col === p.col && q.row === p.row && q.w === p.w && q.h === p.h
+	})
+	return same ? sorted : items
+}
+
+function moveTo(items: WidgetItem[], id: string, index: number) {
+	const from = items.findIndex((item) => item.id === id)
+	if (from < 0 || from === index || index < 0 || index >= items.length)
+		return items
+	const next = [...items]
+	const [moved] = next.splice(from, 1)
+	next.splice(index, 0, moved)
+	return next
+}
+
+const sameOrder = (a: WidgetItem[], b: WidgetItem[]) =>
+	a.length === b.length && a.every((item, i) => item.id === b[i].id)
+
+/* ------------------------------------------------------------------ *
+ * Drop target selection
+ * ------------------------------------------------------------------ */
+
+/** Viewport rectangle of a widget in the settled layout. */
+interface Slot {
+	left: number
+	top: number
+	right: number
+	bottom: number
+}
+
+interface Candidate {
+	order: WidgetItem[]
+	slot: Slot
+}
+
+/** Fraction of a slot the dragged widget's centre must enter to take it. */
+const ENTER = 0.18
+
+/**
+ * Picks the arrangement whose slot for `id` is nearest to the dragged
+ * widget's centre, or null to keep the current one.
+ *
+ * Candidates are measured to a slot shrunk by `ENTER`; the current slot is
+ * measured unshrunk. Every accepted move therefore strictly reduces that
+ * distance, which rules out oscillating between arrangements.
+ */
+function choose(
+	home: Slot,
+	candidates: Candidate[],
+	cx: number,
+	cy: number,
+): WidgetItem[] | null {
+	const distance = (s: Slot, inset: number) => {
+		const ix = (s.right - s.left) * inset
+		const iy = (s.bottom - s.top) * inset
+		const dx = Math.max(s.left + ix - cx, 0, cx - (s.right - ix))
+		const dy = Math.max(s.top + iy - cy, 0, cy - (s.bottom - iy))
+		return Math.hypot(dx, dy)
+	}
+	const toCentre = (s: Slot) =>
+		Math.hypot((s.left + s.right) / 2 - cx, (s.top + s.bottom) / 2 - cy)
+
+	let best = distance(home, 0)
+	if (best === 0) return null
+	let pick: WidgetItem[] | null = null
+	let bestCentre = Infinity
+	for (const { order, slot } of candidates) {
+		const d = distance(slot, ENTER)
+		const c = toCentre(slot)
+		// On a tie the earlier candidate wins; group swaps are listed first.
+		if (d < best || (d === best && pick && c < bestCentre)) {
+			best = d
+			bestCentre = c
+			pick = order
+		}
+	}
+	return pick
+}
+
+/**
+ * Every arrangement one move away from `items`:
+ * - group swaps: a same-shaped area filled entirely by smaller widgets trades
+ *   places with the dragged widget, keeping its internal arrangement;
+ * - sequence moves: the dragged widget takes another index.
+ */
+function candidatesFor(
+	items: WidgetItem[],
+	id: string,
+	columns: number,
+	toSlot: (box: Box) => Slot,
+): Candidate[] {
+	const places = layout(items, columns)
+	const me = places.find((p) => p.id === id)
+	if (!me) return []
+	const byId = new Map(items.map((item) => [item.id, item]))
+	const rows = Math.max(...places.map((p) => p.row + p.h))
+	const out: Candidate[] = []
+
+	for (let row = 0; row + me.h <= rows; row++) {
+		for (let col = 0; col + me.w <= columns; col++) {
+			const area = { col, row, w: me.w, h: me.h }
+			if (overlaps(area, me)) continue
+			const group = places.filter((p) => overlaps(p, area))
+			if (group.length < 2 || !group.every((p) => contains(area, p))) continue
+			const moved = places.map((p) =>
+				p.id === id
+					? { ...p, col, row }
+					: group.includes(p)
+						? { ...p, col: p.col - col + me.col, row: p.row - row + me.row }
+						: p,
+			)
+			moved.sort((a, b) => a.row - b.row || a.col - b.col)
+			out.push({
+				order: moved.map((p) => byId.get(p.id) as WidgetItem),
+				slot: toSlot(area),
+			})
+		}
+	}
+
+	const from = items.findIndex((item) => item.id === id)
+	for (let i = 0; i < items.length; i++) {
+		if (i === from) continue
+		const order = moveTo(items, id, i)
+		const p = layout(order, columns).find((q) => q.id === id)
+		if (p) out.push({ order, slot: toSlot(p) })
+	}
+	return out
+}
+
+/* ------------------------------------------------------------------ *
+ * Motion
+ * ------------------------------------------------------------------ */
+
+const SPRING = { type: 'spring', visualDuration: 0.38, bounce: 0.16 } as const
+const LIFT = { type: 'spring', visualDuration: 0.26, bounce: 0.32 } as const
+const LIFT_SCALE = 1.06
+/** Minimum time between two reorders during a drag. */
+const SETTLE_MS = 40
+/** How long the drop outline stays visible. */
+const LANDED_MS = 620
+/** Touch: hold time before a widget lifts. */
+const LONG_PRESS_MS = 350
+/** Touch: movement allowed during the hold before it counts as a scroll. */
+const PRESS_SLOP = 8
+// Same number of layers in both, so the shadow can interpolate.
+const SHADOW_REST =
+	'0px 1px 2px 0px rgba(0,0,0,0.12), 0px 0px 0px 0px rgba(0,0,0,0)'
+const SHADOW_LIFTED =
+	'0px 28px 60px -16px rgba(0,0,0,0.45), 0px 10px 24px -8px rgba(0,0,0,0.3)'
+
+/* ------------------------------------------------------------------ *
+ * Widget
+ * ------------------------------------------------------------------ */
+
+interface Press {
+	timer: number
+	pointerId: number
+	x: number
+	y: number
+}
+
+type Phase = 'idle' | 'holding' | 'lifted'
+
+interface WidgetHandlers {
+	start: (id: string) => void
+	drag: () => void
+	end: (id: string) => void
+	key: (e: ReactKeyboardEvent, id: string) => void
+	/** True while the click that follows a drop should be ignored. */
+	swallow: () => boolean
+	/** Ignore the next click (called when a pointer is released after a drag). */
+	suppressClick: () => void
+}
+
+const Widget = memo(function Widget({
+	item,
+	col,
+	row,
+	w,
+	h,
+	columns,
+	rows,
+	editable,
+	held,
+	raised,
+	landed,
+	handlers,
+	hintId,
+	position,
+	count,
+	renderItem,
+}: {
+	item: WidgetItem
+	col: number
+	row: number
+	w: number
+	h: number
+	columns: number
+	rows: number
+	editable: boolean
+	held: boolean
+	raised: boolean
+	landed: boolean
+	handlers: WidgetHandlers
+	hintId: string
+	/** 1-based position in reading order, for assistive technology. */
+	position: number
+	count: number
+	renderItem?: (item: never, size: WidgetSize) => ReactNode
+}) {
+	const controls = useDragControls()
+	const node = useRef(null as HTMLDivElement | null)
+	const press = useRef(null as Press | null)
+	const lifted = useRef(false)
+	const cleanup = useRef(null as (() => void) | null)
+	const [phase, setPhase] = useState('idle' as Phase)
+
+	const release = useCallback(() => {
+		if (press.current) window.clearTimeout(press.current.timer)
+		press.current = null
+		lifted.current = false
+		cleanup.current?.()
+		cleanup.current = null
+		setPhase('idle')
+	}, [])
+
+	useEffect(() => {
+		const el = node.current
+		if (!el) return
+		// While lifted, touch movement drags the widget instead of the page.
+		const block = (e: TouchEvent) => {
+			if (lifted.current) e.preventDefault()
+		}
+		el.addEventListener('touchmove', block, { passive: false })
+		return () => {
+			el.removeEventListener('touchmove', block)
+			if (press.current) window.clearTimeout(press.current.timer)
+			cleanup.current?.()
+		}
+	}, [])
+
+	const onPointerDown = (e: ReactPointerEvent) => {
+		if (!editable || e.button !== 0 || !e.isPrimary) return
+		if (e.pointerType !== 'touch') {
+			controls.start(e)
+			return
+		}
+		if (press.current || lifted.current) return
+		const origin = e.nativeEvent
+		const pointerId = e.pointerId
+		setPhase('holding')
+		press.current = {
+			pointerId,
+			x: e.clientX,
+			y: e.clientY,
+			timer: window.setTimeout(() => {
+				press.current = null
+				lifted.current = true
+				setPhase('lifted')
+				navigator.vibrate?.(10)
+				controls.start(origin)
+				const done = (ev: PointerEvent) => {
+					if (ev.pointerId !== pointerId) return
+					handlers.suppressClick()
+					release()
+				}
+				window.addEventListener('pointerup', done)
+				window.addEventListener('pointercancel', done)
+				cleanup.current = () => {
+					window.removeEventListener('pointerup', done)
+					window.removeEventListener('pointercancel', done)
+				}
+			}, LONG_PRESS_MS),
+		}
+	}
+
+	const onPointerMove = (e: ReactPointerEvent) => {
+		const p = press.current
+		if (
+			p &&
+			e.pointerId === p.pointerId &&
+			Math.hypot(e.clientX - p.x, e.clientY - p.y) > PRESS_SLOP
+		)
+			release()
+	}
+
+	const onPointerEnd = (e: ReactPointerEvent) => {
+		if (press.current?.pointerId === e.pointerId) release()
+	}
+
+	const delay = (col / Math.max(columns, 1) + row / Math.max(rows, 1)) * 0.26
+
+	return (
+		<motion.div
+			ref={node}
+			role="listitem"
+			data-slot="widget"
+			data-widget-id={item.id}
+			tabIndex={editable ? 0 : undefined}
+			aria-label={item.label ?? `${SIZE_LABELS[item.size]} widget`}
+			aria-describedby={editable ? hintId : undefined}
+			aria-posinset={position}
+			aria-setsize={count}
+			layout="position"
+			drag={editable}
+			dragListener={false}
+			dragControls={controls}
+			dragSnapToOrigin
+			dragMomentum={false}
+			onDragStart={() => handlers.start(item.id)}
+			onDrag={handlers.drag}
+			onDragEnd={() => handlers.end(item.id)}
+			onPointerDown={onPointerDown}
+			onPointerMove={onPointerMove}
+			onPointerUp={onPointerEnd}
+			onPointerCancel={onPointerEnd}
+			onContextMenu={(e) => {
+				if (phase !== 'idle') e.preventDefault()
+			}}
+			onKeyDown={(e) => handlers.key(e, item.id)}
+			onClickCapture={(e) => {
+				if (
+					handlers.swallow() ||
+					(editable && (e.target as HTMLElement).closest('a'))
+				) {
+					e.preventDefault()
+					e.stopPropagation()
+				}
+			}}
+			animate={{
+				scale: phase === 'holding' ? 0.97 : phase === 'lifted' ? LIFT_SCALE : 1,
+				boxShadow: phase === 'lifted' ? SHADOW_LIFTED : SHADOW_REST,
+			}}
+			whileDrag={{
+				scale: LIFT_SCALE,
+				boxShadow: SHADOW_LIFTED,
+				transition: LIFT,
+			}}
+			transition={SPRING}
+			className={`relative min-w-0 rounded-[var(--widget-radius)] outline-none focus-visible:ring-2 focus-visible:ring-ring [&_a]:[-webkit-user-drag:none] [&_img]:[-webkit-user-drag:none] ${
+				editable
+					? 'cursor-grab touch-pan-y touch-pinch-zoom select-none [-webkit-touch-callout:none] active:cursor-grabbing'
+					: ''
+			}`}
+			style={{
+				gridColumn: `${col + 1} / span ${w}`,
+				gridRow: `${row + 1} / span ${h}`,
+				zIndex: held ? 20 : raised ? 10 : 0,
+			}}>
+			<motion.div
+				initial={{ opacity: 0, y: 18, scale: 0.97 }}
+				animate={{ opacity: 1, y: 0, scale: 1 }}
+				transition={{
+					type: 'spring',
+					visualDuration: 0.6,
+					bounce: 0.12,
+					delay,
+				}}
+				className={`relative isolate flex h-full w-full flex-col overflow-hidden rounded-[var(--widget-radius)] bg-card text-card-foreground ring-inset transition-shadow duration-300 [clip-path:inset(0_round_var(--widget-radius))] ${
+					landed ? 'ring-2 ring-foreground/40' : 'ring-1 ring-border'
+				}`}>
+				{renderItem?.(item as never, sizeOf(w, h))}
+			</motion.div>
+		</motion.div>
+	)
+})
+
+/* ------------------------------------------------------------------ *
+ * Grid
+ * ------------------------------------------------------------------ */
+
+export function DraggableWidgetGrid({
+	items: initialItems,
+	onChange,
+	renderItem,
+	editable = true,
+	maxColumns = 4,
+	cellSize = 215,
+	gap = 12,
+	radius = 24,
+	className = '',
+}: DraggableWidgetGridProps) {
+	const [items, setItems] = useState(() => initialItems ?? DEFAULT_ITEMS)
+	const grid = useRef(null as HTMLDivElement | null)
+	const hintId = useId()
+	const minColumns = Math.min(2, Math.max(1, maxColumns))
+
+	const [metrics, setMetrics] = useState({ unit: 0, columns: 0 })
+	useIsoLayoutEffect(() => {
+		const el = grid.current
+		if (!el) return
+		const measure = () => {
+			const width = el.getBoundingClientRect().width
+			if (width < 1) return
+			const columns = Math.max(
+				minColumns,
+				Math.min(maxColumns, Math.round(width / cellSize)),
+			)
+			const unit = (width - gap * (columns - 1)) / columns
+			setMetrics((was) =>
+				was.columns === columns && Math.abs(was.unit - unit) < 0.5
+					? was
+					: { unit, columns },
+			)
+		}
+		measure()
+		const observer = new ResizeObserver(measure)
+		observer.observe(el)
+		return () => observer.disconnect()
+	}, [maxColumns, minColumns, cellSize, gap])
+
+	const columns = metrics.columns || Math.max(minColumns, maxColumns)
+	const placements = useMemo(() => layout(items, columns), [items, columns])
+	const rows = placements.reduce((n, p) => Math.max(n, p.row + p.h), 0)
+
+	// Latest values for event handlers that outlive a render.
+	const latest = useRef({ items, metrics, onChange })
+	latest.current.metrics = metrics
+	latest.current.onChange = onChange
+	useIsoLayoutEffect(() => {
+		latest.current.items = items
+	}, [items])
+
+	const commit = useCallback((next: WidgetItem[]) => {
+		latest.current.items = next
+		setItems(next)
+	}, [])
+
+	const toSlot = useCallback(
+		(box: Box): Slot => {
+			const el = grid.current
+			const { unit } = latest.current.metrics
+			const rect = el?.getBoundingClientRect()
+			const colStep = unit + gap
+			const rowStep = Math.round(unit) + gap
+			const left = (rect?.left ?? 0) + box.col * colStep
+			const top = (rect?.top ?? 0) + box.row * rowStep
+			return {
+				left,
+				top,
+				right: left + box.w * colStep - gap,
+				bottom: top + box.h * rowStep - gap,
+			}
+		},
+		[gap],
+	)
+
+	/* Drag state. React only re-renders on lift, reorder and drop. */
+	const [held, setHeld] = useState(null as string | null)
+	const [raised, setRaised] = useState(null as string | null)
+	const [landed, setLanded] = useState(null as string | null)
+	const dragging = useRef(null as string | null)
+	const startOrder = useRef(null as WidgetItem[] | null)
+	const frame = useRef(0)
+	const lastMove = useRef(0)
+	const swallowUntil = useRef(0)
+	const ring = useRef(0)
+	const refocus = useRef(null as string | null)
+
+	const step = useCallback(
+		(force = false) => {
+			frame.current = 0
+			const id = dragging.current
+			const { items: current, metrics: m } = latest.current
+			const el = id
+				? (grid.current?.querySelector(
+						`[data-widget-id="${CSS.escape(id)}"]`,
+					) as HTMLElement | null)
+				: null
+			if (!id || !el || !m.columns) return
+			const now = performance.now()
+			if (!force && now - lastMove.current < SETTLE_MS) {
+				// Try again next frame, so a widget held still still settles.
+				frame.current = requestAnimationFrame(() => step())
+				return
+			}
+			const me = layout(current, m.columns).find((p) => p.id === id)
+			if (!me) return
+			const r = el.getBoundingClientRect()
+			const order = choose(
+				toSlot(me),
+				candidatesFor(current, id, m.columns, toSlot),
+				r.left + r.width / 2,
+				r.top + r.height / 2,
+			)
+			if (!order) return
+			lastMove.current = now
+			commit(canonical(order, m.columns))
+		},
+		[toSlot, commit],
+	)
+
+	useEffect(
+		() => () => {
+			cancelAnimationFrame(frame.current)
+			window.clearTimeout(ring.current)
+		},
+		[],
+	)
+
+	// Keep keyboard focus on a widget after it moves in the DOM.
+	useIsoLayoutEffect(() => {
+		const id = refocus.current
+		if (!id) return
+		refocus.current = null
+		const el = grid.current?.querySelector(
+			`[data-widget-id="${CSS.escape(id)}"]`,
+		) as HTMLElement | null
+		el?.focus()
+	}, [items])
+
+	const handlers: WidgetHandlers = useMemo(
+		() => ({
+			start: (id) => {
+				dragging.current = id
+				startOrder.current = latest.current.items
+				lastMove.current = 0
+				setHeld(id)
+				setRaised(id)
+				// The click fired on release must not reach the widget's content.
+				window.addEventListener(
+					'pointerup',
+					() => {
+						swallowUntil.current = performance.now() + 300
+					},
+					{ once: true, capture: true },
+				)
+			},
+			drag: () => {
+				if (!frame.current) frame.current = requestAnimationFrame(() => step())
+			},
+			end: (id) => {
+				cancelAnimationFrame(frame.current)
+				step(true)
+				frame.current = 0
+				dragging.current = null
+				setHeld(null)
+				setLanded(id)
+				window.clearTimeout(ring.current)
+				ring.current = window.setTimeout(() => {
+					setLanded(null)
+					setRaised(null)
+				}, LANDED_MS)
+				const before = startOrder.current
+				startOrder.current = null
+				const after = latest.current.items
+				if (before && !sameOrder(before, after))
+					latest.current.onChange?.(after)
+			},
+			key: (e, id) => {
+				if (!editable || !e.altKey) return
+				if ((e.target as HTMLElement).closest('input, textarea, select')) return
+				const delta =
+					e.key === 'ArrowRight' || e.key === 'ArrowDown'
+						? 1
+						: e.key === 'ArrowLeft' || e.key === 'ArrowUp'
+							? -1
+							: 0
+				if (!delta) return
+				e.preventDefault()
+				const { items: current, metrics: m } = latest.current
+				const cols = m.columns || maxColumns
+				const from = current.findIndex((item) => item.id === id)
+				// Step until the layout actually changes.
+				for (
+					let to = from + delta;
+					to >= 0 && to < current.length;
+					to += delta
+				) {
+					const next = canonical(moveTo(current, id, to), cols)
+					if (sameOrder(next, current)) continue
+					refocus.current = id
+					commit(next)
+					latest.current.onChange?.(next)
+					return
+				}
+			},
+			swallow: () => performance.now() < swallowUntil.current,
+			suppressClick: () => {
+				swallowUntil.current = performance.now() + 300
+			},
+		}),
+		[step, commit, editable, maxColumns],
+	)
+
+	const byId = useMemo(
+		() => new Map(items.map((item) => [item.id, item])),
+		[items],
+	)
+
+	/*
+	 * DOM order stays fixed; only grid placement changes. Moving elements in
+	 * the DOM restarts Motion's mount animation in some React versions, which
+	 * made rearranged widgets fade out and back in. The visual position is
+	 * exposed through aria-posinset instead.
+	 */
+	const domOrder = useRef(items.map((item) => item.id))
+	for (const item of items)
+		if (!domOrder.current.includes(item.id)) domOrder.current.push(item.id)
+	const placementById = new Map(placements.map((p) => [p.id, p]))
+	const visualIndex = new Map(
+		[...placements]
+			.sort((a, b) => a.row - b.row || a.col - b.col)
+			.map((p, i) => [p.id, i]),
+	)
+
+	return (
+		<MotionConfig reducedMotion="user">
+			<div
+				className={`relative w-full ${className}`}
+				style={{ '--widget-radius': `${radius}px` } as CSSProperties}>
+				{editable && (
+					<p id={hintId} className="sr-only">
+						Drag to rearrange. On touch screens, press and hold first. With a
+						keyboard, hold Alt and press the arrow keys.
+					</p>
+				)}
+				<div
+					ref={grid}
+					role="list"
+					data-slot="widget-grid"
+					className="grid w-full"
+					style={{
+						gap,
+						gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+						// Square cells: row height equals column width.
+						gridAutoRows: metrics.unit
+							? `${Math.round(metrics.unit)}px`
+							: `minmax(${cellSize * 0.75}px, auto)`,
+					}}>
+					{domOrder.current.map((id) => {
+						const item = byId.get(id)
+						const p = placementById.get(id)
+						if (!item || !p) return null
+						return (
+							<Widget
+								key={id}
+								position={(visualIndex.get(id) ?? 0) + 1}
+								count={placements.length}
+								item={item}
+								col={p.col}
+								row={p.row}
+								w={p.w}
+								h={p.h}
+								columns={columns}
+								rows={rows}
+								editable={editable}
+								held={held === p.id}
+								raised={raised === p.id}
+								landed={landed === p.id}
+								handlers={handlers}
+								hintId={hintId}
+								renderItem={
+									renderItem as (item: never, size: WidgetSize) => ReactNode
+								}
+							/>
+						)
+					})}
+				</div>
+			</div>
+		</MotionConfig>
+	)
+}
+
+export default DraggableWidgetGrid
+
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+Animated Footer
+Reveal-on-scroll footer with cursor-lit ASCII art and parallax
+
+Preview
+Code
+npx shadcn@latest add https://raw.githubusercontent.com/Ashutoshx7/VengeanceUI/main/public/r/animated-footer.json
+Copy
+
+animated-footer.tsx
+Copy
+"use client";
+
+import * as React from "react";
+import { useEffect, useMemo, useRef } from "react";
+import gsap from "gsap";
+import { useTheme } from "next-themes";
+import { cn } from "@/lib/utils";
+
+/**
+ * Animated Footer
+ *
+ * A cinematic, reveal-on-scroll footer: two source images are re-drawn as
+ * live ASCII art on <canvas>, light up in little clusters around the cursor,
+ * and drift with a soft parallax. When the footer scrolls into view the
+ * display headings unmask character-by-character, the links and copy slide
+ * up behind masks, and the ASCII "hands" glide in from the edges.
+ *
+ * Ported from the vanilla "LukeBaffait Animated Footer" (GSAP + canvas) into a
+ * single, self-contained, prop-driven React component. No global smooth-scroll
+ * or SplitText plugin required — the reveal is driven by an IntersectionObserver
+ * and text is split in JSX.
+ */
+
+export interface AnimatedFooterLink {
+  label: string;
+  href: string;
+}
+
+export interface AnimatedFooterProps {
+  /** The large display words along the bottom edge. Defaults to ["VengeanceUI"]. */
+  headingLines?: string[];
+  /** Left image URL, sampled into ASCII art. Must be same-origin or CORS-enabled. */
+  leftImage?: string;
+  /** Right image URL, sampled into ASCII art. Must be same-origin or CORS-enabled. */
+  rightImage?: string;
+
+  /** Footer background color. Defaults to "#0f0f0f". */
+  background?: string;
+  /** Text color for links, copy and headings. Defaults to "#ffffff". */
+  textColor?: string;
+
+  /** Character ramp, ordered dark → light, used to render the ASCII art. */
+  asciiChars?: string;
+  /** Color of the ASCII glyphs. Defaults to "#803500". */
+  charColor?: string;
+  /** Fill color of a highlighted (hovered) cell. Defaults to "#ff6a00". */
+  hoverColor?: string;
+  /** Glyph color inside a highlighted cell. Defaults to "#0f0f0f". */
+  hoverCharColor?: string;
+  /** Number of columns each image is sampled to. Defaults to 80. */
+  columns?: number;
+  /** Pixel size of each ASCII cell. Defaults to 20. */
+  cellSize?: number;
+  /** Font size (px) of the ASCII glyphs. Defaults to 18. */
+  fontSize?: number;
+
+  /** Pointer parallax strength in px; set to 0 to disable. Defaults to 20. */
+  parallaxStrength?: number;
+  /** Cursor influence radius, in cells, for the hover highlight. Defaults to 8. */
+  hoverRadius?: number;
+
+  /** Play the reveal when the footer scrolls into view (else it shows immediately). Defaults to true. */
+  revealOnScroll?: boolean;
+  /**
+   * Controlled reveal. When set, the footer ignores its own scroll observer and
+   * plays in (`true`) / out (`false`) to match this value — drive it from your
+   * own ScrollTrigger, sentinel or state to reveal it from behind other content.
+   */
+  revealed?: boolean;
+
+  /** Extra class names for the root element. */
+  className?: string;
+}
+
+const DEFAULT_ASCII_CHARS = "........:::=+xX#0369";
+
+const HIGHLIGHT_LIFETIME = 300; // ms a hovered cell stays lit
+const CLUSTER_SIZE = 10; // max cells a hover ripple spreads across
+const PARALLAX_EASE = 0.05;
+
+interface Cell {
+  col: number;
+  row: number;
+  char: string;
+  highlightEndTime: number;
+}
+
+interface Hand {
+  canvas: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D;
+  cells: Map<string, Cell>;
+  cellList: Cell[];
+  rows: number;
+  columns: number;
+  cellSize: number;
+  baselineOffset: number;
+  direction: 1 | -1; // slide-in direction for the reveal curtain
+}
+
+/** Build the ASCII cell grid for one image by sampling its brightness. */
+function buildHandCells(
+  image: HTMLImageElement,
+  columns: number,
+  asciiChars: string,
+): { rows: number; cells: Map<string, Cell> } {
+  const rows = Math.max(
+    1,
+    Math.round(columns / (image.naturalWidth / image.naturalHeight || 1)),
+  );
+
+  const sampler = document.createElement("canvas");
+  sampler.width = columns;
+  sampler.height = rows;
+  const sampleCtx = sampler.getContext("2d");
+  const cells = new Map<string, Cell>();
+  if (!sampleCtx) return { rows, cells };
+
+  sampleCtx.drawImage(image, 0, 0, columns, rows);
+  const pixels = sampleCtx.getImageData(0, 0, columns, rows).data;
+  const backgroundCharIndex = asciiChars.lastIndexOf(".");
+
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < columns; col++) {
+      const offset = (row * columns + col) * 4;
+      const brightness =
+        (pixels[offset] * 0.299 +
+          pixels[offset + 1] * 0.587 +
+          pixels[offset + 2] * 0.114) /
+        255;
+      const charIndex = Math.min(
+        asciiChars.length - 1,
+        Math.floor((1 - brightness) * asciiChars.length),
+      );
+      if (charIndex <= backgroundCharIndex) continue;
+
+      cells.set(`${col},${row}`, {
+        col,
+        row,
+        char: asciiChars[charIndex],
+        highlightEndTime: 0,
+      });
+    }
+  }
+
+  return { rows, cells };
+}
+
+/** Light up a wandering cluster of cells starting from `startCell`. */
+function highlightCluster(cells: Map<string, Cell>, startCell: Cell) {
+  const now = Date.now();
+  startCell.highlightEndTime = now + HIGHLIGHT_LIFETIME;
+
+  const steps = Math.floor(Math.random() * CLUSTER_SIZE) + 1;
+  const litCells = [startCell];
+  let current = startCell;
+
+  for (let step = 0; step < steps; step++) {
+    const neighbours: Cell[] = [];
+    for (let dy = -1; dy <= 1; dy++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        if (dx === 0 && dy === 0) continue;
+        const neighbour = cells.get(`${current.col + dx},${current.row + dy}`);
+        if (neighbour && !litCells.includes(neighbour)) neighbours.push(neighbour);
+      }
+    }
+    if (neighbours.length === 0) break;
+
+    const next = neighbours[Math.floor(Math.random() * neighbours.length)];
+    next.highlightEndTime = now + HIGHLIGHT_LIFETIME + step * 10;
+    litCells.push(next);
+    current = next;
+  }
+}
+
+/** Nearest scrollable ancestor — used as the reveal's IntersectionObserver root. */
+function getScrollParent(node: HTMLElement | null): HTMLElement | null {
+  let el = node?.parentElement ?? null;
+  while (el) {
+    const overflowY = getComputedStyle(el).overflowY;
+    if (overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay") return el;
+    el = el.parentElement;
+  }
+  return null;
+}
+
+export function AnimatedFooter({
+  headingLines = ["VengeanceUI"],
+  leftImage = "/animated-footer/hand-left.jpg",
+  rightImage = "/animated-footer/hand-right.jpg",
+  background,
+  textColor,
+  charColor,
+  hoverColor,
+  hoverCharColor,
+  asciiChars = DEFAULT_ASCII_CHARS,
+  columns = 80,
+  cellSize = 20,
+  fontSize = 18,
+  parallaxStrength = 20,
+  hoverRadius = 8,
+  revealOnScroll = true,
+  revealed,
+  className,
+}: AnimatedFooterProps) {
+  const rootRef = useRef<HTMLElement>(null);
+  const leftWrapRef = useRef<HTMLDivElement>(null);
+  const rightWrapRef = useRef<HTMLDivElement>(null);
+  const leftCanvasRef = useRef<HTMLCanvasElement>(null);
+  const rightCanvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Reveal animations, published by the main effect so the controlled-`revealed`
+  // effect below can play them without rebuilding the ASCII scene.
+  const animateInRef = useRef<() => void>(() => {});
+  const animateOutRef = useRef<() => void>(() => {});
+
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+
+  const cc = charColor ?? (isDark ? "#803500" : "#e6b093");
+  const hc = hoverColor ?? "#ff6a00";
+  const hcc = hoverCharColor ?? (isDark ? "#0f0f0f" : "#ffffff");
+
+  // Live-tunable values read inside the animation loop, so tweaking a color or
+  // the parallax strength never tears down and rebuilds the ASCII scene.
+  const liveRef = useRef({ charColor: cc, hoverColor: hc, hoverCharColor: hcc, parallaxStrength, hoverRadius });
+  useEffect(() => {
+    liveRef.current = { charColor: cc, hoverColor: hc, hoverCharColor: hcc, parallaxStrength, hoverRadius };
+  }, [cc, hc, hcc, parallaxStrength, hoverRadius]);
+
+  // A signature of the structural inputs — the scene rebuilds only when one of
+  // these changes (images, grid resolution, content, reveal mode).
+  const sig = useMemo(
+    () =>
+      JSON.stringify({
+        leftImage,
+        rightImage,
+        columns,
+        cellSize,
+        fontSize,
+        asciiChars,
+        revealOnScroll,
+        headingLines,
+      }),
+    [leftImage, rightImage, columns, cellSize, fontSize, asciiChars, revealOnScroll, headingLines],
+  );
+
+  useEffect(() => {
+    const root = rootRef.current;
+    const leftWrap = leftWrapRef.current;
+    const rightWrap = rightWrapRef.current;
+    if (!root || !leftWrap || !rightWrap) return;
+
+    const hands: Hand[] = [];
+    const wrappers = [leftWrap, rightWrap];
+
+    // ── ASCII hands ──────────────────────────────────────────────────────
+    const setupHand = (
+      image: HTMLImageElement,
+      canvas: HTMLCanvasElement,
+      direction: 1 | -1,
+    ) => {
+      const { rows, cells } = buildHandCells(image, columns, asciiChars);
+      if (cells.size === 0) return;
+
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = columns * cellSize * dpr;
+      canvas.height = rows * cellSize * dpr;
+
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.font = `${fontSize}px monospace`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "alphabetic";
+
+      const metrics = ctx.measureText("X");
+      const glyphHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+      const baselineOffset = cellSize / 2 + glyphHeight / 2 - metrics.actualBoundingBoxDescent;
+
+      hands.push({
+        canvas,
+        ctx,
+        cells,
+        cellList: [...cells.values()],
+        rows,
+        columns,
+        cellSize,
+        baselineOffset,
+        direction,
+      });
+    };
+
+    const loadHand = (src: string, canvas: HTMLCanvasElement, direction: 1 | -1) => {
+      if (!src) return;
+      const image = new Image();
+      image.crossOrigin = "anonymous";
+      let initialized = false;
+      const init = () => {
+        if (initialized) return;
+        initialized = true;
+        setupHand(image, canvas, direction);
+      };
+      image.onload = init;
+      image.src = src;
+      if (image.complete && image.naturalWidth) init();
+    };
+    loadHand(leftImage, leftCanvasRef.current!, 1);
+    loadHand(rightImage, rightCanvasRef.current!, -1);
+
+    const renderHand = (hand: Hand, now: number) => {
+      const { ctx, cellList, cellSize: cs, baselineOffset, columns: cols, rows } = hand;
+      const { charColor: cc, hoverColor: hc, hoverCharColor: hcc } = liveRef.current;
+      ctx.clearRect(0, 0, cols * cs, rows * cs);
+
+      for (const cell of cellList) {
+        const x = cell.col * cs;
+        const y = cell.row * cs;
+        const isHighlighted = cell.highlightEndTime > now;
+
+        if (isHighlighted) {
+          ctx.fillStyle = hc;
+          ctx.fillRect(x, y, cs, cs);
+        }
+        ctx.fillStyle = isHighlighted ? hcc : cc;
+        ctx.fillText(cell.char, x + cs / 2, y + baselineOffset);
+      }
+    };
+
+    // ── Pointer: hover highlight + parallax target ───────────────────────
+    const pointer = { x: 0, y: 0 };
+    const drift = { x: 0, y: 0 };
+    // Reveal "curtain": hands start pushed off the edges and slide to 0.
+    const curtain = { offset: revealOnScroll ? 125 : 0 };
+
+    const hoverHand = (hand: Hand, clientX: number, clientY: number) => {
+      const rect = hand.canvas.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+      const mouseCol = ((clientX - rect.left) / rect.width) * hand.columns;
+      const mouseRow = ((clientY - rect.top) / rect.height) * hand.rows;
+
+      let closest: Cell | null = null;
+      let closestDist = Infinity;
+      for (const cell of hand.cellList) {
+        const dx = mouseCol - cell.col;
+        const dy = mouseRow - cell.row;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < closestDist) {
+          closestDist = dist;
+          closest = cell;
+        }
+      }
+      if (closest && closestDist <= liveRef.current.hoverRadius) {
+        highlightCluster(hand.cells, closest);
+      }
+    };
+
+    const onMouseMove = (event: MouseEvent) => {
+      const strength = liveRef.current.parallaxStrength;
+      const rect = root.getBoundingClientRect();
+      const w = rect.width || 1;
+      const h = rect.height || 1;
+      pointer.x = ((event.clientX - rect.left) / w - 0.5) * strength * 2;
+      pointer.y = ((event.clientY - rect.top) / h - 0.5) * strength * 2;
+      for (const hand of hands) hoverHand(hand, event.clientX, event.clientY);
+    };
+    window.addEventListener("mousemove", onMouseMove);
+
+    // ── Unified render loop: ASCII + parallax + reveal curtain ───────────
+    let rafId = 0;
+    const frame = () => {
+      const now = Date.now();
+      for (const hand of hands) renderHand(hand, now);
+
+      drift.x += (pointer.x - drift.x) * PARALLAX_EASE;
+      drift.y += (pointer.y - drift.y) * PARALLAX_EASE;
+      const strength = liveRef.current.parallaxStrength;
+      const scale = 1 + (strength * 2) / 200;
+
+      wrappers.forEach((wrapper, i) => {
+        const dir = i === 0 ? 1 : -1;
+        const revealX = i === 0 ? -curtain.offset : curtain.offset;
+        const x = drift.x * dir || 0;
+        const y = -drift.y || 0;
+        // Apply reveal via translateX, then apply parallax via translate, avoiding calc() mixed-unit bugs
+        wrapper.style.transform = `translateX(${revealX}%) translate(${x}px, ${y}px) scale(${scale})`;
+      });
+
+      rafId = requestAnimationFrame(frame);
+    };
+    rafId = requestAnimationFrame(frame);
+
+    // ── Reveal (chars + curtain) ─────────────────────────
+    const chars = gsap.utils.toArray<HTMLElement>(root.querySelectorAll("[data-af-char]"));
+
+    const animateIn = () => {
+      gsap.to(curtain, { offset: 0, duration: 1, ease: "power3.out", overwrite: true });
+      gsap.to(chars, {
+        yPercent: 0,
+        duration: 1,
+        ease: "power3.out",
+        stagger: { each: 0.04, from: "center" },
+        overwrite: true,
+      });
+    };
+
+    const animateOut = () => {
+      gsap.to(curtain, { offset: 125, duration: 0.4, ease: "power2.in", overwrite: true });
+      gsap.to(chars, {
+        yPercent: 125,
+        duration: 0.4,
+        ease: "power2.in",
+        stagger: { each: 0.01, from: "center" },
+        overwrite: true,
+      });
+    };
+
+    // Publish for the controlled-`revealed` effect.
+    animateInRef.current = animateIn;
+    animateOutRef.current = animateOut;
+
+    const maskAll = () => {
+      gsap.set(chars, { yPercent: 125 });
+    };
+    const showAll = () => {
+      gsap.set(chars, { yPercent: 0 });
+    };
+
+    let observer: IntersectionObserver | null = null;
+
+    if (revealed !== undefined) {
+      // Controlled: the `revealed` effect below drives the reveal. Set the
+      // initial state to match, and never attach the scroll observer.
+      curtain.offset = revealed ? 0 : 125;
+      if (revealed) showAll();
+      else maskAll();
+    } else if (revealOnScroll) {
+      // Start fully masked — nothing shows until the footer is scrolled into view.
+      maskAll();
+
+      // Drive the reveal purely from scroll position, relative to the nearest
+      // scrollable ancestor (the page in real use, or the preview's scroll
+      // container in the docs). Plays in when the footer crosses into view and
+      // reverses when you scroll back up.
+      let isRevealed = false;
+      observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting && !isRevealed) {
+              isRevealed = true;
+              animateIn();
+            } else if (!entry.isIntersecting && isRevealed) {
+              isRevealed = false;
+              animateOut();
+            }
+          }
+        },
+        { root: getScrollParent(root), threshold: 0.35 },
+      );
+      observer.observe(root);
+    } else {
+      showAll();
+    }
+
+    // ── Cleanup ──────────────────────────────────────────────────────────
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener("mousemove", onMouseMove);
+      observer?.disconnect();
+      gsap.killTweensOf([curtain, ...chars]);
+    };
+    // Rebuild only when a structural input changes; live values flow via liveRef.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sig]);
+
+  // Controlled reveal: play in/out to match the `revealed` prop without
+  // rebuilding the scene. Ignored entirely when `revealed` is undefined.
+  useEffect(() => {
+    if (revealed === undefined) return;
+    if (revealed) animateInRef.current();
+    else animateOutRef.current();
+  }, [revealed]);
+
+  // Whether the content starts masked on first paint (avoids a flash before the
+  // effect runs): hidden unless it's meant to be shown immediately.
+  const startsHidden = revealed !== undefined ? !revealed : revealOnScroll;
+  const offEdge = startsHidden ? 125 : 0;
+
+  return (
+    <footer
+      ref={rootRef}
+      className={cn(
+        "relative h-full w-full overflow-hidden",
+        !background && "bg-white dark:bg-black",
+        !textColor && "text-black dark:text-white",
+        className
+      )}
+      style={{ backgroundColor: background, color: textColor, containerType: "inline-size" }}
+    >
+      {/* ASCII hands */}
+      <div className="pointer-events-none absolute inset-0 flex items-center justify-between">
+        <div
+          ref={leftWrapRef}
+          className="relative w-2/5 min-w-[200px] will-change-transform"
+          style={{ transform: `translateX(-${offEdge}%)` }}
+        >
+          <canvas ref={leftCanvasRef} className="block h-auto w-full" />
+        </div>
+        <div
+          ref={rightWrapRef}
+          className="relative w-2/5 min-w-[200px] will-change-transform"
+          style={{ transform: `translateX(${offEdge}%)` }}
+        >
+          <canvas ref={rightCanvasRef} className="block h-auto w-full" />
+        </div>
+      </div>
+
+      {/* Display headings */}
+      <div className="absolute inset-x-0 bottom-0 flex items-end justify-center gap-4 p-8">
+        {headingLines.map((word, wi) => (
+          <h2
+            key={`${word}-${wi}`}
+            aria-label={word}
+            className="overflow-hidden font-medium leading-none tracking-tight pb-[0.15em] -mb-[0.15em]"
+            style={{ fontSize: "clamp(2rem, 13cqw, 11rem)" }}
+          >
+            {Array.from(word).map((ch, ci) => (
+              <span
+                key={ci}
+                data-af-char
+                aria-hidden="true"
+                className="inline-block"
+              >
+                {ch === " " ? " " : ch}
+              </span>
+            ))}
+          </h2>
+        ))}
+      </div>
+    </footer>
+  );
+}
+
+export default AnimatedFooter;
+Installation
+Run the following command
+
+npm
+pnpm
+bun
+yarn
+
+npx shadcn@latest add https://raw.githubusercontent.com/Ashutoshx7/VengeanceUI/main/public/r/animated-footer.json
+Usage
+code
+
+1	import { AnimatedFooter } from "@/components/ui/animated-footer"
+2	
+3	export function AnimatedFooterDemo() {
+4	  return (
+5	    <div className="relative h-[600px] w-full overflow-hidden rounded-xl">
+6	      <AnimatedFooter
+7	        headingLines={["VengeanceUI"]}
+8	        leftImage="/animated-footer/hand-left.jpg"
+9	        rightImage="/animated-footer/hand-right.jpg"
+10	      />
+11	    </div>
+12	  )
+13	}
+Props
+Prop Name	Type	Default	Description
+headingLines	string[]	["VengeanceUI"]	The large display words along the bottom edge.
+leftImage	string	'/animated-footer/hand-left.jpg'	Left image URL, sampled into ASCII art. Same-origin or CORS-enabled.
+rightImage	string	'/animated-footer/hand-right.jpg'	Right image URL, sampled into ASCII art. Same-origin or CORS-enabled.
+background	string	undefined	Footer background color. Defaults to tailwind classes.
+textColor	string	undefined	Text color for headings. Defaults to tailwind classes.
+asciiChars	string	'........:::=+xX#0369'	Character ramp, ordered dark → light, used to render the ASCII art.
+charColor	string	Adaptive	Color of the ASCII glyphs. Adapts to dark/light mode by default.
+hoverColor	string	'#ff6a00'	Fill color of a highlighted (hovered) cell.
+hoverCharColor	string	Adaptive	Glyph color inside a highlighted cell. Adapts to dark/light mode by default.
+columns	number	80	Number of columns each image is sampled to.
+cellSize	number	20	Pixel size of each ASCII cell.
+fontSize	number	18	Font size (px) of the ASCII glyphs.
+parallaxStrength	number	20	Pointer parallax strength in px; set to 0 to disable.
+hoverRadius	number	8	Cursor influence radius, in cells, for the hover highlight.
+revealOnScroll	boolean	true	Play the reveal when the footer scrolls into view (else show immediately).
+revealed	boolean	-	Controlled reveal. When set, ignores the built-in observer and plays in (true) / out (false) to match — drive it from your own scroll trigger to reveal the footer from behind other content.
+className	string	-	Additional classes for the root element.
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+Developer Service Bento
+Animated developer-service showcase with interactive pricing and pause states
+
+Preview
+Code
+npx shadcn@latest add https://raw.githubusercontent.com/Ashutoshx7/VengeanceUI/main/public/r/research-bento-grid.json
+Copy
+
+research-bento-grid.tsx
+Copy
+
+
+"use client";
+
+import * as React from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { SiCloudflare, SiDocker, SiGithub, SiSupabase, SiVercel } from "react-icons/si";
+
+import { cn } from "@/lib/utils";
+
+export interface ResearchBentoBrand {
+  name: string;
+  icon: React.ComponentType<{ className?: string; "aria-hidden"?: boolean }>;
+}
+
+export interface ResearchBentoGridCopy {
+  showcaseTitle: React.ReactNode;
+  showcaseDescription: React.ReactNode;
+  pricingTitle: React.ReactNode;
+  pricingDescription: React.ReactNode;
+  pauseTitle: React.ReactNode;
+  activeDescription: React.ReactNode;
+  pausedDescription: React.ReactNode;
+}
+
+export interface ResearchBentoGridProps
+  extends Omit<React.ComponentPropsWithoutRef<"div">, "children"> {
+  monthlyPrice?: number;
+  previousPrice?: number;
+  currency?: string;
+  locale?: string;
+  paused?: boolean;
+  defaultPaused?: boolean;
+  selectedBrand?: number;
+  defaultSelectedBrand?: number;
+  brands?: readonly ResearchBentoBrand[];
+  copy?: Partial<ResearchBentoGridCopy>;
+  autoPlay?: boolean;
+  brandRotationInterval?: number;
+  spotlightInterval?: number;
+  userLabel?: string;
+  collaboratorLabel?: string;
+  onPausedChange?: (paused: boolean) => void;
+  onSelectedBrandChange?: (index: number) => void;
+}
+
+const spring = { type: "spring", stiffness: 230, damping: 24 } as const;
+const LIFTED_TILES = new Set([5, 14, 23, 34, 41, 53, 62, 71, 79, 88, 97, 108, 119, 131, 146, 157, 169, 184, 199, 213, 226, 241]);
+const BRIGHT_TILES = new Set([17, 45, 76, 103, 138, 176, 205, 234]);
+const INVOICE_BARS = [62, 44, 70, 36, 56];
+const DEFAULT_COPY: ResearchBentoGridCopy = {
+  showcaseTitle: "One team for your entire stack",
+  showcaseDescription: "From product UI to production code, ship focused improvements with the tools your team already trusts.",
+  pricingTitle: <>Senior execution.<br />Predictable cost.</>,
+  pricingDescription: "Skip expanding headcount for every sprint. Get consistent product and engineering support at a predictable monthly cost.",
+  pauseTitle: <>Build on your terms.<br />Pause at any time.</>,
+  activeDescription: "Between releases? Pause your workspace and resume when the next sprint is ready.",
+  pausedDescription: "Your workspace is paused. Resume whenever the next feature is ready to move.",
+};
+
+function ArrowCursor({
+  className,
+  label,
+  inverted = false,
+  delay = 0,
+  active,
+  targetLeft,
+  targetTop,
+}: {
+  className?: string;
+  label: string;
+  inverted?: boolean;
+  delay?: number;
+  active?: boolean;
+  targetLeft?: string;
+  targetTop?: string;
+}) {
+  const reduceMotion = useReducedMotion();
+
+  return (
+    <motion.div
+      aria-hidden
+      className={cn("absolute z-30 flex flex-col items-start", className)}
+      animate={reduceMotion
+        ? undefined
+        : active !== undefined
+          ? active
+            ? { x: -3, y: -36, rotate: -1.5 }
+            : { x: 0, y: 0, rotate: 0 }
+          : targetLeft
+            ? { left: targetLeft, top: targetTop, x: 0, y: [0, -3, 0], rotate: [0, 1.5, 0] }
+            : { x: 0, y: [0, -3, 0], rotate: [0, 1.5, 0] }}
+      transition={active !== undefined
+        ? {
+            duration: active ? 0.68 : 0.82,
+            ease: active ? [0.16, 1, 0.3, 1] : [0.22, 1, 0.36, 1],
+          }
+        : targetLeft
+          ? {
+              left: spring,
+              top: spring,
+              y: { duration: 4.6, delay, repeat: Infinity, ease: "easeInOut" },
+              rotate: { duration: 4.6, delay, repeat: Infinity, ease: "easeInOut" },
+            }
+          : { duration: 4.6, delay, repeat: Infinity, ease: "easeInOut" }}
+    >
+      <svg width="26" height="30" viewBox="0 0 26 30" fill="none" className="h-auto w-[18px] drop-shadow-md sm:w-[22px] lg:w-[26px]">
+        <path
+          d="M2.2 2.5 22 15.1l-9.4 2.1-4.1 9.1L2.2 2.5Z"
+          className={cn(
+            inverted
+              ? "fill-zinc-950 stroke-white dark:fill-white dark:stroke-[#080808]"
+              : "fill-[#edff00] stroke-white dark:stroke-white/70",
+          )}
+          strokeWidth="2.1"
+          strokeLinejoin="round"
+        />
+      </svg>
+      <span
+        className={cn(
+          "ml-2.5 -mt-1 px-2.5 py-1 text-[12px] font-semibold tracking-[-0.04em] sm:ml-3 sm:px-3 sm:text-[14px] lg:ml-4 lg:px-4 lg:py-1.5 lg:text-[17px]",
+          inverted
+            ? "rounded-full bg-[#f2f2f2] text-black shadow-[0_5px_18px_rgba(0,0,0,0.28)]"
+            : cn(
+                "rounded-[22px] border border-white/60 bg-[#edff00] text-black",
+                active
+                  ? "shadow-[0_5px_18px_rgba(0,0,0,0.24),0_0_14px_rgba(237,255,0,0.18)]"
+                  : "shadow-[0_5px_18px_rgba(0,0,0,0.22)]",
+              ),
+        )}
+      >
+        {label}
+      </span>
+    </motion.div>
+  );
+}
+
+const DEFAULT_BRANDS: readonly ResearchBentoBrand[] = [
+  { name: "Vercel", icon: SiVercel },
+  { name: "GitHub", icon: SiGithub },
+  { name: "Supabase", icon: SiSupabase },
+  { name: "Cloudflare", icon: SiCloudflare },
+  { name: "Docker", icon: SiDocker },
+];
+
+function BrandMark({ brand }: { brand: ResearchBentoBrand }) {
+  const Icon = brand.icon;
+  return <Icon className="size-[58%]" aria-hidden />;
+}
+
+function Panel({ className, children, ...props }: React.ComponentProps<"section">) {
+  const grainId = React.useId().replace(/:/g, "");
+
+  return (
+    <section
+      {...props}
+      className={cn(
+        "relative isolate overflow-hidden rounded-[15px] border border-[#c8c8c4] bg-[#f7f7f5]",
+        "shadow-[inset_0_1px_rgba(255,255,255,0.9),0_12px_32px_rgba(24,24,27,0.08)]",
+        "dark:border-[#292929] dark:bg-[#080808] dark:shadow-[inset_0_1px_rgba(255,255,255,0.02),0_12px_32px_rgba(0,0,0,0.22)]",
+        className,
+      )}
+    >
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.88),transparent_45%)] dark:bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.025),transparent_45%)]" />
+      {children}
+      <svg
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-50 size-full opacity-[0.07] mix-blend-multiply dark:opacity-[0.1] dark:mix-blend-soft-light"
+      >
+        <filter id={grainId} x="0" y="0" width="100%" height="100%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="4" seed="11" stitchTiles="stitch" />
+          <feColorMatrix type="saturate" values="0" />
+          <feComponentTransfer>
+            <feFuncA type="table" tableValues="0 0.55" />
+          </feComponentTransfer>
+        </filter>
+        <rect width="100%" height="100%" filter={`url(#${grainId})`} />
+      </svg>
+    </section>
+  );
+}
+
+function FeatureCopy({ title, children, className }: { title: React.ReactNode; children: React.ReactNode; className?: string }) {
+  return (
+    <div className={cn("absolute inset-x-0 bottom-0 z-20 px-5 pb-5 sm:px-7 sm:pb-7", className)}>
+      <h3 className="text-[16px] font-medium leading-[1.08] tracking-[-0.045em] text-zinc-950 sm:text-[18px] dark:text-[#f1f1f1]">{title}</h3>
+      <p className="mt-2.5 max-w-[330px] text-[12px] leading-[1.35] tracking-[-0.015em] text-zinc-600 sm:mt-3 sm:text-[13px] dark:text-[#858585]">{children}</p>
+    </div>
+  );
+}
+
+interface DesignsPanelProps {
+  brands: readonly ResearchBentoBrand[];
+  selectedBrand?: number;
+  defaultSelectedBrand: number;
+  autoPlay: boolean;
+  rotationInterval: number;
+  userLabel: string;
+  collaboratorLabel: string;
+  title: React.ReactNode;
+  description: React.ReactNode;
+  onSelectedBrandChange?: (index: number) => void;
+}
+
+function DesignsPanel({
+  brands,
+  selectedBrand,
+  defaultSelectedBrand,
+  autoPlay,
+  rotationInterval,
+  userLabel,
+  collaboratorLabel,
+  title,
+  description,
+  onSelectedBrandChange,
+}: DesignsPanelProps) {
+  const [internalSelected, setInternalSelected] = React.useState(defaultSelectedBrand);
+  const reduceMotion = useReducedMotion();
+  const isControlled = selectedBrand !== undefined;
+  const selected = Math.min(Math.max(isControlled ? selectedBrand : internalSelected, 0), brands.length - 1);
+  const cursorStops = brands.map((_, index) => `${15 + (70 * index) / Math.max(brands.length - 1, 1)}%`);
+
+  const selectBrand = React.useCallback((index: number) => {
+    if (!isControlled) setInternalSelected(index);
+    onSelectedBrandChange?.(index);
+  }, [isControlled, onSelectedBrandChange]);
+
+  React.useEffect(() => {
+    if (!autoPlay || reduceMotion || brands.length < 2) return;
+    const interval = setInterval(() => {
+      const next = (selected + 1) % brands.length;
+      selectBrand(next);
+    }, rotationInterval);
+    return () => clearInterval(interval);
+  }, [autoPlay, brands.length, reduceMotion, rotationInterval, selectBrand, selected]);
+
+  return (
+    <Panel className="min-h-[350px] sm:min-h-[320px] @min-[840px]:col-span-12 @min-[840px]:min-h-[302px] @min-[840px]:row-span-1">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 grid h-[78%] grid-cols-[repeat(28,minmax(0,1fr))] grid-rows-[repeat(9,minmax(0,1fr))] gap-px overflow-hidden"
+        style={{ maskImage: "linear-gradient(to bottom,black 0%,black 62%,transparent 100%)" }}
+      >
+        {Array.from({ length: 252 }, (_, index) => (
+          <span
+            key={index}
+            className={cn(
+              "border border-black/[0.035] bg-[#ededeb] dark:border-white/[0.018] dark:bg-[#0b0b0b]",
+              LIFTED_TILES.has(index) && "bg-[#e4e4e1] dark:bg-[#101010]",
+              BRIGHT_TILES.has(index) && "bg-[#dadad6] dark:bg-[#151515]",
+            )}
+          />
+        ))}
+      </div>
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute -top-[8%] z-[1] hidden h-[66%] w-[24%] rounded-full bg-white/[0.022] blur-[48px] dark:block"
+        animate={reduceMotion ? undefined : { x: ["-120%", "520%"] }}
+        transition={{ duration: 14, repeat: Infinity, repeatDelay: 2.5, ease: "easeInOut" }}
+      />
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[76%] bg-[radial-gradient(ellipse_at_50%_18%,transparent_12%,rgba(247,247,245,.12)_58%,#f7f7f5_100%)] dark:bg-[radial-gradient(ellipse_at_50%_18%,transparent_12%,rgba(8,8,8,.1)_58%,#080808_100%)]" />
+
+      <div className="absolute inset-x-4 top-[9%] z-10 mx-auto flex max-w-[760px] items-center gap-1.5 sm:inset-x-7 sm:top-[12%] sm:gap-2.5">
+        {brands.map((brand, index) => (
+          <motion.button
+            type="button"
+            key={brand.name}
+            onClick={() => selectBrand(index)}
+            aria-label={`Select ${brand.name}`}
+            aria-pressed={selected === index}
+            className={cn(
+              "relative flex aspect-square min-w-0 flex-1 items-center justify-center overflow-hidden rounded-[9px] border bg-[linear-gradient(145deg,#f2f2f0_0%,#e7e7e4_46%,#dcdcd8_100%)] shadow-[inset_0_1px_rgba(255,255,255,.9),0_12px_24px_rgba(24,24,27,.12)] sm:rounded-[10px] dark:bg-[linear-gradient(145deg,#222_0%,#1a1a1a_48%,#141414_100%)] dark:shadow-[inset_0_1px_rgba(255,255,255,.025),0_10px_22px_rgba(0,0,0,.32)]",
+              selected === index
+                ? "border-[#b5c200]/45 text-[#a9b500] shadow-[inset_0_1px_rgba(255,255,255,.8),0_12px_28px_rgba(24,24,27,.14),0_0_22px_rgba(190,204,0,.12)] dark:border-[#edff00]/15 dark:text-[#edff00] dark:shadow-[inset_0_1px_rgba(255,255,255,.025),0_10px_24px_rgba(0,0,0,.34),0_0_18px_rgba(237,255,0,.045)]"
+                : "border-black/[0.11] text-zinc-800 dark:border-white/[0.055] dark:text-[#e8e8e8]",
+            )}
+            animate={reduceMotion ? undefined : {
+              y: selected === index ? -3 : [0, index % 2 ? 1.5 : -1.5, 0],
+              scale: selected === index ? 1.018 : 1,
+            }}
+            whileHover={{ y: -4, scale: 1.02 }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ y: { duration: 5 + index * 0.3, delay: index * 0.2, repeat: Infinity, ease: "easeInOut" }, scale: spring }}
+          >
+            {selected === index && (
+              <motion.span
+                aria-hidden
+                className="absolute inset-[12%] rounded-full bg-[#edff00]/20 blur-xl dark:bg-[#edff00]/[0.11]"
+                initial={{ opacity: 0, scale: 0.7 }}
+                animate={{ opacity: [0.35, 0.7, 0.35], scale: [0.9, 1.08, 0.9] }}
+                transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+              />
+            )}
+            <motion.span
+              className="relative flex size-full items-center justify-center"
+              animate={{ scale: selected === index ? 1.06 : 1 }}
+              transition={spring}
+            >
+              <BrandMark brand={brand} />
+            </motion.span>
+          </motion.button>
+        ))}
+      </div>
+
+      <ArrowCursor
+        label={userLabel}
+        className="left-[35%] top-[40%]"
+        targetLeft={cursorStops[selected]}
+        targetTop="40%"
+        delay={0.2}
+      />
+      <ArrowCursor label={collaboratorLabel} inverted className="left-[58%] top-[54%] sm:left-[62%] sm:top-[56%]" delay={0.9} />
+
+      <FeatureCopy title={title}>{description}</FeatureCopy>
+    </Panel>
+  );
+}
+
+interface InvoicePanelProps {
+  monthlyPrice: number;
+  previousPrice: number;
+  currency: string;
+  locale: string;
+  autoPlay: boolean;
+  title: React.ReactNode;
+  description: React.ReactNode;
+}
+
+function InvoicePanel({ monthlyPrice, previousPrice, currency, locale, autoPlay, title, description }: InvoicePanelProps) {
+  const reduceMotion = useReducedMotion();
+  const [invoiceIndex, setInvoiceIndex] = React.useState(0);
+  const formatPrice = React.useMemo(
+    () => new Intl.NumberFormat(locale, { style: "currency", currency, maximumFractionDigits: 0 }),
+    [currency, locale],
+  );
+  const invoices = [
+    { label: "Invoice", price: previousPrice, previousPrice: null, accent: false },
+    { label: "Invoice", price: monthlyPrice, previousPrice, accent: true },
+  ];
+
+  React.useEffect(() => {
+    if (!autoPlay || reduceMotion) return;
+    const interval = setInterval(() => {
+      setInvoiceIndex((current) => (current + 1) % invoices.length);
+    }, 3900);
+    return () => clearInterval(interval);
+  }, [autoPlay, invoices.length, reduceMotion]);
+
+  const invoice = invoices[invoiceIndex];
+
+  return (
+    <Panel className="min-h-[420px] [container-type:inline-size] sm:min-h-[360px] @min-[840px]:col-span-7 @min-[840px]:min-h-[302px] @min-[840px]:row-span-1">
+      <div className="pointer-events-none absolute inset-0 opacity-[0.055] dark:opacity-[0.045]" style={{ backgroundImage: "radial-gradient(circle,currentColor .65px,transparent .75px)", backgroundSize: "11px 11px" }} />
+      <div className="absolute inset-x-0 top-0 h-[58%] overflow-hidden sm:inset-y-0 sm:left-auto sm:right-0 sm:h-auto sm:w-[53%]">
+        <AnimatePresence initial={false} mode="wait">
+          <motion.div
+            key={invoiceIndex}
+            className="absolute left-[21%] top-5 h-[225px] w-[58%] overflow-hidden rounded-[10px] border border-black/[0.16] bg-[linear-gradient(145deg,#f5f5f2_0%,#eaeae6_46%,#dededa_100%)] p-3.5 shadow-[inset_0_1px_rgba(255,255,255,.9),0_18px_42px_rgba(24,24,27,.14),0_3px_8px_rgba(24,24,27,.08)] sm:left-auto sm:right-4 sm:h-[250px] sm:w-[89%] dark:border-[#343434]/80 dark:bg-[linear-gradient(145deg,#1c1c1c_0%,#161616_48%,#101010_100%)] dark:shadow-[inset_0_1px_rgba(255,255,255,.02),0_16px_36px_rgba(0,0,0,.38),0_3px_8px_rgba(0,0,0,.25)] @min-[520px]:right-7 @min-[520px]:p-5"
+            initial={reduceMotion ? false : { y: 270, opacity: 0, rotate: -1.25 }}
+            animate={{ y: 0, opacity: 1, rotate: 0 }}
+            exit={reduceMotion ? { opacity: 0 } : { y: 285, opacity: 0, rotate: 1.1 }}
+            transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className="flex items-start justify-between text-zinc-500 dark:text-[#a0a0a0]">
+              <span className="text-[12px]">{invoice.label}</span>
+              <span className="relative mt-0.5 size-4 rounded-full bg-zinc-500 dark:bg-[#9e9e9e]"><span className="absolute right-0 top-1/2 h-2 w-2 -translate-y-1/2 rounded-l-full bg-[#e7e7e3] dark:bg-[#222]" /></span>
+            </div>
+            <div className="mt-2 flex items-baseline gap-2 whitespace-nowrap">
+              <span className={cn("text-[26px] font-medium tracking-[-0.055em] @min-[520px]:text-[30px]", invoice.accent ? "text-[#a4b000] dark:text-[#edff00]" : "text-zinc-500 dark:text-[#8e8e8e]")}>
+                {formatPrice.format(invoice.price)}
+              </span>
+              {invoice.previousPrice && (
+                <span className="text-[14px] text-zinc-500 line-through @min-[520px]:text-[16px] dark:text-[#767676]">{formatPrice.format(invoice.previousPrice)}</span>
+              )}
+            </div>
+            <div className="mt-5 space-y-2.5">
+              <div className="h-1 w-[42%] rounded-full bg-black/[0.08] dark:bg-white/[0.07]" />
+              <div className="h-1 w-[27%] rounded-full bg-black/[0.055] dark:bg-white/[0.045]" />
+            </div>
+            <div className="mt-4 space-y-2.5">
+              {INVOICE_BARS.map((width, index) => (
+                <div key={index} className="flex items-center justify-between gap-4">
+                  <motion.span
+                    className="h-2.5 rounded-[3px] bg-black/[0.055] dark:bg-white/[0.045]"
+                    style={{ width: `${width}%` }}
+                    animate={reduceMotion ? undefined : { opacity: [0.35, 0.62, 0.35] }}
+                    transition={{ duration: 3.5, delay: index * 0.28, repeat: Infinity, ease: "easeInOut" }}
+                  />
+                  <span className="h-3 w-[28%] rounded-[4px] bg-black/[0.08] dark:bg-white/[0.07]" />
+                </div>
+              ))}
+            </div>
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-x-0 bottom-0 h-[42%] bg-[linear-gradient(to_bottom,transparent,rgba(222,222,218,.55)_52%,#dededa_100%)] dark:bg-[linear-gradient(to_bottom,transparent,rgba(17,17,17,.55)_52%,#111_100%)]"
+            />
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Foreground fog: deliberately sits above the invoice and dotted field,
+          while FeatureCopy remains above it at z-20. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-[48%] bg-[linear-gradient(to_bottom,rgba(247,247,245,0)_0%,rgba(247,247,245,.12)_24%,rgba(247,247,245,.48)_58%,rgba(247,247,245,.88)_86%,#f7f7f5_100%)] dark:bg-[linear-gradient(to_bottom,rgba(8,8,8,0)_0%,rgba(8,8,8,.12)_24%,rgba(8,8,8,.48)_58%,rgba(8,8,8,.88)_86%,#080808_100%)]"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-[-8%] -bottom-[24%] z-10 h-[48%] rounded-[50%] bg-[#f7f7f5]/75 blur-[38px] dark:bg-[#080808]/75"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-px bg-black/[0.04] dark:bg-white/[0.025]"
+      />
+
+      <FeatureCopy className="sm:right-1/2 sm:pr-3" title={title}>{description}</FeatureCopy>
+    </Panel>
+  );
+}
+
+interface PausePanelProps {
+  paused?: boolean;
+  defaultPaused: boolean;
+  autoPlay: boolean;
+  spotlightInterval: number;
+  userLabel: string;
+  title: React.ReactNode;
+  activeDescription: React.ReactNode;
+  pausedDescription: React.ReactNode;
+  onPausedChange?: (paused: boolean) => void;
+}
+
+function PausePanel({
+  paused: controlledPaused,
+  defaultPaused,
+  autoPlay,
+  spotlightInterval,
+  userLabel,
+  title,
+  activeDescription,
+  pausedDescription,
+  onPausedChange,
+}: PausePanelProps) {
+  const [internalPaused, setInternalPaused] = React.useState(defaultPaused);
+  const [demoLit, setDemoLit] = React.useState(true);
+  const reduceMotion = useReducedMotion();
+  const isControlled = controlledPaused !== undefined;
+  const paused = isControlled ? controlledPaused : internalPaused;
+  const arrowLit = autoPlay && demoLit && !reduceMotion;
+
+  React.useEffect(() => {
+    if (!autoPlay || reduceMotion) return;
+
+    let offTimer: ReturnType<typeof setTimeout> | undefined;
+    const illuminate = () => {
+      setDemoLit(true);
+      offTimer = setTimeout(() => setDemoLit(false), 1500);
+    };
+
+    const firstTimer = setTimeout(() => setDemoLit(false), 1500);
+    const loopTimer = setInterval(illuminate, spotlightInterval);
+
+    return () => {
+      clearTimeout(firstTimer);
+      if (offTimer) clearTimeout(offTimer);
+      clearInterval(loopTimer);
+    };
+  }, [autoPlay, reduceMotion, spotlightInterval]);
+
+  const toggle = () => {
+    const next = !paused;
+    if (!isControlled) setInternalPaused(next);
+    onPausedChange?.(next);
+  };
+
+  return (
+    <Panel className="min-h-[340px] sm:min-h-[320px] @min-[840px]:col-span-5 @min-[840px]:min-h-[302px] @min-[840px]:row-span-1">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-[0.08] mix-blend-multiply dark:opacity-[0.09] dark:mix-blend-screen"
+        style={{
+          backgroundImage: "radial-gradient(circle at 20% 30%,currentColor 0 .45px,transparent .7px),radial-gradient(circle at 70% 65%,currentColor 0 .45px,transparent .75px)",
+          backgroundSize: "4px 4px,5px 5px",
+        }}
+      />
+      <div className="absolute inset-x-0 top-0 flex h-[66%] items-center justify-center">
+        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((ring) => (
+          <motion.div
+            key={ring}
+            aria-hidden
+            className="absolute border border-black/[0.07] dark:border-white/[0.04]"
+            style={{
+              width: 190 + ring * 23,
+              height: 100 + ring * 16,
+              borderRadius: 23 + ring * 3,
+              opacity: Math.max(0.18, 0.72 - ring * 0.045),
+            }}
+            animate={reduceMotion ? undefined : { scale: [0.995, 1.008, 0.995] }}
+            transition={{ duration: 5.2, delay: ring * 0.11, repeat: Infinity, ease: "easeInOut" }}
+          />
+        ))}
+        <motion.button
+          type="button"
+          onClick={toggle}
+          whileHover={{ scale: 1.025 }}
+          whileTap={{ scale: 0.97 }}
+          transition={spring}
+          animate={{ scale: arrowLit ? 1.012 : 1 }}
+          className={cn(
+            "relative z-10 flex h-[78px] min-w-[174px] items-center justify-center overflow-hidden rounded-[20px] border bg-gradient-to-br from-white to-[#deded9] px-8 text-[28px] font-semibold tracking-[-0.055em] transition-[border-color,color,box-shadow] duration-500 dark:from-[#181818] dark:to-[#0d0d0d]",
+            arrowLit
+              ? "border-[#edff00] text-[#050505] shadow-[0_10px_24px_rgba(24,24,27,.12)] dark:border-[#edff00] dark:text-[#050505] dark:shadow-[0_10px_24px_rgba(0,0,0,.28)]"
+              : "border-black/[0.18] text-zinc-950 shadow-[inset_0_1px_rgba(255,255,255,.9),0_12px_38px_rgba(24,24,27,.14)] dark:border-white/[0.14] dark:text-[#f1f1f1] dark:shadow-[inset_0_1px_rgba(255,255,255,.035),0_10px_30px_rgba(0,0,0,.32)]",
+          )}
+          aria-pressed={paused}
+        >
+          <motion.span
+            aria-hidden
+            className="absolute inset-0 bg-[#edff00]"
+            animate={{ opacity: arrowLit ? 1 : 0 }}
+            transition={{ duration: arrowLit ? 0.64 : 0.76, ease: arrowLit ? [0.16, 1, 0.3, 1] : [0.22, 1, 0.36, 1] }}
+          />
+          <span className="relative">{paused ? "Resume" : "Pause"}</span>
+        </motion.button>
+        <ArrowCursor label={userLabel} className="left-[57%] top-[70%]" delay={0.5} active={arrowLit} />
+      </div>
+
+      <FeatureCopy title={title}>{paused ? pausedDescription : activeDescription}</FeatureCopy>
+    </Panel>
+  );
+}
+
+export function ResearchBentoGrid({
+  monthlyPrice = 1990,
+  previousPrice = 32000,
+  currency = "USD",
+  locale = "en-US",
+  paused,
+  defaultPaused = false,
+  selectedBrand,
+  defaultSelectedBrand = 1,
+  brands = DEFAULT_BRANDS,
+  copy,
+  autoPlay = true,
+  brandRotationInterval = 2600,
+  spotlightInterval = 4400,
+  userLabel = "You",
+  collaboratorLabel = "X7",
+  className,
+  onPausedChange,
+  onSelectedBrandChange,
+  ...props
+}: ResearchBentoGridProps) {
+  const content = { ...DEFAULT_COPY, ...copy };
+
+  if (brands.length === 0) {
+    throw new Error("ResearchBentoGrid requires at least one brand.");
+  }
+
+  return (
+    <div
+      {...props}
+      className={cn(
+        "flex h-full w-full overflow-y-auto bg-[#eeeeeb] p-2 text-zinc-950 [--bento-tile-cutout:#e4e4e1] [container-type:inline-size] sm:p-3",
+        "dark:bg-[#020202] dark:text-white dark:[--bento-tile-cutout:#171717]",
+        className,
+      )}
+    >
+      <div className="m-auto grid w-full max-w-[1120px] grid-cols-1 gap-2.5 sm:gap-3 @min-[840px]:h-[min(100%,656px)] @min-[840px]:grid-cols-12 @min-[840px]:grid-rows-2">
+        <DesignsPanel
+          brands={brands}
+          selectedBrand={selectedBrand}
+          defaultSelectedBrand={defaultSelectedBrand}
+          autoPlay={autoPlay}
+          rotationInterval={brandRotationInterval}
+          userLabel={userLabel}
+          collaboratorLabel={collaboratorLabel}
+          title={content.showcaseTitle}
+          description={content.showcaseDescription}
+          onSelectedBrandChange={onSelectedBrandChange}
+        />
+        <InvoicePanel
+          monthlyPrice={monthlyPrice}
+          previousPrice={previousPrice}
+          currency={currency}
+          locale={locale}
+          autoPlay={autoPlay}
+          title={content.pricingTitle}
+          description={content.pricingDescription}
+        />
+        <PausePanel
+          paused={paused}
+          defaultPaused={defaultPaused}
+          autoPlay={autoPlay}
+          spotlightInterval={spotlightInterval}
+          userLabel={userLabel}
+          title={content.pauseTitle}
+          activeDescription={content.activeDescription}
+          pausedDescription={content.pausedDescription}
+          onPausedChange={onPausedChange}
+        />
+      </div>
+    </div>
+  );
+}
+
+export default ResearchBentoGrid;
+
+
+Installation
+Run the following command
+
+npm
+pnpm
+bun
+yarn
+
+npx shadcn@latest add https://raw.githubusercontent.com/Ashutoshx7/VengeanceUI/main/public/r/research-bento-grid.json
+Usage
+code
+
+1	import { ResearchBentoGrid } from "@/components/ui/research-bento-grid"
+2	
+3	export function DeveloperServiceShowcase() {
+4	  return (
+5	    <div className="h-[680px] w-full">
+6	      <ResearchBentoGrid
+7	        monthlyPrice={1990}
+8	        previousPrice={32000}
+9	        currency="USD"
+10	        defaultSelectedBrand={0}
+11	        onPausedChange={(paused) => console.log({ paused })}
+12	        onSelectedBrandChange={(index) => console.log({ index })}
+13	      />
+14	    </div>
+15	  )
+16	}
+Props
+Prop Name	Type	Default	Description
+monthlyPrice	number	1990	Highlighted subscription price shown on the invoice.
+previousPrice	number	32000	Struck-through comparison price shown beside the subscription price.
+currency	string	'USD'	ISO 4217 currency code used to format invoice prices.
+locale	string	'en-US'	Locale passed to Intl.NumberFormat for invoice prices.
+paused	boolean	-	Controlled Pause or Resume state.
+defaultPaused	boolean	false	Initial state of the Pause or Resume control.
+selectedBrand	number	-	Controlled index of the selected developer brand.
+defaultSelectedBrand	number	1	Initial selected brand index when uncontrolled.
+brands	readonly ResearchBentoBrand[]	developer brands	One or more named icon components displayed in the showcase.
+copy	Partial<ResearchBentoGridCopy>	developer copy	Overrides card titles and descriptions.
+autoPlay	boolean	true	Enables automatic brand rotation, invoice cycling, and cursor spotlight animation.
+brandRotationInterval	number	2600	Milliseconds between automatic brand selections.
+spotlightInterval	number	4400	Milliseconds between automatic Pause-button spotlight cycles.
+userLabel	string	'You'	Label displayed beside the active cursor.
+collaboratorLabel	string	'X7'	Label displayed beside the collaborator cursor.
+className	string	-	Additional classes for the component root.
+onPausedChange	(paused: boolean) => void	-	Called whenever the subscription pause state changes.
+onSelectedBrandChange	(index: number) => void	-	Called whenever a brand is selected manually or automatically.
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+

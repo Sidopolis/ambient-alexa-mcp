@@ -44,7 +44,7 @@ export const toolDefinitions = [
       properties: {
         deviceId: {
           type: "string",
-          description: "ID of the target device: living_room_light, thermostat, front_door_lock, ambient_speakers"
+          description: "ID of the target device: living_room_light, thermostat, front_door_lock, ambient_speakers, solar_storage, ev_charger"
         },
         action: {
           type: "string",

@@ -1,0 +1,13 @@
+COMPONENTS FROM 21ST.DEV - Retrieved for UDP App
+=================================================
+
+1. Agent Plan - by isaiahbjork (id: 2127)
+   Install: npx shadcn@latest add "https://21st.dev/r/isaiahbjork/agent-plan"
+   
+2. Thinking - by theshanelevine (id: 23592)
+   Install: npx shadcn@latest add "https://21st.dev/r/theshanelevine/thinking"
+   
+3. AI Tool Call - by educalvolpz (id: 23789)
+   Install: npx shadcn@latest add "https://21st.dev/r/educalvolpz/ai-tool-call"
+
+All codes retrieved and available for use in pipeline view.

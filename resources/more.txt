@@ -1,0 +1,1862 @@
+"use client";
+
+import { motion } from "framer-motion";
+import * as opentype from "opentype.js";
+import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
+
+const DEFAULT_FONT_URL =
+  "https://raw.githubusercontent.com/google/fonts/main/ofl/indieflower/IndieFlower-Regular.ttf";
+
+interface HandwritingSvgProps {
+  path?: string;
+  text?: string;
+  fontUrl?: string;
+  className?: string;
+  strokeClassName?: string;
+  duration?: number;
+  delay?: number;
+  strokeWidth?: number;
+  width?: number;
+  height?: number;
+  fontSize?: number;
+  ease?: "linear" | "easeIn" | "easeOut" | "easeInOut";
+}
+
+export function HandwritingSvg({
+  path: pathProp,
+  text,
+  fontUrl = DEFAULT_FONT_URL,
+  className,
+  strokeClassName,
+  duration = 2,
+  delay = 0.5,
+  strokeWidth = 2,
+  width = 100,
+  height = 100,
+  fontSize = 48,
+  ease = "easeInOut",
+}: HandwritingSvgProps) {
+  const [path, setPath] = useState<string | null>(pathProp ?? null);
+  const [viewBox, setViewBox] = useState(`${0} ${0} ${width} ${height}`);
+  const [loading, setLoading] = useState(!!text && !pathProp);
+
+  useEffect(() => {
+    if (!text || pathProp) {
+      setPath(pathProp ?? null);
+      setViewBox(`0 0 ${width} ${height}`);
+      setLoading(false);
+      return;
+    }
+    let cancelled = false;
+    setLoading(true);
+    fetch(fontUrl)
+      .then((res) => res.arrayBuffer())
+      .then((buffer) => {
+        if (cancelled) {
+          return;
+        }
+        const font = opentype.parse(buffer);
+        const p = font.getPath(text, 0, fontSize, fontSize);
+        const bbox = p.getBoundingBox();
+        const pad = 5;
+        const vx = Math.floor(bbox.x1) - pad;
+        const vy = Math.floor(bbox.y1) - pad;
+        const vw = Math.ceil(bbox.x2 - bbox.x1) + pad * 2;
+        const vh = Math.ceil(bbox.y2 - bbox.y1) + pad * 2;
+        setViewBox(`${vx} ${vy} ${vw} ${vh}`);
+        setPath(p.toPathData(2));
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setPath(null);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [text, fontUrl, pathProp, fontSize, width, height]);
+
+  if (loading) {
+    return (
+      <svg
+        width={width}
+        height={height}
+        viewBox={`0 0 ${width} ${height}`}
+        className={cn("text-muted-foreground", className)}
+        aria-hidden={true}
+      >
+        <title>Handwriting SVG loading</title>
+        <text
+          x="50%"
+          y="50%"
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fontSize={14}
+        >
+          Loading…
+        </text>
+      </svg>
+    );
+  }
+
+  const d = path ?? "";
+  if (!d) {
+    return (
+      <svg
+        width={width}
+        height={height}
+        viewBox={`0 0 ${width} ${height}`}
+        className={cn("text-muted-foreground", className)}
+        aria-hidden={true}
+      >
+        <title>Handwriting SVG</title>
+        <text
+          x="50%"
+          y="50%"
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fontSize={12}
+        >
+          {text ? "Invalid font" : "Provide path or text"}
+        </text>
+      </svg>
+    );
+  }
+
+  const svgViewBox = pathProp ? `0 0 ${width} ${height}` : viewBox;
+
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox={svgViewBox}
+      className={cn("text-rose-500", className)}
+      aria-hidden={true}
+    >
+      <title>Handwriting SVG</title>
+      <motion.path
+        d={d}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className={strokeClassName}
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ delay, duration, ease }}
+      />
+    </svg>
+  );
+}
+
+export default HandwritingSvg;
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+
+'use client';
+
+import { useState } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Calendar, GripVertical, MessageCircle, Paperclip, Plus } from 'lucide-react';
+
+interface Task {
+  id: string;
+  title: string;
+  description?: string;
+  priority?: 'low' | 'medium' | 'high';
+  assignee?: {
+    name: string;
+    avatar: string;
+  };
+  tags?: string[];
+  dueDate?: string;
+  attachments?: number;
+  comments?: number;
+}
+
+interface Column {
+  id: string;
+  title: string;
+  tasks: Task[];
+  color?: string;
+}
+
+const sampleData: Column[] = [
+  {
+    id: 'todo',
+    title: 'To Do',
+    color: '#8B7355',
+    tasks: [
+      {
+        id: '1',
+        title: 'Design System Audit',
+        description: 'Review and update component library',
+        priority: 'high',
+        assignee: { name: 'Sarah Chen', avatar: '/headshot/Lummi Doodle 02.png' },
+        tags: ['Design', 'System'],
+        dueDate: '2024-01-15',
+        attachments: 3,
+        comments: 7,
+      },
+      {
+        id: '2',
+        title: 'User Research Analysis',
+        description: 'Analyze feedback from recent user interviews',
+        priority: 'medium',
+        assignee: { name: 'Alex Rivera', avatar: '/headshot/Lummi Doodle 04.png' },
+        tags: ['Research', 'UX'],
+        dueDate: '2024-01-18',
+        comments: 4,
+      },
+    ],
+  },
+  {
+    id: 'progress',
+    title: 'In Progress',
+    color: '#6B8E23',
+    tasks: [
+      {
+        id: '3',
+        title: 'Mobile App Redesign',
+        description: 'Implementing new navigation patterns',
+        priority: 'high',
+        assignee: { name: 'Jordan Kim', avatar: '/headshot/Lummi Doodle 06.png' },
+        tags: ['Mobile', 'UI'],
+        attachments: 8,
+        comments: 12,
+      },
+    ],
+  },
+  {
+    id: 'review',
+    title: 'Review',
+    color: '#CD853F',
+    tasks: [
+      {
+        id: '4',
+        title: 'API Documentation',
+        description: 'Complete developer documentation',
+        priority: 'medium',
+        assignee: { name: 'Maya Patel', avatar: '/headshot/Lummi Doodle 09.png' },
+        tags: ['Documentation', 'API'],
+        dueDate: '2024-01-20',
+        comments: 2,
+      },
+    ],
+  },
+  {
+    id: 'done',
+    title: 'Done',
+    color: '#556B2F',
+    tasks: [
+      {
+        id: '5',
+        title: 'Landing Page Optimization',
+        description: 'Improved conversion rate by 23%',
+        priority: 'low',
+        assignee: { name: 'Chris Wong', avatar: '/headshot/Lummi Doodle 10.png' },
+        tags: ['Marketing', 'Web'],
+        attachments: 2,
+        comments: 8,
+      },
+    ],
+  },
+];
+
+export default function KanbanBoard() {
+  const [columns, setColumns] = useState<Column[]>(sampleData);
+
+  const handleDragStart = (e: React.DragEvent, task: Task, columnId: string) => {
+    e.dataTransfer.setData('text/plain', JSON.stringify({ task, sourceColumnId: columnId }));
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e: React.DragEvent, targetColumnId: string) => {
+    e.preventDefault();
+    const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+    const { task, sourceColumnId } = data;
+
+    if (sourceColumnId === targetColumnId) return;
+
+    setColumns((prev) =>
+      prev.map((col) => {
+        if (col.id === sourceColumnId) {
+          return { ...col, tasks: col.tasks.filter((t) => t.id !== task.id) };
+        }
+        if (col.id === targetColumnId) {
+          return { ...col, tasks: [...col.tasks, task] };
+        }
+        return col;
+      }),
+    );
+  };
+
+  return (
+    <div className="">
+      <div className="mb-8 text-center">
+        <h1 className="text-4xl font-light text-neutral-900 dark:text-neutral-100 mb-2">
+          Kanban Board
+        </h1>
+        <p className="text-neutral-700 dark:text-neutral-300">Drag and drop task management</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2  gap-6">
+        {columns.map((column) => (
+          <div
+            key={column.id}
+            className="bg-white/20 dark:bg-neutral-900/20 backdrop-blur-xl rounded-3xl p-5 border border-border dark:border-neutral-700/50"
+            onDragOver={handleDragOver}
+            onDrop={(e) => handleDrop(e, column.id)}
+          >
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-4 h-4 rounded-full " style={{ backgroundColor: column.color }} />
+                <h3 className="font-semibold text-neutral-900 dark:text-neutral-100">
+                  {column.title}
+                </h3>
+                <Badge className="bg-neutral-100/80 dark:bg-neutral-800/80 text-neutral-800 dark:text-neutral-200 border-neutral-200/50 dark:border-neutral-600/50">
+                  {column.tasks.length}
+                </Badge>
+              </div>
+              <button className="p-1 rounded-full bg-white/30 dark:bg-neutral-800/30 hover:bg-white/50 dark:hover:bg-neutral-700/50 transition-colors">
+                <Plus className="w-4 h-4 text-neutral-700 dark:text-neutral-300" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              {column.tasks.map((task) => (
+                <Card
+                  key={task.id}
+                  className="cursor-move transition-all duration-300 border bg-white/60 dark:bg-neutral-800/60 backdrop-blur-sm hover:bg-white/70 dark:hover:bg-neutral-700/70"
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, task, column.id)}
+                >
+                  <CardContent className="p-5">
+                    <div className="space-y-4">
+                      <div className="flex items-start justify-between">
+                        <h4 className="font-semibold text-neutral-900 dark:text-neutral-100 leading-tight">
+                          {task.title}
+                        </h4>
+                        <GripVertical className="w-5 h-5 text-neutral-500 dark:text-neutral-400 cursor-move" />
+                      </div>
+
+                      {task.description && (
+                        <p className="text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed">
+                          {task.description}
+                        </p>
+                      )}
+
+                      {task.tags && (
+                        <div className="flex flex-wrap gap-2">
+                          {task.tags.map((tag) => (
+                            <Badge
+                              key={tag}
+                              className="text-xs bg-neutral-100/60 dark:bg-neutral-700/60 text-neutral-800 dark:text-neutral-200 border-neutral-200/50 dark:border-neutral-600/50 backdrop-blur-sm"
+                            >
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+
+                      <div className="flex items-center justify-between pt-2 border-t border-neutral-200/30 dark:border-neutral-700/30">
+                        <div className="flex items-center gap-4 text-neutral-600 dark:text-neutral-400">
+                          {task.dueDate && (
+                            <div className="flex items-center gap-1">
+                              <Calendar className="w-4 h-4" />
+                              <span className="text-xs font-medium">Jan 15</span>
+                            </div>
+                          )}
+                          {task.comments && (
+                            <div className="flex items-center gap-1">
+                              <MessageCircle className="w-4 h-4" />
+                              <span className="text-xs font-medium">{task.comments}</span>
+                            </div>
+                          )}
+                          {task.attachments && (
+                            <div className="flex items-center gap-1">
+                              <Paperclip className="w-4 h-4" />
+                              <span className="text-xs font-medium">{task.attachments}</span>
+                            </div>
+                          )}
+                        </div>
+
+                        {task.assignee && (
+                          <Avatar className="w-8 h-8 ring-2 ring-white/50 dark:ring-neutral-700/50">
+                            <AvatarImage src={task.assignee.avatar} />
+                            <AvatarFallback className="bg-neutral-200 dark:bg-neutral-700 text-neutral-800 dark:text-neutral-200 font-medium">
+                              {task.assignee.name
+                                .split(' ')
+                                .map((n) => n[0])
+                                .join('')}
+                            </AvatarFallback>
+                          </Avatar>
+                        )}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+"use client";
+
+import { useState, useMemo } from "react";
+import { Drawer } from "vaul";
+import useMeasure from "react-use-measure";
+import { motion } from "motion/react";
+import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
+import {
+  BannedIcon,
+  DangerIcon,
+  FaceIDIcon,
+  LockIcon,
+  PassIcon,
+  PhraseIcon,
+  RecoveryPhraseIcon,
+  ShieldIcon,
+  WarningIcon,
+} from "@/components/ui/animated-drawer-utils/demo-icons";
+export const AnimatedDrawer = () => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [view, setView] = useState("default");
+  const [elementRef, bounds] = useMeasure();
+
+  const content = useMemo(() => {
+    switch (view) {
+      case "default":
+        return (
+          <div className="">
+            <div className="flex items-center justify-between w-full">
+              <h2 className="text-lg font-medium text-neutral-900 dark:text-neutral-100">
+                Wallet Settings
+              </h2>
+              <Button
+                variant="secondary"
+                size="icon"
+                className="rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                onClick={() => setIsOpen(false)}
+              >
+                <X
+                  className="text-neutral-600 dark:text-neutral-400"
+                  size="18"
+                />
+              </Button>
+            </div>
+
+            <div className="mt-6 flex flex-col items-start gap-4">
+              <button
+                onClick={() => setView("key")}
+                className="bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-900 dark:text-neutral-100 font-medium flex items-center gap-2 w-full rounded-2xl px-4 py-3.5 transition-colors"
+              >
+                <LockIcon />
+                View Private Key
+              </button>
+              <button
+                onClick={() => setView("pharse")}
+                className="bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-900 dark:text-neutral-100 font-medium flex items-center gap-2 w-full rounded-2xl px-4 py-3.5 transition-colors"
+              >
+                <PassIcon />
+                View Recovery Phrase
+              </button>
+              <button
+                onClick={() => setView("remove")}
+                className="bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 font-medium flex items-center gap-2 w-full rounded-2xl px-4 py-3.5 transition-colors"
+              >
+                <WarningIcon />
+                Remove Wallet
+              </button>
+            </div>
+          </div>
+        );
+      case "remove":
+        return (
+          <div className="space-y-4">
+            <div className="flex justify-between">
+              <DangerIcon />
+              <Button
+                variant="secondary"
+                size="icon"
+                className="rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                onClick={() => setIsOpen(false)}
+              >
+                <X
+                  className="text-neutral-600 dark:text-neutral-400"
+                  size="18"
+                />
+              </Button>
+            </div>
+            <h2 className="font-medium text-xl text-neutral-900 dark:text-neutral-100">
+              Remove Wallet?
+            </h2>
+
+            <p className="text-neutral-500 dark:text-neutral-400 font-light text-lg">
+              This action cannot be undone. Make sure you&apos;ve backed up your
+              recovery phrase before proceeding. You&apos;ll lose access to all
+              funds if you don&apos;t have a backup.
+            </p>
+            <div className="flex items-center justify-start gap-4">
+              <Button
+                onClick={() => setView("default")}
+                className="w-36 h-12 bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600 text-neutral-900 dark:text-neutral-100 rounded-3xl text-lg transition-colors"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => setView("default")}
+                className="w-36 h-12 bg-red-500 hover:bg-red-600 text-white rounded-3xl text-lg transition-colors"
+              >
+                Remove
+              </Button>
+            </div>
+          </div>
+        );
+      case "pharse":
+        return (
+          <div className="space-y-4">
+            <div className="flex justify-between">
+              <RecoveryPhraseIcon />
+              <Button
+                variant="secondary"
+                size="icon"
+                className="rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                onClick={() => setIsOpen(false)}
+              >
+                <X
+                  className="text-neutral-600 dark:text-neutral-400"
+                  size="18"
+                />
+              </Button>
+            </div>
+            <h2 className="font-medium text-xl text-neutral-900 dark:text-neutral-100">
+              Recovery Phrase
+            </h2>
+            <p className="text-neutral-500 dark:text-neutral-400 font-light text-lg">
+              Your recovery phrase is the master key to your wallet. Write it
+              down and store it securely. Anyone with this phrase can access
+              your funds.
+            </p>
+            <div className="border-t border-neutral-200 dark:border-neutral-700 space-y-5 text-neutral-500 dark:text-neutral-400 text-lg">
+              <div className="flex items-center gap-4 mt-5">
+                <ShieldIcon />
+                <h3>Store it in a secure location</h3>
+              </div>
+              <div className="flex items-center gap-4">
+                <PhraseIcon />
+                <h3>Never share with anyone</h3>
+              </div>
+              <div className="flex items-center gap-4">
+                <BannedIcon />
+                <h3>We cannot recover it for you</h3>
+              </div>
+            </div>
+            <div className="flex items-center justify-start gap-4">
+              <Button
+                onClick={() => setView("default")}
+                className="w-36 h-12 bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600 text-neutral-900 dark:text-neutral-100 rounded-3xl text-lg transition-colors"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => setView("default")}
+                className="w-42 h-12 bg-sky-400 hover:bg-sky-500 text-white rounded-3xl text-lg flex items-center gap-3 transition-colors"
+              >
+                <FaceIDIcon />
+                Show Phrase
+              </Button>
+            </div>
+          </div>
+        );
+      case "key":
+        return (
+          <div className="space-y-4">
+            <div className="flex justify-between">
+              <RecoveryPhraseIcon />
+              <Button
+                variant="secondary"
+                size="icon"
+                className="rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                onClick={() => setIsOpen(false)}
+              >
+                <X
+                  className="text-neutral-600 dark:text-neutral-400"
+                  size="18"
+                />
+              </Button>
+            </div>
+            <h2 className="font-medium text-xl text-neutral-900 dark:text-neutral-100">
+              Private Key
+            </h2>
+            <p className="text-neutral-500 dark:text-neutral-400 font-light text-lg">
+              Your private key is a cryptographic key that proves ownership of
+              your wallet. Treat it with the same security as your bank account
+              details.
+            </p>
+
+            <div className="border-t border-neutral-200 dark:border-neutral-700 space-y-5 text-neutral-500 dark:text-neutral-400 text-lg">
+              <div className="flex items-center gap-4 mt-5">
+                <ShieldIcon />
+                <h3>Store it in a secure location</h3>
+              </div>
+              <div className="flex items-center gap-4">
+                <PhraseIcon />
+                <h3>Never share with anyone</h3>
+              </div>
+              <div className="flex items-center gap-4">
+                <BannedIcon />
+                <h3>We cannot recover it for you</h3>
+              </div>
+            </div>
+            <div className="flex items-center justify-start gap-4">
+              <Button
+                onClick={() => setView("default")}
+                className="w-36 h-12 bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600 text-neutral-900 dark:text-neutral-100 rounded-3xl text-lg transition-colors"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => setView("default")}
+                className="w-42 h-12 bg-sky-400 hover:bg-sky-500 text-white rounded-3xl text-lg flex items-center gap-3 transition-colors"
+              >
+                <FaceIDIcon />
+                Show Key
+              </Button>
+            </div>
+          </div>
+        );
+    }
+  }, [view]);
+
+  return (
+    <>
+      <Button
+        className="mt-5 px-6 rounded-full bg-white dark:bg-neutral-800 py-2 font-medium text-black dark:text-white border border-neutral-200 dark:border-neutral-700 transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-700 focus-visible:shadow-focus-ring-button md:font-medium"
+        onClick={() => setIsOpen(true)}
+      >
+        Click Me To Open Drawer
+      </Button>
+      <Drawer.Root open={isOpen} onOpenChange={setIsOpen}>
+        <Drawer.Portal>
+          <Drawer.Overlay
+            className="fixed inset-0 bg-black/40"
+            onClick={() => setIsOpen(false)}
+          />
+          <Drawer.Content
+            asChild
+            className="fixed inset-x-4 bottom-4 z-10 mx-auto h-64 max-w-[361px] overflow-hidden rounded-[36px] bg-white dark:bg-neutral-900 outline-hidden md:mx-auto md:w-full"
+          >
+            <motion.div animate={{ height: bounds.height }}>
+              <div className="p-6" ref={elementRef}>
+                {content}
+              </div>
+            </motion.div>
+          </Drawer.Content>
+        </Drawer.Portal>
+      </Drawer.Root>
+    </>
+  );
+};
+
+export default AnimatedDrawer;
+
+
+--------------------------------------------------------------------------------------------------------------------------
+
+
+import * as React from "react"
+
+import { cn } from "@/lib/utils"
+
+const Card = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(
+      "rounded-lg border bg-card text-card-foreground shadow-sm",
+      className,
+    )}
+    {...props}
+  />
+))
+Card.displayName = "Card"
+
+const CardHeader = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("flex flex-col space-y-1.5 p-6", className)}
+    {...props}
+  />
+))
+CardHeader.displayName = "CardHeader"
+
+const CardTitle = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLHeadingElement>
+>(({ className, ...props }, ref) => (
+  <h3
+    ref={ref}
+    className={cn(
+      "text-2xl font-semibold leading-none tracking-tight",
+      className,
+    )}
+    {...props}
+  />
+))
+CardTitle.displayName = "CardTitle"
+
+const CardDescription = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, ...props }, ref) => (
+  <p
+    ref={ref}
+    className={cn("text-sm text-muted-foreground", className)}
+    {...props}
+  />
+))
+CardDescription.displayName = "CardDescription"
+
+const CardContent = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
+))
+CardContent.displayName = "CardContent"
+
+const CardFooter = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("flex items-center p-6 pt-0", className)}
+    {...props}
+  />
+))
+CardFooter.displayName = "CardFooter"
+
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+
+
+
+-----------------------------------------------------------------------------------------------------------
+
+
+
+"use client";
+
+import { Command as CommandPrimitive, useCommandState } from "cmdk";
+import { X } from "lucide-react";
+import * as React from "react";
+import { forwardRef, useEffect } from "react";
+
+import { Badge } from "@/components/ui/badge";
+import {
+  Command,
+  CommandGroup,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { cn } from "@/lib/utils";
+
+export interface Option {
+  value: string;
+  label: string;
+  disable?: boolean;
+  /** fixed option that can't be removed. */
+  fixed?: boolean;
+  /** Group the options by providing key. */
+  [key: string]: string | boolean | undefined;
+}
+interface GroupOption {
+  [key: string]: Option[];
+}
+
+interface MultipleSelectorProps {
+  value?: Option[];
+  defaultOptions?: Option[];
+  /** manually controlled options */
+  options?: Option[];
+  placeholder?: string;
+  /** Loading component. */
+  loadingIndicator?: React.ReactNode;
+  /** Empty component. */
+  emptyIndicator?: React.ReactNode;
+  /** Debounce time for async search. Only work with `onSearch`. */
+  delay?: number;
+  /**
+   * Only work with `onSearch` prop. Trigger search when `onFocus`.
+   * For example, when user click on the input, it will trigger the search to get initial options.
+   **/
+  triggerSearchOnFocus?: boolean;
+  /** async search */
+  onSearch?: (value: string) => Promise<Option[]>;
+  /**
+   * sync search. This search will not showing loadingIndicator.
+   * The rest props are the same as async search.
+   * i.e.: creatable, groupBy, delay.
+   **/
+  onSearchSync?: (value: string) => Option[];
+  onChange?: (options: Option[]) => void;
+  /** Limit the maximum number of selected options. */
+  maxSelected?: number;
+  /** When the number of selected options exceeds the limit, the onMaxSelected will be called. */
+  onMaxSelected?: (maxLimit: number) => void;
+  /** Hide the placeholder when there are options selected. */
+  hidePlaceholderWhenSelected?: boolean;
+  disabled?: boolean;
+  /** Group the options base on provided key. */
+  groupBy?: string;
+  className?: string;
+  badgeClassName?: string;
+  /**
+   * First item selected is a default behavior by cmdk. That is why the default is true.
+   * This is a workaround solution by add a dummy item.
+   *
+   * @reference: https://github.com/pacocoursey/cmdk/issues/171
+   */
+  selectFirstItem?: boolean;
+  /** Allow user to create option when there is no option matched. */
+  creatable?: boolean;
+  /** Props of `Command` */
+  commandProps?: React.ComponentPropsWithoutRef<typeof Command>;
+  /** Props of `CommandInput` */
+  inputProps?: Omit<
+    React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>,
+    "value" | "placeholder" | "disabled"
+  >;
+  /** hide the clear all button. */
+  hideClearAllButton?: boolean;
+}
+
+export interface MultipleSelectorRef {
+  selectedValue: Option[];
+  input: HTMLInputElement;
+  focus: () => void;
+  reset: () => void;
+}
+
+export function useDebounce<T>(value: T, delay?: number): T {
+  const [debouncedValue, setDebouncedValue] = React.useState<T>(value);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedValue(value), delay || 500);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
+
+function transToGroupOption(options: Option[], groupBy?: string) {
+  if (options.length === 0) {
+    return {};
+  }
+  if (!groupBy) {
+    return {
+      "": options,
+    };
+  }
+
+  const groupOption: GroupOption = {};
+  options.forEach((option) => {
+    const key = (option[groupBy] as string) || "";
+    if (!groupOption[key]) {
+      groupOption[key] = [];
+    }
+    groupOption[key].push(option);
+  });
+  return groupOption;
+}
+
+function removePickedOption(groupOption: GroupOption, picked: Option[]) {
+  const cloneOption = JSON.parse(JSON.stringify(groupOption)) as GroupOption;
+
+  for (const [key, value] of Object.entries(cloneOption)) {
+    cloneOption[key] = value.filter(
+      (val) => !picked.find((p) => p.value === val.value),
+    );
+  }
+  return cloneOption;
+}
+
+function isOptionsExist(groupOption: GroupOption, targetOption: Option[]) {
+  for (const [, value] of Object.entries(groupOption)) {
+    if (
+      value.some((option) => targetOption.find((p) => p.value === option.value))
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * The `CommandEmpty` of shadcn/ui will cause the cmdk empty not rendering correctly.
+ * So we create one and copy the `Empty` implementation from `cmdk`.
+ *
+ * @reference: https://github.com/hsuanyi-chou/shadcn-ui-expansions/issues/34#issuecomment-1949561607
+ **/
+const CommandEmpty = forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<typeof CommandPrimitive.Empty>
+>(({ className, ...props }, forwardedRef) => {
+  const render = useCommandState((state) => state.filtered.count === 0);
+
+  if (!render) return null;
+
+  return (
+    <div
+      ref={forwardedRef}
+      className={cn("py-6 text-center text-sm", className)}
+      cmdk-empty=""
+      role="presentation"
+      {...props}
+    />
+  );
+});
+
+CommandEmpty.displayName = "CommandEmpty";
+
+const MultipleSelector = React.forwardRef<
+  MultipleSelectorRef,
+  MultipleSelectorProps
+>(
+  (
+    {
+      value,
+      onChange,
+      placeholder,
+      defaultOptions: arrayDefaultOptions = [],
+      options: arrayOptions,
+      delay,
+      onSearch,
+      onSearchSync,
+      loadingIndicator,
+      emptyIndicator,
+      maxSelected = Number.MAX_SAFE_INTEGER,
+      onMaxSelected,
+      hidePlaceholderWhenSelected,
+      disabled,
+      groupBy,
+      className,
+      badgeClassName,
+      selectFirstItem = true,
+      creatable = false,
+      triggerSearchOnFocus = false,
+      commandProps,
+      inputProps,
+      hideClearAllButton = false,
+    }: MultipleSelectorProps,
+    ref: React.Ref<MultipleSelectorRef>,
+  ) => {
+    const inputRef = React.useRef<HTMLInputElement>(null);
+    const [open, setOpen] = React.useState(false);
+    const [onScrollbar, setOnScrollbar] = React.useState(false);
+    const [isLoading, setIsLoading] = React.useState(false);
+    const dropdownRef = React.useRef<HTMLDivElement>(null); // Added this
+
+    const [selected, setSelected] = React.useState<Option[]>(value || []);
+    const [options, setOptions] = React.useState<GroupOption>(
+      transToGroupOption(arrayDefaultOptions, groupBy),
+    );
+    const [inputValue, setInputValue] = React.useState("");
+    const debouncedSearchTerm = useDebounce(inputValue, delay || 500);
+
+    React.useImperativeHandle(
+      ref,
+      () => ({
+        selectedValue: [...selected],
+        input: inputRef.current as HTMLInputElement,
+        focus: () => inputRef?.current?.focus(),
+        reset: () => setSelected([]),
+      }),
+      [selected],
+    );
+
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        inputRef.current &&
+        !inputRef.current.contains(event.target as Node)
+      ) {
+        setOpen(false);
+        inputRef.current.blur();
+      }
+    };
+
+    const handleUnselect = React.useCallback(
+      (option: Option) => {
+        const newOptions = selected.filter((s) => s.value !== option.value);
+        setSelected(newOptions);
+        onChange?.(newOptions);
+      },
+      [onChange, selected],
+    );
+
+    const handleKeyDown = React.useCallback(
+      (e: React.KeyboardEvent<HTMLDivElement>) => {
+        const input = inputRef.current;
+        if (input) {
+          if (e.key === "Delete" || e.key === "Backspace") {
+            if (input.value === "" && selected.length > 0) {
+              const lastSelectOption = selected[selected.length - 1];
+              // If last item is fixed, we should not remove it.
+              if (!lastSelectOption.fixed) {
+                handleUnselect(selected[selected.length - 1]);
+              }
+            }
+          }
+          // This is not a default behavior of the <input /> field
+          if (e.key === "Escape") {
+            input.blur();
+          }
+        }
+      },
+      [handleUnselect, selected],
+    );
+
+    useEffect(() => {
+      if (open) {
+        document.addEventListener("mousedown", handleClickOutside);
+        document.addEventListener("touchend", handleClickOutside);
+      } else {
+        document.removeEventListener("mousedown", handleClickOutside);
+        document.removeEventListener("touchend", handleClickOutside);
+      }
+
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+        document.removeEventListener("touchend", handleClickOutside);
+      };
+    }, [open]);
+
+    useEffect(() => {
+      if (value) {
+        setSelected(value);
+      }
+    }, [value]);
+
+    useEffect(() => {
+      /** If `onSearch` is provided, do not trigger options updated. */
+      if (!arrayOptions || onSearch) {
+        return;
+      }
+      const newOption = transToGroupOption(arrayOptions || [], groupBy);
+      if (JSON.stringify(newOption) !== JSON.stringify(options)) {
+        setOptions(newOption);
+      }
+    }, [arrayDefaultOptions, arrayOptions, groupBy, onSearch, options]);
+
+    useEffect(() => {
+      /** sync search */
+
+      const doSearchSync = () => {
+        const res = onSearchSync?.(debouncedSearchTerm);
+        setOptions(transToGroupOption(res || [], groupBy));
+      };
+
+      const exec = async () => {
+        if (!onSearchSync || !open) return;
+
+        if (triggerSearchOnFocus) {
+          doSearchSync();
+        }
+
+        if (debouncedSearchTerm) {
+          doSearchSync();
+        }
+      };
+
+      void exec();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [debouncedSearchTerm, groupBy, open, triggerSearchOnFocus]);
+
+    useEffect(() => {
+      /** async search */
+
+      const doSearch = async () => {
+        setIsLoading(true);
+        const res = await onSearch?.(debouncedSearchTerm);
+        setOptions(transToGroupOption(res || [], groupBy));
+        setIsLoading(false);
+      };
+
+      const exec = async () => {
+        if (!onSearch || !open) return;
+
+        if (triggerSearchOnFocus) {
+          await doSearch();
+        }
+
+        if (debouncedSearchTerm) {
+          await doSearch();
+        }
+      };
+
+      void exec();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [debouncedSearchTerm, groupBy, open, triggerSearchOnFocus]);
+
+    const CreatableItem = () => {
+      if (!creatable) return undefined;
+      if (
+        isOptionsExist(options, [{ value: inputValue, label: inputValue }]) ||
+        selected.find((s) => s.value === inputValue)
+      ) {
+        return undefined;
+      }
+
+      const Item = (
+        <CommandItem
+          value={inputValue}
+          className="cursor-pointer"
+          onMouseDown={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+          onSelect={(value: string) => {
+            if (selected.length >= maxSelected) {
+              onMaxSelected?.(selected.length);
+              return;
+            }
+            setInputValue("");
+            const newOptions = [...selected, { value, label: value }];
+            setSelected(newOptions);
+            onChange?.(newOptions);
+          }}
+        >
+          {`Create "${inputValue}"`}
+        </CommandItem>
+      );
+
+      // For normal creatable
+      if (!onSearch && inputValue.length > 0) {
+        return Item;
+      }
+
+      // For async search creatable. avoid showing creatable item before loading at first.
+      if (onSearch && debouncedSearchTerm.length > 0 && !isLoading) {
+        return Item;
+      }
+
+      return undefined;
+    };
+
+    const EmptyItem = React.useCallback(() => {
+      if (!emptyIndicator) return undefined;
+
+      // For async search that showing emptyIndicator
+      if (onSearch && !creatable && Object.keys(options).length === 0) {
+        return (
+          <CommandItem value="-" disabled>
+            {emptyIndicator}
+          </CommandItem>
+        );
+      }
+
+      return <CommandEmpty>{emptyIndicator}</CommandEmpty>;
+    }, [creatable, emptyIndicator, onSearch, options]);
+
+    const selectables = React.useMemo<GroupOption>(
+      () => removePickedOption(options, selected),
+      [options, selected],
+    );
+
+    /** Avoid Creatable Selector freezing or lagging when paste a long string. */
+    const commandFilter = React.useCallback(() => {
+      if (commandProps?.filter) {
+        return commandProps.filter;
+      }
+
+      if (creatable) {
+        return (value: string, search: string) => {
+          return value.toLowerCase().includes(search.toLowerCase()) ? 1 : -1;
+        };
+      }
+      // Using default filter in `cmdk`. We don't have to provide it.
+      return undefined;
+    }, [creatable, commandProps?.filter]);
+
+    return (
+      <Command
+        ref={dropdownRef}
+        {...commandProps}
+        onKeyDown={(e) => {
+          handleKeyDown(e);
+          commandProps?.onKeyDown?.(e);
+        }}
+        className={cn(
+          "h-auto overflow-visible bg-transparent",
+          commandProps?.className,
+        )}
+        shouldFilter={
+          commandProps?.shouldFilter !== undefined
+            ? commandProps.shouldFilter
+            : !onSearch
+        } // When onSearch is provided, we don't want to filter the options. You can still override it.
+        filter={commandFilter()}
+      >
+        <div
+          className={cn(
+            "min-h-10 rounded-md border border-input text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
+            {
+              "px-3 py-2": selected.length !== 0,
+              "cursor-text": !disabled && selected.length !== 0,
+            },
+            className,
+          )}
+          onClick={() => {
+            if (disabled) return;
+            inputRef?.current?.focus();
+          }}
+        >
+          <div className="relative flex flex-wrap gap-1">
+            {selected.map((option) => {
+              return (
+                <Badge
+                  key={option.value}
+                  className={cn(
+                    "data-[disabled]:bg-muted-foreground data-[disabled]:text-muted data-[disabled]:hover:bg-muted-foreground",
+                    "data-[fixed]:bg-muted-foreground data-[fixed]:text-muted data-[fixed]:hover:bg-muted-foreground",
+                    badgeClassName,
+                  )}
+                  data-fixed={option.fixed}
+                  data-disabled={disabled || undefined}
+                >
+                  {option.label}
+                  <button
+                    className={cn(
+                      "ml-1 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2",
+                      (disabled || option.fixed) && "hidden",
+                    )}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleUnselect(option);
+                      }
+                    }}
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                    onClick={() => handleUnselect(option)}
+                  >
+                    <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                  </button>
+                </Badge>
+              );
+            })}
+            {/* Avoid having the "Search" Icon */}
+            <CommandPrimitive.Input
+              {...inputProps}
+              ref={inputRef}
+              value={inputValue}
+              disabled={disabled}
+              onValueChange={(value) => {
+                setInputValue(value);
+                inputProps?.onValueChange?.(value);
+              }}
+              onBlur={(event) => {
+                if (!onScrollbar) {
+                  setOpen(false);
+                }
+                inputProps?.onBlur?.(event);
+              }}
+              onFocus={(event) => {
+                setOpen(true);
+                triggerSearchOnFocus && onSearch?.(debouncedSearchTerm);
+                inputProps?.onFocus?.(event);
+              }}
+              placeholder={
+                hidePlaceholderWhenSelected && selected.length !== 0
+                  ? ""
+                  : placeholder
+              }
+              className={cn(
+                "flex-1 bg-transparent outline-none placeholder:text-muted-foreground",
+                {
+                  "w-full": hidePlaceholderWhenSelected,
+                  "px-3 py-2": selected.length === 0,
+                  "ml-1": selected.length !== 0,
+                },
+                inputProps?.className,
+              )}
+            />
+            <button
+              type="button"
+              onClick={() => {
+                setSelected(selected.filter((s) => s.fixed));
+                onChange?.(selected.filter((s) => s.fixed));
+              }}
+              className={cn(
+                "absolute right-0 h-6 w-6 p-0",
+                (hideClearAllButton ||
+                  disabled ||
+                  selected.length < 1 ||
+                  selected.filter((s) => s.fixed).length === selected.length) &&
+                  "hidden",
+              )}
+            >
+              <X />
+            </button>
+          </div>
+        </div>
+        <div className="relative">
+          {open && (
+            <CommandList
+              className="absolute top-1 z-10 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in"
+              onMouseLeave={() => {
+                setOnScrollbar(false);
+              }}
+              onMouseEnter={() => {
+                setOnScrollbar(true);
+              }}
+              onMouseUp={() => {
+                inputRef?.current?.focus();
+              }}
+            >
+              {isLoading ? (
+                <>{loadingIndicator}</>
+              ) : (
+                <>
+                  {EmptyItem()}
+                  {CreatableItem()}
+                  {!selectFirstItem && (
+                    <CommandItem value="-" className="hidden" />
+                  )}
+                  {Object.entries(selectables).map(([key, dropdowns]) => (
+                    <CommandGroup
+                      key={key}
+                      heading={key}
+                      className="h-full overflow-auto"
+                    >
+                      <>
+                        {dropdowns.map((option) => {
+                          return (
+                            <CommandItem
+                              key={option.value}
+                              value={option.value}
+                              disabled={option.disable}
+                              onMouseDown={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                              }}
+                              onSelect={() => {
+                                if (selected.length >= maxSelected) {
+                                  onMaxSelected?.(selected.length);
+                                  return;
+                                }
+                                setInputValue("");
+                                const newOptions = [...selected, option];
+                                setSelected(newOptions);
+                                onChange?.(newOptions);
+                              }}
+                              className={cn(
+                                "cursor-pointer",
+                                option.disable &&
+                                  "cursor-default text-muted-foreground",
+                              )}
+                            >
+                              {option.label}
+                            </CommandItem>
+                          );
+                        })}
+                      </>
+                    </CommandGroup>
+                  ))}
+                </>
+              )}
+            </CommandList>
+          )}
+        </div>
+      </Command>
+    );
+  },
+);
+
+MultipleSelector.displayName = "MultipleSelector";
+export default MultipleSelector;
+
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+"use client";
+
+import * as React from "react";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+/* Border Beam Panel — from Motiq (https://motiq.dev/components/border-beam-panel).
+   MIT licensed. Zero runtime dependencies. */
+
+/* -------------------------------------------------------------------------- */
+/* Motiq design tokens                                                        */
+/* -------------------------------------------------------------------------- */
+/* Rendered with the component, in a low cascade layer, so your own
+   `:root { --motiq-*: … }` always wins. Move it to globals.css to drop it. */
+const MOTIQ_TOKENS = "@layer motiq{:root{--motiq-accent:#315fea;--motiq-accent-text:#244fd1;--motiq-bg:#f7f9fc;--motiq-border:#dce4ef;--motiq-border-strong:#c5d1e1;--motiq-fg:#101828;--motiq-fg-secondary:#344054;--motiq-muted:#667085;--motiq-secondary-accent:#009fb3;--motiq-signature:#e9564a;--motiq-surface:#ffffff;--motiq-surface-2:#f8fafd}}@layer motiq{.dark,[data-theme=\"dark\"]{--motiq-accent:#4f7cff;--motiq-accent-text:#7f9fff;--motiq-bg:#080c14;--motiq-border:#263449;--motiq-border-strong:#354863;--motiq-fg:#f8fafc;--motiq-fg-secondary:#cbd5e1;--motiq-muted:#9caabd;--motiq-secondary-accent:#22c7d9;--motiq-signature:#ff6b5e;--motiq-surface:#111827;--motiq-surface-2:#192337}}";
+
+/** Merge Tailwind class names; later/consumer classes win on conflict. */
+function cn(...inputs: ClassValue[]): string {
+  return twMerge(clsx(inputs));
+}
+
+/* ---- motion primitives (inlined from @motiq/primitives) ---- */
+
+/**
+ * SSR-safe `prefers-reduced-motion`. Reads synchronously on the client so a
+ * reduced-motion user never sees a frame of motion; the value is never rendered
+ * into markup, so there is no hydration-mismatch risk.
+ */
+function useReducedMotion(): boolean {
+  const [reduced, setReduced] = React.useState(
+    () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(mq.matches);
+    const onChange = (e: MediaQueryListEvent) => setReduced(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+  return reduced;
+}
+
+/**
+ * Returns whether the referenced element is currently worth animating — i.e.
+ * on-screen AND the tab is visible. Use it to pause per-frame work, autoplay,
+ * or streaming when the component scrolls away or the tab is backgrounded.
+ */
+function useVisibilityPause<T extends Element>(
+  ref: React.RefObject<T | null>,
+  { threshold = 0.1 }: { threshold?: number } = {},
+): boolean {
+  const [onScreen, setOnScreen] = React.useState(true);
+  const [tabVisible, setTabVisible] = React.useState(true);
+
+  React.useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(
+      (entries) => setOnScreen(entries.some((e) => e.isIntersecting)),
+      { threshold },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [ref, threshold]);
+
+  React.useEffect(() => {
+    const onVis = () => setTabVisible(document.visibilityState !== "hidden");
+    onVis();
+    document.addEventListener("visibilitychange", onVis);
+    return () => document.removeEventListener("visibilitychange", onVis);
+  }, []);
+
+  return onScreen && tabVisible;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Types                                                                      */
+/* -------------------------------------------------------------------------- */
+
+export interface BorderBeamPanelProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Panel content — semantics and layout are entirely yours. */
+  children?: React.ReactNode;
+  /** One comet, or two opposed comets 180° apart. */
+  beams?: 1 | 2;
+  /** Comet colors. The second defaults to the rare coral signature. */
+  colors?: [string, string?];
+  /** Ring thickness in px. */
+  thickness?: number;
+  /** Resting angular velocity in deg/s (~8.5s per lap at 42). */
+  idleSpeed?: number;
+  /** Hover/focus angular velocity in deg/s — the springs wind up toward it. */
+  hoverSpeed?: number;
+  /** Blurred copy of the ring behind the panel, read as cast light. */
+  glow?: boolean;
+  /** Corner radius in px. */
+  radius?: number;
+  /** Velocity spring — the SPEED is sprung, so the comets coast instead of snapping. */
+  spring?: { stiffness?: number; damping?: number };
+  /** Deterministic starting angle (SSR-stable; no Math.random). */
+  seed?: number;
+  /** Park the loop while scrolled offscreen or the tab is hidden. */
+  pauseWhenHidden?: boolean;
+  /** Force the static, motion-free lit-border state regardless of system preference. */
+  reducedMotion?: boolean;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Physics + gradient                                                         */
+/* -------------------------------------------------------------------------- */
+
+/** Hand-rolled delta-time spring — keeps the component dependency-free. */
+class Spring {
+  x: number;
+  v = 0;
+  target: number;
+  k: number;
+  d: number;
+  constructor(value: number, k: number, d: number) {
+    this.x = value;
+    this.target = value;
+    this.k = k;
+    this.d = d;
+  }
+  step(dt: number): number {
+    const a = this.k * (this.target - this.x) - this.d * this.v;
+    this.v += a * dt;
+    this.x += this.v * dt;
+    return this.x;
+  }
+}
+
+const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
+
+/** Static angle under reduced motion — both comets sit on visible edges. */
+const PARKED_ANGLE = 40;
+
+/**
+ * One comet: a ~45° tail easing into a 4° bright head. The toe uses a 4% mix of
+ * the comet color rather than `transparent`, because `transparent` is
+ * rgba(0,0,0,0) and a conic ramp through it dips visibly gray.
+ */
+function comet(tail: string, head: string, tip: string, midAlpha: number, start: number): string {
+  return [
+    `color-mix(in srgb, ${tail} 4%, transparent) ${start + 18}deg`,
+    `color-mix(in srgb, ${tail} ${midAlpha}%, transparent) ${start + 46}deg`,
+    `${head} ${start + 56}deg`,
+    `${tip} ${start + 60}deg`,
+    `transparent ${start + 63}deg`,
+  ].join(", ");
+}
+
+function ringGradient(beams: 1 | 2, colors: [string, string?] | undefined): string {
+  const tail0 = colors?.[0] ?? "var(--motiq-accent, #4f7cff)";
+  // Default comet reads azure → cyan along its length; a custom color stays itself.
+  const head0 = colors?.[0] ?? "var(--motiq-secondary-accent, #22c7d9)";
+  const stops = [
+    "transparent 0deg",
+    comet(tail0, head0, `color-mix(in srgb, ${head0} 22%, #ffffff)`, 55, 0),
+  ];
+  // The single coral moment on this surface — the second comet's head.
+  if (beams === 2) {
+    const c1 = colors?.[1] ?? "var(--motiq-signature, #ff6b5e)";
+    stops.push("transparent 198deg", comet(c1, c1, `color-mix(in srgb, ${c1} 26%, #ffffff)`, 50, 198));
+  }
+  stops.push("transparent 360deg");
+  return `conic-gradient(from var(--mk-beam-a, 0deg), ${stops.join(", ")})`;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Component                                                                  */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * BorderBeamPanel — twin comets orbiting a 2px border ring. The ring is a
+ * rotating conic gradient cut with a two-layer CSS ALPHA mask
+ * (`mask-composite: exclude`); SVG luminance masks are deliberately avoided
+ * because they silently no-op in Chromium. The angular VELOCITY itself is
+ * sprung (k=30, d=11) toward 240°/s on hover and back to 42°/s on leave, so the
+ * beams wind up and coast instead of snapping between speeds. Only one custom
+ * property changes per frame — panel content never repaints. Clean-room original.
+ */
+function BorderBeamPanelBase({
+  children,
+  beams = 2,
+  colors,
+  thickness = 2,
+  idleSpeed = 42,
+  hoverSpeed = 240,
+  glow = true,
+  radius = 16,
+  spring,
+  seed = 1,
+  pauseWhenHidden = true,
+  reducedMotion,
+  className,
+  style,
+  ...props
+}: BorderBeamPanelProps) {
+  const uid = React.useId().replace(/[^a-zA-Z0-9]/g, "");
+  const cls = `mk-beam-${uid}`;
+  const rootRef = React.useRef<HTMLDivElement | null>(null);
+
+  const systemReduced = useReducedMotion();
+  // Resolved after mount so SSR and first client render agree on data-motion.
+  const [hydrated, setHydrated] = React.useState(false);
+  React.useEffect(() => setHydrated(true), []);
+  const staticMode = reducedMotion === true || (hydrated && systemReduced);
+  const onScreen = useVisibilityPause(rootRef, { threshold: 0.05 });
+  const paused = pauseWhenHidden && !onScreen;
+  const animate = !staticMode && !paused;
+
+  const stiffness = spring?.stiffness ?? 30;
+  const damping = spring?.damping ?? 11;
+
+  // Deterministic start angle — a lap phase, never Math.random (SSR-stable).
+  const startAngle = React.useMemo(() => ((seed * 137.508) % 360 + 360) % 360, [seed]);
+
+  const speedRef = React.useRef(new Spring(idleSpeed, stiffness, damping));
+  const angleRef = React.useRef(startAngle);
+  const liveRef = React.useRef({ idleSpeed, hoverSpeed });
+  liveRef.current = { idleSpeed, hoverSpeed };
+
+  React.useEffect(() => {
+    speedRef.current.k = stiffness;
+    speedRef.current.d = damping;
+  }, [stiffness, damping]);
+
+  const paint = React.useCallback((angle: number) => {
+    rootRef.current?.style.setProperty("--mk-beam-a", `${(((angle % 360) + 360) % 360).toFixed(2)}deg`);
+  }, []);
+
+  React.useEffect(() => {
+    if (!animate) return;
+    let raf = 0;
+    let last = 0;
+    const frame = (now: number) => {
+      if (!last) last = now;
+      const dt = clamp((now - last) / 1000, 0, 0.05);
+      last = now;
+      angleRef.current += speedRef.current.step(dt) * dt;
+      paint(angleRef.current);
+      raf = requestAnimationFrame(frame);
+    };
+    raf = requestAnimationFrame(frame);
+    return () => cancelAnimationFrame(raf);
+  }, [animate, paint]);
+
+  React.useEffect(() => {
+    if (!staticMode) return;
+    angleRef.current = PARKED_ANGLE;
+    speedRef.current.x = speedRef.current.target = liveRef.current.idleSpeed;
+    speedRef.current.v = 0;
+    paint(PARKED_ANGLE);
+  }, [staticMode, paint]);
+
+  const surge = React.useCallback(() => {
+    speedRef.current.target = liveRef.current.hoverSpeed;
+  }, []);
+  const settle = React.useCallback(() => {
+    speedRef.current.target = liveRef.current.idleSpeed;
+  }, []);
+
+  const gradient = React.useMemo(() => ringGradient(beams, colors), [beams, colors]);
+
+  const css = `
+.${cls} .mk-beam-ring, .${cls} .mk-beam-glow {
+  position: absolute;
+  inset: -1px;
+  border-radius: ${radius}px;
+  pointer-events: none;
+  background: ${gradient};
+}
+.${cls} .mk-beam-ring {
+  padding: ${Math.max(1, thickness)}px;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+}
+.${cls} .mk-beam-glow { filter: blur(14px); opacity: 0.35; z-index: -1; }
+@media (forced-colors: active) {
+  .${cls} .mk-beam-ring, .${cls} .mk-beam-glow { display: none; }
+  .${cls} { border-color: CanvasText; }
+}`.trim();
+
+  return (
+    <div
+      ref={rootRef}
+      data-motion={staticMode ? "static" : "animated"}
+      data-paused={paused ? "true" : "false"}
+      onPointerEnter={surge}
+      onPointerLeave={settle}
+      onFocus={surge}
+      onBlur={settle}
+      className={cn(
+        "relative w-full border border-[var(--motiq-border,#263449)] bg-[var(--motiq-surface,#111827)] p-7",
+        cls,
+        className,
+      )}
+      style={{
+        borderRadius: `${radius}px`,
+        isolation: "isolate",
+        ["--mk-beam-a" as string]: `${startAngle.toFixed(2)}deg`,
+        ...style,
+      }}
+      {...props}
+    >
+      <style dangerouslySetInnerHTML={{ __html: css }} />
+      {glow ? <div aria-hidden="true" className="mk-beam-glow" /> : null}
+      <div aria-hidden="true" className="mk-beam-ring" />
+      {children}
+    </div>
+  );
+}
+
+export function BorderBeamPanel(props: BorderBeamPanelProps) {
+  return (
+    <>
+      <style dangerouslySetInnerHTML={{ __html: MOTIQ_TOKENS }} />
+      <BorderBeamPanelBase {...props} />
+    </>
+  );
+}
+
+export default BorderBeamPanel;
+
+
+
+------------------------------------------------------------------------------------------------------------
+
+
+// --- Component ---
+import * as React from "react"
+import { cva, type VariantProps } from "class-variance-authority"
+import { cn } from "@/lib/utils"
+import { IconType } from "@remixicon/react"
+
+const statusBadgeVariants = cva(
+  "inline-flex items-center gap-x-2.5 rounded-tremor-full bg-background px-2.5 py-1.5 text-tremor-label border",
+  {
+    variants: {
+      status: {
+        success: "",
+        error: "",
+        default: "",
+      },
+    },
+    defaultVariants: {
+      status: "default",
+    },
+  }
+)
+
+interface StatusBadgeProps
+  extends React.HTMLAttributes<HTMLSpanElement>,
+    VariantProps<typeof statusBadgeVariants> {
+  leftIcon?: IconType
+  rightIcon?: IconType
+  leftLabel: string
+  rightLabel: string
+}
+
+export function StatusBadge({
+  className,
+  status,
+  leftIcon: LeftIcon,
+  rightIcon: RightIcon,
+  leftLabel,
+  rightLabel,
+  ...props
+}: StatusBadgeProps) {
+  return (
+    <span className={cn(statusBadgeVariants({ status }), className)} {...props}>
+      <span className="inline-flex items-center gap-1.5 font-medium text-foreground">
+        {LeftIcon && (
+          <LeftIcon 
+            className={cn(
+              "-ml-0.5 size-4 shrink-0",
+              status === "success" && "text-emerald-600 dark:text-emerald-500",
+              status === "error" && "text-red-600 dark:text-red-500"
+            )} 
+            aria-hidden={true}
+          />
+        )}
+        {leftLabel}
+      </span>
+      <span className="h-4 w-px bg-border" />
+      <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+        {RightIcon && (
+          <RightIcon 
+            className="-ml-0.5 size-4 shrink-0" 
+            aria-hidden={true}
+          />
+        )}
+        {rightLabel}
+      </span>
+    </span>
+  )
+}
+
+// --- Demo ---
+import { StatusBadge } from "@/components/ui/status-badge"
+import {
+  RiCheckboxCircleFill,
+  RiCloseCircleFill,
+  RiCloseCircleLine,
+  RiShieldCheckLine,
+} from '@remixicon/react'
+
+export function StatusBadgeDemo() {
+  return (
+    <div className="flex flex-wrap justify-center gap-4">
+      <StatusBadge 
+        leftIcon={RiShieldCheckLine}
+        rightIcon={RiCloseCircleLine}
+        leftLabel="Protection"
+        rightLabel="SSO login"
+        status="success"
+      />
+      <StatusBadge 
+        leftIcon={RiCheckboxCircleFill}
+        rightIcon={RiCloseCircleLine}
+        leftLabel="Live"
+        rightLabel="Audit trails"
+        status="success"
+      />
+      <StatusBadge 
+        leftIcon={RiCloseCircleFill}
+        rightIcon={RiShieldCheckLine}
+        leftLabel="Safety checks"
+        rightLabel="Production"
+        status="error"
+      />
+    </div>
+  )
+}
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+

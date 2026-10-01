@@ -1,0 +1,96 @@
+<!-- UDP Logo Concepts - Unified Delivery Platform by Workmates Core2Cloud -->
+<!-- Brand Colors: Indigo #4B39FF | Gold #FDBE1B | Orange #F9811F | Ink #1F1F53 -->
+
+<!-- ============================================ -->
+<!-- CONCEPT 1: CONVERGENCE HEXAGON                -->
+<!-- Three paths converging into a unified hexagon -->
+<!-- ============================================ -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="c1-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4B39FF"/>
+      <stop offset="100%" stop-color="#F9811F"/>
+    </linearGradient>
+  </defs>
+  <!-- Outer hexagon shell -->
+  <path d="M32 4 L56 18 L56 46 L32 60 L8 46 L8 18 Z" 
+        fill="none" stroke="#1F1F53" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- Three converging agent paths -->
+  <path d="M20 14 L32 32" stroke="#4B39FF" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M44 14 L32 32" stroke="#F9811F" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M32 52 L32 32" stroke="#FDBE1B" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Center node (unified point) -->
+  <circle cx="32" cy="32" r="4" fill="url(#c1-grad)"/>
+  <!-- Agent nodes -->
+  <circle cx="20" cy="14" r="3" fill="#4B39FF"/>
+  <circle cx="44" cy="14" r="3" fill="#F9811F"/>
+  <circle cx="32" cy="52" r="3" fill="#FDBE1B"/>
+</svg>
+
+
+<!-- ============================================ -->
+<!-- CONCEPT 2: CLOUD CIRCUIT MARK                 -->
+<!-- Abstract cloud shape with circuit/data paths  -->
+<!-- ============================================ -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Stylized cloud shape made of geometric arcs -->
+  <path d="M16 40 C8 40 8 30 14 28 C12 20 20 16 28 18 C30 12 38 12 40 18 C48 14 56 20 52 28 C58 30 58 40 50 40 Z" 
+        fill="#1F1F53"/>
+  <!-- Delivery arrow/path through cloud -->
+  <path d="M20 34 L28 34 L28 28 L36 34 L28 40 L28 34" 
+        fill="#FDBE1B"/>
+  <!-- Three parallel data lines (representing multi-agent) -->
+  <line x1="38" y1="30" x2="50" y2="30" stroke="#4B39FF" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="38" y1="34" x2="50" y2="34" stroke="#F9811F" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="38" y1="38" x2="50" y2="38" stroke="#FDBE1B" stroke-width="1.5" stroke-linecap="round"/>
+</svg>
+
+
+<!-- ============================================ -->
+<!-- CONCEPT 3: UNIFIED STACK                      -->
+<!-- Layered geometric planes = infrastructure     -->
+<!-- ============================================ -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Bottom layer -->
+  <path d="M12 44 L32 54 L52 44 L32 34 Z" fill="#4B39FF" opacity="0.3"/>
+  <!-- Middle layer -->  
+  <path d="M12 36 L32 46 L52 36 L32 26 Z" fill="#4B39FF" opacity="0.6"/>
+  <!-- Top layer (active/delivery) -->
+  <path d="M12 28 L32 38 L52 28 L32 18 Z" fill="#4B39FF"/>
+  <!-- Upward arrow (delivery/deployment) -->
+  <path d="M32 8 L38 14 L34 14 L34 22 L30 22 L30 14 L26 14 Z" fill="#FDBE1B"/>
+  <!-- Small dots representing agents on top layer -->
+  <circle cx="24" cy="28" r="1.5" fill="#FDBE1B"/>
+  <circle cx="32" cy="24" r="1.5" fill="#F9811F"/>
+  <circle cx="40" cy="28" r="1.5" fill="#FDBE1B"/>
+</svg>
+
+
+<!-- ============================================ -->
+<!-- CONCEPT 4: ORBITAL AGENTS                     -->
+<!-- Central core with orbiting agent nodes        -->
+<!-- ============================================ -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="c4-core" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4B39FF"/>
+      <stop offset="100%" stop-color="#1F1F53"/>
+    </linearGradient>
+  </defs>
+  <!-- Orbital rings -->
+  <ellipse cx="32" cy="32" rx="24" ry="10" fill="none" stroke="#4B39FF" stroke-width="1.2" opacity="0.4" 
+           transform="rotate(-30 32 32)"/>
+  <ellipse cx="32" cy="32" rx="24" ry="10" fill="none" stroke="#F9811F" stroke-width="1.2" opacity="0.4"
+           transform="rotate(30 32 32)"/>
+  <ellipse cx="32" cy="32" rx="24" ry="10" fill="none" stroke="#FDBE1B" stroke-width="1.2" opacity="0.4"
+           transform="rotate(90 32 32)"/>
+  <!-- Core hexagon -->
+  <path d="M32 24 L39 28 L39 36 L32 40 L25 36 L25 28 Z" fill="url(#c4-core)"/>
+  <!-- Agent nodes on orbits -->
+  <circle cx="14" cy="22" r="3" fill="#4B39FF"/>
+  <circle cx="50" cy="22" r="3" fill="#F9811F"/>
+  <circle cx="32" cy="8" r="3" fill="#FDBE1B"/>
+  <circle cx="50" cy="42" r="3" fill="#4B39FF"/>
+  <circle cx="14" cy="42" r="3" fill="#F9811F"/>
+  <circle cx="32" cy="56" r="3" fill="#FDBE1B"/>
+</svg>

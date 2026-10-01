@@ -1,6 +1,6 @@
 /**
- * AWS Bedrock Runtime Client & Agent Reasoning Engine
- * Supports Claude 3.5 Sonnet, Amazon Nova Pro, and intelligent developer fallback.
+ * AWS Bedrock Runtime Client & Intent Engine
+ * Supports Claude 3.5 Sonnet, Amazon Nova Pro, and offline fallback.
  */
 
 import { BedrockRuntimeClient, InvokeModelCommand } from "@aws-sdk/client-bedrock-runtime";
@@ -22,8 +22,7 @@ if (hasAwsCredentials) {
 }
 
 /**
- * Intelligent Agentic Planner & Tool Orchestrator
- * Uses Amazon Bedrock if configured, or autonomous agent loop with full telemetry.
+ * Runs agent reasoning: tries Bedrock first, falls back to local intent engine.
  */
 export async function runAgentReasoning(userPrompt, conversationContext = []) {
   const startTime = Date.now();
@@ -79,7 +78,7 @@ export async function runAgentReasoning(userPrompt, conversationContext = []) {
     }
   }
 
-  // Autonomous Agent Simulator (Zero-crash developer mode while credits are processing)
+  // Offline intent engine (works without AWS credentials)
   const simulatedPlan = formulateAutonomousPlan(userPrompt);
   let toolResult = null;
 
@@ -112,7 +111,7 @@ function formulateAutonomousPlan(prompt) {
   // 1. Autonomous Multi-Step Routines (Highest Priority)
   if (lower.includes("routine") || lower.includes("work mode") || lower.includes("focus") || lower.includes("morning")) {
     return {
-      reasoning: "Complex multi-service routine detected. Initiating autonomous multi-step execution across devices, tasks, and lighting.",
+      reasoning: "Multi-step routine detected, executing across devices.",
       toolName: "execute_multi_step_routine",
       toolArgs: {
         routineName: "Deep Focus Workspace",
@@ -124,7 +123,7 @@ function formulateAutonomousPlan(prompt) {
           "Filter non-urgent Alexa+ notifications"
         ]
       },
-      responseText: "Initiating Deep Focus Workspace routine. I have adjusted your lighting, locked the front door, set the room to 21.5°C, and silenced distractions.",
+      responseText: "Starting Deep Focus routine. Lights dimmed, front door locked, thermostat set to 21.5°C, notifications silenced.",
       defaultCard: {
         cardType: "task_carousel",
         title: "Deep Focus Mode Active",
@@ -140,7 +139,7 @@ function formulateAutonomousPlan(prompt) {
   // 2. Climate / Thermostat Control
   if (lower.includes("temp") || lower.includes("cool") || lower.includes("warm") || lower.includes("climate")) {
     return {
-      reasoning: "User intent targets environmental climate control. Adjusting thermostat to optimum 22°C.",
+      reasoning: "Climate control intent, setting thermostat to 22°C.",
       toolName: "smart_home_control",
       toolArgs: { deviceId: "thermostat", action: "set_temperature", value: "22" },
       responseText: "Adjusted the climate control to 22°C. The current temperature is 23°C and cooling.",
@@ -157,10 +156,10 @@ function formulateAutonomousPlan(prompt) {
     const action = lower.includes("off") ? "turn_off" : "turn_on";
     const color = lower.includes("purple") ? "#9d00ff" : lower.includes("cyan") ? "#00d2ff" : "#ffffff";
     return {
-      reasoning: "User expressed intent regarding living room lighting. Invoking smart_home_control MCP tool.",
+      reasoning: "Lighting intent for living room, calling smart_home_control.",
       toolName: "smart_home_control",
       toolArgs: { deviceId: "living_room_light", action, value: color },
-      responseText: `I've ${action === "turn_on" ? "turned on" : "turned off"} the Living Room lights and synced the ambience for you.`,
+      responseText: `${action === "turn_on" ? "Turned on" : "Turned off"} the Living Room lights.`,
       defaultCard: {
         cardType: "device_controller",
         title: "Living Room Lighting",
@@ -171,10 +170,10 @@ function formulateAutonomousPlan(prompt) {
 
   if (lower.includes("todo") || lower.includes("task") || lower.includes("hackathon")) {
     return {
-      reasoning: "User requested task list verification. Pulling context memory store.",
+      reasoning: "Task or checklist query, reading context memory.",
       toolName: "manage_context_memory",
       toolArgs: { operation: "read_preferences" },
-      responseText: "Here is your Hackathon action checklist. You have 2 active tasks remaining, and your Streamable HTTP MCP server is ready for deployment.",
+      responseText: "Here's your Hackathon checklist. 2 tasks remaining, MCP server is ready for deployment.",
       defaultCard: {
         cardType: "metrics_dashboard",
         title: "Amazon Developer Hackathon Progress",
@@ -190,14 +189,14 @@ function formulateAutonomousPlan(prompt) {
 
   // Default agentic response
   return {
-    reasoning: "General conversational request. Maintaining stateful context and providing interactive recommendation card.",
+    reasoning: "General query, rendering suggestion card.",
     toolName: "render_interactive_card",
     toolArgs: {
       cardType: "smart_suggestion",
       title: "Alexa+ Proactive Suggestions",
-      details: { promptReceived: prompt, status: "Connected via MCP Streamable HTTP" }
+      details: { promptReceived: userPrompt, status: "Connected via MCP Streamable HTTP" }
     },
-    responseText: `I'm connected to your self-hosted MCP server over Streamable HTTP and AWS Bedrock. You can command smart home devices, trigger autonomous routines, or query your persistent memory.`,
+    responseText: `Connected to your MCP server over Streamable HTTP. You can control devices, run routines, or check your memory store.`,
     defaultCard: {
       cardType: "smart_suggestion",
       title: "Aura+ Assistant Ready",

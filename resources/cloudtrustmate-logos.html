@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cloudtrustmate — Logo System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Poppins:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#111110; --cream:#F4EFE1; --paper:#0d0d0c; --muted:#8a857a;
+    --line:rgba(255,255,255,0.08);
+    --indigo:#4B39FF; --indigo-l:#A79CFF; --gold:#FDBE1B; --navy:#1F1F53; --mist:#F5F5FC;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:#e9e5da;font-family:'Space Grotesk',sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1120px;margin:0 auto;padding:72px 32px 120px;}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
+  h1{font-size:42px;font-weight:700;letter-spacing:-0.02em;margin:0;color:#fff;}
+  .sub{color:var(--muted);font-size:16px;max-width:720px;margin-top:14px;}
+  .note{margin-top:22px;font-size:13px;color:#cfc9bb;background:rgba(255,255,255,0.03);border:1px solid var(--line);border-radius:10px;padding:14px 16px;max-width:720px;}
+  .note b{color:#fff;}
+  .toggle{margin-top:16px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#cfc9bb;display:flex;gap:8px;align-items:center;cursor:pointer;user-select:none;}
+  .toggle input{accent-color:var(--indigo);}
+  .section-label{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:56px 0 22px;padding-top:30px;border-top:1px solid var(--line);}
+
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+  .tile{display:flex;flex-direction:column;}
+  .mark{border-radius:16px;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;overflow:hidden;transition:transform .18s ease;position:relative;}
+  .mark:hover{transform:translateY(-4px);}
+  .mark svg{width:64%;height:64%;display:block;position:relative;z-index:1;}
+  .cream-tile{background:var(--cream);}
+  .wm-tile{background:#fff;border:1px solid #E2E2F0;}
+  /* optional alignment guide */
+  .mark.guide::after{content:"";position:absolute;inset:18%;border:1px dashed rgba(0,0,0,.18);border-radius:8px;}
+  .mark.guide::before{content:"";position:absolute;left:50%;top:12%;bottom:12%;width:1px;background:rgba(0,0,0,.12);}
+  .name{font-size:13px;color:#e9e5da;margin-top:12px;font-weight:600;}
+  .desc{font-size:11.5px;color:var(--muted);margin-top:1px;}
+  .wm-band{background:var(--mist);border-radius:20px;padding:32px;}
+  .wm-band .name{color:var(--navy);font-family:'Poppins',sans-serif;}
+  .wm-band .desc{color:#9a9ab0;}
+
+  .lockups{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px;}
+  .lock{border-radius:16px;padding:32px;display:flex;align-items:center;gap:18px;}
+  .lock.light{background:#fff;border:1px solid #E2E2F0;}
+  .lock.navy{background:var(--navy);}
+  .lock svg{width:52px;height:52px;flex-shrink:0;}
+  .lock .word{font-family:'Poppins',sans-serif;font-size:26px;font-weight:800;letter-spacing:-0.02em;}
+  .lock.light .word{color:var(--navy);} .lock.navy .word{color:#fff;}
+  .lock .word .t{color:var(--indigo);} .lock.navy .word .t{color:var(--gold);}
+  .lock .tag{display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-top:5px;font-weight:400;}
+
+  .sizes{display:flex;align-items:flex-end;gap:26px;background:var(--cream);border-radius:16px;padding:26px 30px;}
+  .sizes .s{display:flex;flex-direction:column;align-items:center;gap:8px;color:#7a756a;font-family:'IBM Plex Mono',monospace;font-size:10px;}
+  .sizes .s svg{color:var(--ink);}
+
+  footer{margin-top:64px;padding-top:24px;border-top:1px solid var(--line);font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);line-height:1.7;}
+  @media(max-width:880px){.grid{grid-template-columns:repeat(3,1fr);}}
+  @media(max-width:600px){.grid{grid-template-columns:repeat(2,1fr);}.lockups{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">Logo System — Round 7 · aligned + diverse construction</div>
+  <h1>Cloudtrustmate</h1>
+  <p class="sub">Rebuilt so no two share a construction method — negative-space letterforms, monoline, rotational, interlocking, and grid marks — not fifteen clouds. Every mark is drawn inside the same centred 64-unit box so they sit identically in each tile.</p>
+  <div class="note"><b>Alignment fixed:</b> all marks normalised to a centred bounding box (turn on the grid to verify). <b>Variety fixed:</b> letterform-C, letterform-T, interlock, rotor, chevron-stack, monoline — distinct silhouettes. Pure transparent SVG, two-tone in the Workmates set.</div>
+  <label class="toggle"><input type="checkbox" id="guideToggle"> show alignment grid</label>
+
+  <div class="section-label">The Marks — black on cream</div>
+  <div class="grid" id="darkGrid"></div>
+
+  <div class="section-label">Same marks — Workmates two-tone</div>
+  <div class="wm-band">
+    <div class="grid" id="wmGrid"></div>
+    <div class="lockups">
+      <div class="lock light" id="lockLight"></div>
+      <div class="lock navy" id="lockNavy"></div>
+    </div>
+  </div>
+
+  <div class="section-label">Small-size test — favicon / app icon</div>
+  <div class="sizes" id="sizes"></div>
+
+  <footer>
+    Cloudtrustmate — Round 7 · aligned, diverse, two-tone · scalable SVG.<br>
+    Say which names you like and I'll export each as its own .svg (mono + two-tone).
+  </footer>
+</div>
+
+<script>
+const INK = "#111110";
+
+/* All paths drawn inside an 18..82 box (centre 50,50) so every mark
+   fills the same optical area. Distinct construction per mark.
+   data-gold / data-navy = accent parts for the two-tone Workmates render. */
+const LOGOS = [
+  // 1 — LETTERFORM C built from a cloud (dual meaning, negative space)
+  { name:"C-mark", desc:"letter C = cloud gap",
+    svg:`<path fill-rule="evenodd" d="M50 18a32 32 0 1 0 28 47H62a18 18 0 1 1 0-30h16A32 32 0 0 0 50 18Z"/>
+         <circle data-gold cx="50" cy="50" r="7"/>` },
+
+  // 2 — LETTERFORM T inside a shield (trust + T)
+  { name:"T-shield", desc:"letter T in shield",
+    svg:`<path fill-rule="evenodd" d="M50 16 78 25v19c0 20-12 34-28 43C34 78 22 64 22 44V25L50 16Zm-12 16v9h8v22h8V41h8v-9H38Z"/>
+         <rect data-gold x="46" y="41" width="8" height="22"/>` },
+
+  // 3 — INTERLOCK: two links, mate/bond
+  { name:"Link", desc:"two interlocked links",
+    svg:`<path fill-rule="evenodd" d="M30 34h18a12 12 0 0 1 0 24h-6v-8h6a4 4 0 0 0 0-8H30a4 4 0 0 0 0 8h2v8h-2a12 12 0 0 1 0-24Z"/>
+         <path data-gold fill-rule="evenodd" d="M70 66H52a12 12 0 0 1 0-24h6v8h-6a4 4 0 0 0 0 8h18a4 4 0 0 0 0-8h-2v-8h2a12 12 0 0 1 0 24Z"/>` },
+
+  // 4 — PINWHEEL: 4-fold rotor built from clean triangles (motion/sync)
+  { name:"Rotor", desc:"4-fold sync",
+    svg:`<path d="M50 50 50 20 68 32Z"/>
+         <path data-gold d="M50 50 80 50 68 68Z"/>
+         <path d="M50 50 50 80 32 68Z"/>
+         <path data-navy d="M50 50 20 50 32 32Z"/>` },
+
+  // 5 — CHEVRON STACK: upload/ascend, three stacked (aligned)
+  { name:"Ascend", desc:"stacked chevrons",
+    svg:`<path d="M50 20 74 38H60l-10-7-10 7H26Z"/>
+         <path data-gold d="M50 40 74 58H60l-10-7-10 7H26Z"/>
+         <path d="M50 60 74 78H60l-10-7-10 7H26Z" opacity=".55"/>` },
+
+  // 6 — MONOLINE shield (stroke, not solid) — different weight/feel
+  { name:"Outline", desc:"monoline shield + dot",
+    svg:`<path d="M50 20 74 28v16c0 17-10 29-24 36-14-7-24-19-24-36V28L50 20Z" fill="none" stroke="currentColor" stroke-width="7" stroke-linejoin="round"/>
+         <circle data-gold cx="50" cy="47" r="7"/>` },
+
+  // 7 — SQUARE grid quatrefoil (like Piece/Unfold in ref)
+  { name:"Quad", desc:"four petals, unity",
+    svg:`<path fill-rule="evenodd" d="M50 20a15 15 0 0 0 15 15 15 15 0 0 0-15 15 15 15 0 0 0-15-15 15 15 0 0 0 15-15Z"/>
+         <path data-gold fill-rule="evenodd" d="M50 50a15 15 0 0 0 15 15 15 15 0 0 0-15 15 15 15 0 0 0-15-15 15 15 0 0 0 15-15Z"/>` },
+
+  // 8 — HEX secure core (aligned, platform)
+  { name:"Hexcore", desc:"secure hex node",
+    svg:`<path fill-rule="evenodd" d="M50 18 78 34v32L50 82 22 66V34L50 18Zm0 16L36 42v16l14 8 14-8V42L50 34Z"/>
+         <circle data-gold cx="50" cy="50" r="7"/>` },
+
+  // 9 — CLOUD + check (the flagship, kept, re-centred)
+  { name:"Checkcloud", desc:"cloud + verified tick",
+    svg:`<path d="M32 68a18 18 0 0 1 1.5-35.9A22 22 0 0 1 74 36a14 14 0 0 1 2 32H32Z"/>
+         <path data-gold d="m41 50 6 6 14-14 6 6-20 20-12-12Z"/>` },
+
+  // 10 — SHIELD + bolt (kept, re-centred)
+  { name:"Shieldbolt", desc:"shield + lightning",
+    svg:`<path d="M50 18 76 27v17c0 20-12 34-26 42-14-8-26-22-26-42V27L50 18Z"/>
+         <path data-gold d="M53 32 39 54h9l-3 16 17-24h-9l3-14Z"/>` },
+
+  // 11 — TWO FIGURES (mate) — re-centred, clean
+  { name:"Mates", desc:"two figures",
+    svg:`<circle cx="38" cy="34" r="9"/>
+         <path d="M24 78V64a14 14 0 0 1 28 0v14Z"/>
+         <circle data-gold cx="62" cy="34" r="9"/>
+         <path data-navy d="M48 78V64a14 14 0 0 1 28 0v14Z"/>` },
+
+  // 12 — APERTURE / faceted eye (kept, re-centred)
+  { name:"Aperture", desc:"secure lens",
+    svg:`<path fill-rule="evenodd" d="M50 18a32 32 0 1 0 0 64 32 32 0 0 0 0-64Zm0 12 14 8v16l-14 8-14-8V38l14-8Z"/>
+         <circle data-gold cx="50" cy="50" r="7"/>` },
+
+  // 13 — INFINITY LINK: two loops bonded (mate), clean
+  { name:"Infinity", desc:"bonded loops",
+    svg:`<path fill-rule="evenodd" d="M35 34a16 16 0 1 0 15 22 16 16 0 1 0 0-12 16 16 0 0 0-15-10Zm0 10a6 6 0 1 1 0 12 6 6 0 0 1 0-12Zm30 0a6 6 0 1 1 0 12 6 6 0 0 1 0-12Z"/>
+         <circle data-gold cx="65" cy="50" r="6"/>` },
+
+  // 14 — WAVES: two flowing lines (cloud data)
+  { name:"Stream", desc:"data waves",
+    svg:`<path d="M20 42c8-9 16-9 24 0s16 9 24 0 12-6 12-6v11s-4-3-12 5-16 9-24 0-16-9-24 0Z"/>
+         <path data-gold d="M20 62c8-9 16-9 24 0s16 9 24 0 12-6 12-6v11s-4-3-12 5-16 9-24 0-16-9-24 0Z"/>` },
+
+  // 15 — KEY monoline in a circle (access/trust)
+  { name:"Access", desc:"key in ring",
+    svg:`<path fill-rule="evenodd" d="M50 18a32 32 0 1 0 0 64 32 32 0 0 0 0-64Zm0 10a22 22 0 1 1 0 44 22 22 0 0 1 0-44Z"/>
+         <path data-gold d="M46 40a9 9 0 0 0-4 17v9h6v-4h5v-5h-5v-.5A9 9 0 0 0 46 40Z"/>` },
+
+  // 16 — GEM: clean diamond, solid body + gold top facet
+  { name:"Gem", desc:"cut facet",
+    svg:`<path d="M32 26h36l12 16-30 34-30-34 12-16Z"/>
+         <path data-gold d="M32 26h36l-6 16H38l-6-16Z"/>` },
+
+  // 17 — STREAM fixed: three clean stacked waves
+  { name:"Stream", desc:"data waves",
+    svg:`<path d="M22 38c7-7 13-7 20 0M42 38c7 7 13 7 20 0M62 38c7-7 13-7 16-4" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
+         <path data-gold d="M22 54c7-7 13-7 20 0M42 54c7 7 13 7 20 0M62 54c7-7 13-7 16-4" fill="none" stroke="#FDBE1B" stroke-width="7" stroke-linecap="round"/>
+         <path d="M22 70c7-7 13-7 20 0M42 70c7 7 13 7 20 0M62 70c7-7 13-7 16-4" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" opacity=".5"/>` },
+
+  // ── NEW BATCH ─────────────────────────────
+  // 18 — CT ligature: C and T sharing a stem
+  { name:"CT-lig", desc:"C + T ligature",
+    svg:`<path fill-rule="evenodd" d="M46 20a30 30 0 1 0 20 52l-8-8a19 19 0 1 1 0-28l6-6h-6v-8h22v8h-8A30 30 0 0 0 46 20Z"/>
+         <rect data-gold x="62" y="28" width="8" height="30"/>` },
+
+  // 19 — CUBE: isometric secure block (3 faces, two-tone shines)
+  { name:"Cube", desc:"isometric block",
+    svg:`<path d="M50 18 80 34 50 50 20 34Z"/>
+         <path data-gold d="M20 34 50 50v30L20 64Z"/>
+         <path data-navy d="M80 34 50 50v30l30-16Z"/>` },
+
+  // 20 — RADAR: concentric arcs + dot (monitor/observe)
+  { name:"Radar", desc:"concentric watch",
+    svg:`<path d="M50 24a26 26 0 0 1 26 26h-8a18 18 0 0 0-18-18Z"/>
+         <path d="M50 38a12 12 0 0 1 12 12h-8a4 4 0 0 0-4-4Z"/>
+         <circle data-gold cx="50" cy="72" r="8"/>` },
+
+  // 21 — PADLOCK clean: bold body + shackle + gold keyhole
+  { name:"Lock", desc:"padlock + keyhole",
+    svg:`<path d="M36 44v-6a14 14 0 0 1 28 0v6" fill="none" stroke="currentColor" stroke-width="8"/>
+         <rect x="26" y="44" width="48" height="38" rx="9"/>
+         <path data-gold d="M50 54a6 6 0 0 0-3 11v6h6v-6a6 6 0 0 0-3-11Z"/>` },
+
+  // 22 — CLOUD-C negative: a C carved out of a cloud
+  { name:"Cloud-C", desc:"C carved in cloud",
+    svg:`<path fill-rule="evenodd" d="M30 72a20 20 0 0 1 2-40 24 24 0 0 1 45 6 15 15 0 0 1 1 34H30Zm22-30a14 14 0 1 0 10 24l-6-6a6 6 0 1 1 0-12l6-6a14 14 0 0 0-10 0Z"/>
+         <circle data-gold cx="52" cy="52" r="5"/>` },
+
+  // 23 — ARROWS SYNC: two curved arrows (deploy/refresh)
+  { name:"Sync", desc:"deploy loop",
+    svg:`<path fill-rule="evenodd" d="M50 24a26 26 0 0 1 24 16l-9 3a17 17 0 0 0-15-10V24Zm-6 3-2 21 18-9-6-2a26 26 0 0 0-10-10Z" data-gold/>
+         <path fill-rule="evenodd" d="M50 76a26 26 0 0 1-24-16l9-3a17 17 0 0 0 15 10v9Zm6-3 2-21-18 9 6 2a26 26 0 0 0 10 10Z"/>` },
+
+  // 24 — MOUNTAIN cloud: peak + cloud (summit/reliability)
+  { name:"Summit", desc:"peak + cloud",
+    svg:`<path d="M20 74 40 40l12 20 8-12 20 26H20Z"/>
+         <circle data-gold cx="66" cy="34" r="9"/>` },
+
+  // 25 — GRID DOTS: 3x3 with center accent (platform/network)
+  { name:"Matrix", desc:"node grid",
+    svg:`<circle cx="30" cy="30" r="7"/><circle cx="50" cy="30" r="7"/><circle cx="70" cy="30" r="7"/>
+         <circle cx="30" cy="50" r="7"/><circle data-gold cx="50" cy="50" r="7"/><circle cx="70" cy="50" r="7"/>
+         <circle cx="30" cy="70" r="7"/><circle cx="50" cy="70" r="7"/><circle cx="70" cy="70" r="7"/>` },
+
+  // 26 — SHIELD-C: C-arc forming a shield outline
+  { name:"Shield-C", desc:"C-arc shield",
+    svg:`<path fill-rule="evenodd" d="M50 16 78 25v19c0 20-12 34-28 43C34 78 22 64 22 44V25L50 16Zm0 12L34 33v11c0 14 8 24 16 30 8-6 16-16 16-30V33L50 28Z"/>
+         <path data-gold d="M50 34l12 4v9c0 9-6 16-12 20-6-4-12-11-12-20v-9l12-4Z"/>` },
+
+  // 27 — ORIGAMI: folded paper diamond (two folds, dimensional)
+  { name:"Fold", desc:"folded facets",
+    svg:`<path d="M50 18 78 50 50 82 22 50Z"/>
+         <path data-gold d="M50 18 78 50 50 50Z"/>
+         <path data-navy d="M50 82 22 50 50 50Z"/>` },
+
+  // 28 — PULSE: heartbeat line in a rounded square (health/uptime)
+  { name:"Pulse", desc:"uptime signal",
+    svg:`<path fill-rule="evenodd" d="M28 22h44a10 10 0 0 1 10 10v36a10 10 0 0 1-10 10H28a10 10 0 0 1-10-10V32a10 10 0 0 1 10-10Zm2 30h10l4-10 8 20 5-12h13v-8H51l-3 8-8-20-6 14h-4v8Z"/>` },
+
+  // 29 — KEY-C: a C whose gap forms a key notch
+  { name:"Keycloud", desc:"key + cloud",
+    svg:`<path d="M30 66a20 20 0 0 1 2-40 24 24 0 0 1 45 6 15 15 0 0 1 1 34H56"/>
+         <path fill-rule="evenodd" d="M42 60a10 10 0 1 0-9 6h-5v6h5v6h6v-6h3v-5a10 10 0 0 0 0-7Zm-9 1a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z" data-gold/>` },
+
+  // 30 — BADGE STAR: rosette (award/certified)
+  { name:"Rosette", desc:"certified star",
+    svg:`<path fill-rule="evenodd" d="M50 18l6 6 8-3 3 8 8 3-3 8 6 6-6 6 3 8-8 3-3 8-8-3-6 6-6-6-8 3-3-8-8-3 3-8-6-6 6-6-3-8 8-3 3-8 8 3 6-6Zm0 16a16 16 0 1 0 0 32 16 16 0 0 0 0-32Z"/>
+         <path data-gold d="m43 50 5 5 11-11 5 5-16 16-10-10Z"/>` },
+
+  // ── BATCH 3 ───────────────────────────────
+  // 31 — SHIELD-CHECK combined bold (trust flagship alt)
+  { name:"Trustcheck", desc:"bold shield tick",
+    svg:`<path d="M50 16 78 26v18c0 20-12 34-28 42-16-8-28-22-28-42V26L50 16Z"/>
+         <path data-gold d="m40 47 7 7 15-15 5 5-20 20-12-12Z"/>` },
+
+  // 32 — CLOUD LAYERS: two offset clouds (scale/redundancy)
+  { name:"Duocloud", desc:"redundant clouds",
+    svg:`<path data-gold d="M40 44a14 14 0 0 1 1-27 17 17 0 0 1 31 4 10 10 0 0 1 2 23H40Z"/>
+         <path d="M28 62a15 15 0 0 1 1-29 18 18 0 0 1 33 4 11 11 0 0 1 2 25H28Z"/>` },
+
+  // 33 — LETTER M (mate): two peaks
+  { name:"M-mark", desc:"letter M · mate",
+    svg:`<path d="M22 78V26h10l18 22 18-22h10v52H68V44L50 66 32 44v34Z"/>
+         <rect data-gold x="45" y="60" width="10" height="18"/>` },
+
+  // 34 — SPARK / burst (AI, generate)
+  { name:"Spark", desc:"generate burst",
+    svg:`<path d="M50 18l5 20 20 5-20 5-5 20-5-20-20-5 20-5Z"/>
+         <circle data-gold cx="74" cy="26" r="6"/>` },
+
+  // 35 — RING SEGMENTS: 3 arcs forming a ring (pipeline stages)
+  { name:"Stages", desc:"pipeline ring",
+    svg:`<path fill-rule="evenodd" d="M50 20a30 30 0 0 1 26 15l-9 5a20 20 0 0 0-17-10Z"/>
+         <path data-gold fill-rule="evenodd" d="M76 55a30 30 0 0 1-26 25v-10a20 20 0 0 0 17-20Z"/>
+         <path fill-rule="evenodd" d="M44 80a30 30 0 0 1-20-45l9 5a20 20 0 0 0 11 30Z"/>` },
+
+  // 36 — CUBE OUTLINE: wireframe box (infra/container)
+  { name:"Container", desc:"infra box",
+    svg:`<path fill-rule="evenodd" d="M50 18 80 34v32L50 82 20 66V34L50 18Zm0 9L30 38v24l20 11 20-11V38L50 27Z"/>
+         <path d="M50 27v46M30 38l20 11 20-11" fill="none" stroke="currentColor" stroke-width="4"/>
+         <circle data-gold cx="50" cy="49" r="6"/>` },
+
+  // 37 — CHAT / node bubble (collaborate, mate)
+  { name:"Bubble", desc:"talk · collaborate",
+    svg:`<path fill-rule="evenodd" d="M24 26h52a8 8 0 0 1 8 8v28a8 8 0 0 1-8 8H46L30 82V70h-6a8 8 0 0 1-8-8V34a8 8 0 0 1 8-8Z"/>
+         <circle cx="38" cy="48" r="4" fill-rule="evenodd"/>
+         <circle data-gold cx="52" cy="48" r="4"/>
+         <circle cx="66" cy="48" r="4" fill-rule="evenodd"/>` },
+
+  // 38 — ARROW SHIELD UP (secure deploy)
+  { name:"Deploy", desc:"secure launch",
+    svg:`<path fill-rule="evenodd" d="M50 16 78 26v18c0 20-12 34-28 42-16-8-28-22-28-42V26L50 16Zm0 14L36 46h8v16h12V46h8L50 30Z"/>` },
+
+  // 39 — ORBIT PATH: dot travelling an ellipse (motion)
+  { name:"Trace", desc:"orbit path",
+    svg:`<ellipse cx="50" cy="50" rx="30" ry="16" fill="none" stroke="currentColor" stroke-width="6" transform="rotate(-30 50 50)"/>
+         <circle cx="50" cy="50" r="8"/>
+         <circle data-gold cx="74" cy="38" r="7"/>` },
+
+  // 40 — HEX MONOGRAM C (letter inside hex)
+  { name:"Hex-C", desc:"C in hex",
+    svg:`<path fill-rule="evenodd" d="M50 16 80 33v34L50 84 20 67V33L50 16Zm6 20a18 18 0 1 0 12 31l-7-7a9 9 0 1 1 0-14h9A18 18 0 0 0 56 36Z"/>
+         <circle data-gold cx="52" cy="50" r="5"/>` },
+
+  // ── BATCH 4 ───────────────────────────────
+  // 41 — DROPLET SHIELD (cloud/data + protection)
+  { name:"Droplet", desc:"data drop guard",
+    svg:`<path fill-rule="evenodd" d="M50 16c14 16 22 27 22 38a22 22 0 0 1-44 0c0-11 8-22 22-38Zm0 22a12 12 0 0 0-12 12h8a4 4 0 0 1 4-4V38Z"/>
+         <circle data-gold cx="58" cy="50" r="5"/>` },
+
+  // 42 — TWO CHEVRONS facing (mate/exchange)
+  { name:"Exchange", desc:"two-way sync",
+    svg:`<path d="M44 22 22 50l22 28V60h14V40H44Z"/>
+         <path data-gold d="M56 22l22 28-22 28V60H42V40h14Z" opacity="0"/>
+         <path data-gold d="M56 78 78 50 56 22v18H42v20h14Z"/>` },
+
+  // 43 — KEYSTONE ARCH (trust foundation)
+  { name:"Arch", desc:"foundation arch",
+    svg:`<path fill-rule="evenodd" d="M22 80V50a28 28 0 0 1 56 0v30H62V50a12 12 0 0 0-24 0v30Z"/>
+         <rect data-gold x="44" y="38" width="12" height="12" rx="2"/>` },
+
+  // 44 — SIGNAL BARS rising (growth/uptime)
+  { name:"Growth", desc:"rising bars",
+    svg:`<rect x="22" y="58" width="12" height="22" rx="2"/>
+         <rect x="44" y="44" width="12" height="36" rx="2"/>
+         <rect data-gold x="66" y="28" width="12" height="52" rx="2"/>` },
+
+  // 45 — EYE / watch (observability, monitor)
+  { name:"Watch", desc:"observe",
+    svg:`<path fill-rule="evenodd" d="M50 30c18 0 30 20 30 20s-12 20-30 20-30-20-30-20 12-20 30-20Zm0 8a12 12 0 1 0 0 24 12 12 0 0 0 0-24Z"/>
+         <circle data-gold cx="50" cy="50" r="6"/>` },
+
+  // 46 — INTERLOCKED SQUARES (secure blocks)
+  { name:"Blocks", desc:"linked blocks",
+    svg:`<path fill-rule="evenodd" d="M24 24h32v32H24Zm8 8v16h16V32Z"/>
+         <path data-gold fill-rule="evenodd" d="M44 44h32v32H44Zm8 8v16h16V52Z"/>` },
+
+  // 47 — FLAG CHECK (milestone/verified)
+  { name:"Flag", desc:"verified milestone",
+    svg:`<path d="M30 20h6v60h-6Z"/>
+         <path d="M40 24h34l-8 12 8 12H40Z"/>
+         <path data-gold d="M50 30h14l-4 6 4 6H50Z" opacity="0"/>
+         <circle data-gold cx="55" cy="36" r="5"/>` },
+
+  // 48 — CONCENTRIC LOCK (layered security)
+  { name:"Layered", desc:"layered security",
+    svg:`<path fill-rule="evenodd" d="M50 18a32 32 0 1 0 0 64 32 32 0 0 0 0-64Zm0 12a20 20 0 1 1 0 40 20 20 0 0 1 0-40Z"/>
+         <circle data-gold cx="50" cy="50" r="9"/>` },
+
+  // 49 — ARROW CLOUD (cloud + forward)
+  { name:"Forward", desc:"cloud forward",
+    svg:`<path fill-rule="evenodd" d="M28 68a20 20 0 0 1 1.5-39.9A24 24 0 0 1 74 33a15 15 0 0 1 2 35H50l10 10-14 0V58h14l-8-8H28Z" opacity="0"/>
+         <path d="M28 68a20 20 0 0 1 1.5-39.9A24 24 0 0 1 74 33a15 15 0 0 1 2 35H30Z"/>
+         <path data-gold d="M46 44v8h-8l12 12 12-12h-8v-8Z"/>` },
+
+  // 50 — MONOGRAM CTM stack (3 bars = C T M initials abstract)
+  { name:"Triband", desc:"three-mark stack",
+    svg:`<rect x="24" y="26" width="52" height="12" rx="6"/>
+         <rect data-gold x="24" y="44" width="40" height="12" rx="6"/>
+         <rect x="24" y="62" width="52" height="12" rx="6"/>` },
+
+  // ── CTM LETTERMARKS ───────────────────────
+  // 51 — CTM in a rounded badge, stacked mono initials
+  { name:"CTM-badge", desc:"CTM in badge",
+    svg:`<rect x="18" y="22" width="64" height="56" rx="14"/>
+         <path data-gold fill-rule="evenodd" d="M42 40a10 10 0 0 0 0 20 10 10 0 0 0 7-3l-4-4a5 5 0 1 1 0-6l4-4a10 10 0 0 0-7-3Z"/>
+         <path data-gold d="M52 40h16v5h-5.5v15h-5V45H52Z"/>` },
+
+  // 52 — C·T·M horizontal lockup, clean geometric letters
+  { name:"CTM-row", desc:"C T M inline",
+    svg:`<path fill-rule="evenodd" d="M30 34a16 16 0 1 0 11 28l-6-6a8 8 0 1 1 0-16h5A16 16 0 0 0 30 34Z"/>
+         <path data-gold d="M44 35h20v6h-7v24h-6V41h-7Z"/>
+         <path d="M68 65V35h5l6 12 6-12h5v30h-5V47l-6 12-6-12v18Z"/>` },
+
+  // 53 — CTM monogram fused: C cradles a T with M feet
+  { name:"CTM-fuse", desc:"fused monogram",
+    svg:`<path fill-rule="evenodd" d="M50 18a32 32 0 1 0 22 55l-7-7a22 22 0 1 1 0-32l7-7A31.9 31.9 0 0 0 50 18Z"/>
+         <path data-gold d="M40 34h24v8h-8v18h-8V42h-8Z"/>
+         <path data-navy d="M36 66V52l7 8 7-8v14h-5v-6l-2 3-2-3v6Z"/>` },
+
+  // 54 — CT ligature with M underline (wordmark feel)
+  { name:"CTM-line", desc:"CT + M base",
+    svg:`<path fill-rule="evenodd" d="M40 26a20 20 0 1 0 14 34l-6-6a12 12 0 1 1 0-16h8V26H40Z"/>
+         <rect x="46" y="26" width="9" height="34"/>
+         <path data-gold d="M26 70l6-8 6 8 6-8 6 8 6-8 6 8" fill="none" stroke="#FDBE1B" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>` },
+
+  // 55 — CTM in a hexagon, three initials stacked tight
+  { name:"CTM-hex", desc:"CTM in hex",
+    svg:`<path fill-rule="evenodd" d="M50 16 80 33v34L50 84 20 67V33L50 16Z"/>
+         <path data-gold fill-rule="evenodd" d="M40 38a9 9 0 0 0 0 18 9 9 0 0 0 6-2l-4-4a4 4 0 1 1 0-6l4-4a9 9 0 0 0-6-2Z"/>
+         <path data-gold d="M49 38h16v5h-5.5v13h-5V43H49Z"/>
+         <path data-gold d="M40 62v-2l4 4 4-4v2" fill="none" stroke="#FDBE1B" stroke-width="4"/>` },
+
+  // 56 — Bold CTM slab, three letters as solid blocks
+  { name:"CTM-slab", desc:"slab initials",
+    svg:`<path fill-rule="evenodd" d="M22 34a14 14 0 1 0 9 25l-5-5a7 7 0 1 1 0-14h4A14 14 0 0 0 22 34Z"/>
+         <path data-gold d="M34 35h16v6h-5v24h-6V41h-5Z"/>
+         <path d="M54 65V35h6l6 14 6-14h6v30h-6V49l-6 12-6-12v16Z"/>` },
+
+  // ── CTM LETTERMARKS · BATCH 2 ─────────────
+  // 57 — CTM in a circle, initials centred
+  { name:"CTM-circle", desc:"CTM in circle",
+    svg:`<circle cx="50" cy="50" r="34"/>
+         <path data-gold fill-rule="evenodd" d="M38 40a10 10 0 0 0 0 20 10 10 0 0 0 7-3l-4-4a5 5 0 1 1 0-6l4-4a10 10 0 0 0-7-3Z"/>
+         <path data-gold d="M47 40h15v5h-5v15h-5V45h-5Z"/>
+         <path data-gold d="M50 60v-2l3 4 3-4v2" fill="none" stroke="#FDBE1B" stroke-width="4"/>` },
+
+  // 58 — CTM shield lockup (trust + initials)
+  { name:"CTM-shield", desc:"CTM shield",
+    svg:`<path d="M50 16 78 25v19c0 20-12 34-28 43C34 78 22 64 22 44V25L50 16Z"/>
+         <path data-gold fill-rule="evenodd" d="M40 38a9 9 0 0 0 0 18 9 9 0 0 0 6-2l-4-4a4 4 0 1 1 0-6l4-4a9 9 0 0 0-6-2Z"/>
+         <path data-gold d="M48 38h14v5h-4.5v14h-5V43H48Z"/>` },
+
+  // 59 — CTM tall stack (C over T over M, vertical)
+  { name:"CTM-stack", desc:"vertical CTM",
+    svg:`<path fill-rule="evenodd" d="M50 20a11 11 0 0 0 0 22 11 11 0 0 0 8-3l-5-5a5 5 0 1 1 0-8l5-5a11 11 0 0 0-8-3Z"/>
+         <path data-gold d="M38 46h24v6h-9v10h-6V52h-9Z"/>
+         <path d="M34 80V64l16 10 16-10v16h-6v-6l-10 6-10-6v6Z"/>` },
+
+  // 60 — CTM negative in solid square (letters cut out)
+  { name:"CTM-cut", desc:"cut-out CTM",
+    svg:`<path fill-rule="evenodd" d="M20 22h60a4 4 0 0 1 4 4v48a4 4 0 0 1-4 4H20a4 4 0 0 1-4-4V26a4 4 0 0 1 4-4Zm18 20a9 9 0 0 0 0 18 9 9 0 0 0 6-2l-4-4a4 4 0 1 1 0-6l4-4a9 9 0 0 0-6-2Zm10 0v5h4.5v13h5V47H52v-5H48Zm18 18V42l-5 8-5-8v18h4v-6l1 2 1-2v6Z"/>
+         <circle data-gold cx="70" cy="30" r="4"/>` },
+
+  // 61 — CTM ligature: shared vertical stem C-T-M
+  { name:"CTM-stem", desc:"shared-stem CTM",
+    svg:`<path fill-rule="evenodd" d="M38 26a20 20 0 1 0 14 34l-6-6a12 12 0 1 1 0-16h6V26H38Z"/>
+         <rect data-gold x="44" y="26" width="9" height="48"/>
+         <path d="M53 74V50l9 10 9-10v24h-6V64l-3 3-3-3v10Z"/>` },
+
+  // 62 — CTM pill row (each letter in its own tab)
+  { name:"CTM-pills", desc:"CTM tabs",
+    svg:`<rect x="16" y="40" width="20" height="20" rx="10"/>
+         <rect data-gold x="40" y="40" width="20" height="20" rx="10"/>
+         <rect x="64" y="40" width="20" height="20" rx="10"/>
+         <path fill="#F4EFE1" d="M22 47a4 4 0 0 0 0 6l-2-2a1 1 0 0 1 0-2Z" opacity="0"/>` },
+
+  // ── SHAPE + "CTM" TEXT INSIDE ─────────────
+  // These are a container shape with the real text "CTM" cut through it.
+  // The word 'cut' in the svg is replaced at build time with the letters.
+  { name:"Text-circle",  desc:"CTM in circle",  shape:`<circle cx="50" cy="50" r="34"/>` },
+  { name:"Text-square",  desc:"CTM in square",  shape:`<rect x="16" y="16" width="68" height="68" rx="14"/>` },
+  { name:"Text-hex",     desc:"CTM in hexagon", shape:`<path d="M50 14 82 32v36L50 86 18 68V32Z"/>` },
+  { name:"Text-shield",  desc:"CTM in shield",  shape:`<path d="M50 14 82 24v22c0 24-16 42-32 52C34 88 18 70 18 46V24Z"/>` },
+  { name:"Text-badge",   desc:"CTM in badge",   shape:`<rect x="14" y="24" width="72" height="52" rx="26"/>` },
+  { name:"Text-diamond", desc:"CTM in diamond", shape:`<path d="M50 14 86 50 50 86 14 50Z"/>` },
+  { name:"Text-rounded", desc:"CTM tall tile",  shape:`<rect x="22" y="14" width="56" height="72" rx="16"/>` },
+  { name:"Text-ticket",  desc:"CTM ticket",     shape:`<path d="M18 30a6 6 0 0 1 6-6h52a6 6 0 0 1 6 6 6 6 0 0 0 0 12v16a6 6 0 0 0 0 12 6 6 0 0 1-6 6H24a6 6 0 0 1-6-6 6 6 0 0 0 0-12V42a6 6 0 0 0 0-12Z"/>` },
+  { name:"Text-blob",    desc:"CTM soft blob",   shape:`<path d="M30 22h40a12 12 0 0 1 12 12v32a12 12 0 0 1-12 12H30a12 12 0 0 1-12-12V34a12 12 0 0 1 12-12Z"/>` },
+  { name:"Text-octagon", desc:"CTM octagon",     shape:`<path d="M35 16h30l19 19v30l-19 19H35L16 65V35Z"/>` },
+  { name:"Text-pin",     desc:"CTM pin",         shape:`<path d="M50 16a30 30 0 0 0-30 30c0 14 20 34 30 40 10-6 30-26 30-40a30 30 0 0 0-30-30Z"/>` },
+  { name:"Text-arch",    desc:"CTM arch",        shape:`<path d="M20 84V44a30 30 0 0 1 60 0v40Z"/>` },
+];
+
+function build(l, fill, twoTone){
+  let s;
+  if(l.shape){
+    // Shape container with the literal text "CTM" inside.
+    // Mono: text is a transparent cut-out (uses a mask). Two-tone: text is gold.
+    const textFill = twoTone ? "#FDBE1B" : fill;
+    if(twoTone){
+      s = `${l.shape}
+        <text x="50" y="50" text-anchor="middle" dominant-baseline="central"
+              font-family="'Space Grotesk',sans-serif" font-weight="700"
+              font-size="26" letter-spacing="1" fill="${textFill}">CTM</text>`;
+    } else {
+      // real knockout so "CTM" is transparent on any background
+      const mid = 'ctm-'+Math.random().toString(36).slice(2,8);
+      s = `<mask id="${mid}">
+             <rect x="0" y="0" width="100" height="100" fill="white"/>
+             <text x="50" y="50" text-anchor="middle" dominant-baseline="central"
+                   font-family="'Space Grotesk',sans-serif" font-weight="700"
+                   font-size="26" letter-spacing="1" fill="black">CTM</text>
+           </mask>
+           <g mask="url(#${mid})">${l.shape}</g>`;
+    }
+  } else {
+    s = l.svg;
+    if(twoTone){
+      s = s.replace(/data-gold/g,'fill="#FDBE1B"').replace(/data-navy/g,'fill="#1F1F53"');
+    } else {
+      s = s.replace(/data-gold/g,'').replace(/data-navy/g,'');
+      s = s.replace(/stroke="#FDBE1B"/g,'stroke="'+fill+'"');
+    }
+  }
+  // Wrap inner content in a group we can measure + normalise after mount.
+  return `<svg viewBox="0 0 100 100" fill="${fill}" xmlns="http://www.w3.org/2000/svg"><g class="norm">${s}</g></svg>`;
+}
+
+// Measure each mark's real bounding box and scale/translate it to fill the
+// same centred target box (TARGET wide, centre 50,50). Kills all size/align drift.
+const TARGET = 62; // side length of the optical box every mark fills
+function normalizeAll(){
+  document.querySelectorAll('svg .norm').forEach(g=>{
+    // reset any previous transform before measuring
+    g.removeAttribute('transform');
+    let box;
+    try { box = g.getBBox(); } catch(e){ return; }
+    if(!box || !box.width || !box.height) return;
+    const scale = TARGET / Math.max(box.width, box.height);
+    const cx = box.x + box.width/2;
+    const cy = box.y + box.height/2;
+    // translate group centre to 50,50 then scale about that point
+    const tx = 50 - cx*scale;
+    const ty = 50 - cy*scale;
+    g.setAttribute('transform', `translate(${tx.toFixed(2)} ${ty.toFixed(2)}) scale(${scale.toFixed(4)})`);
+  });
+}
+
+function render(){
+  const guide = document.getElementById('guideToggle').checked ? ' guide' : '';
+  document.getElementById("darkGrid").innerHTML = LOGOS.map(l=>`
+    <div class="tile"><div class="mark cream-tile${guide}">${build(l, INK, false)}</div>
+    <div class="name">${l.name}</div><div class="desc">${l.desc}</div></div>`).join("");
+  document.getElementById("wmGrid").innerHTML = LOGOS.map(l=>`
+    <div class="tile"><div class="mark wm-tile${guide}">${build(l, "#4B39FF", true)}</div>
+    <div class="name">${l.name}</div><div class="desc">${l.desc}</div></div>`).join("");
+}
+render();
+document.getElementById('guideToggle').addEventListener('change', ()=>{ render(); requestAnimationFrame(normalizeAll); });
+
+const primary = LOGOS.find(x=>x.name==="Checkcloud");
+document.getElementById("lockLight").innerHTML = `${build(primary,"#4B39FF",true)}
+  <div class="word">Cloud<span class="t">trust</span>mate<span class="tag">Secure cloud partnerships</span></div>`;
+document.getElementById("lockNavy").innerHTML = `${build(primary,"#F4EFE1",false)}
+  <div class="word">Cloud<span class="t">trust</span>mate<span class="tag">Secure cloud partnerships</span></div>`;
+
+// small-size test on the flagship
+const sizes=[64,32,24,16];
+document.getElementById("sizes").innerHTML = sizes.map(px=>`
+  <div class="s"><span style="width:${px}px;height:${px}px;display:flex">${build(primary, INK, false)}</span>${px}px</div>`).join("");
+
+// Normalise EVERY mark (grids, lockups, size test) once the DOM has painted,
+// so all marks share the same optical box regardless of how their path was drawn.
+requestAnimationFrame(()=>{ normalizeAll(); });
+// fonts/layout can shift metrics — run once more after load to be safe
+window.addEventListener('load', ()=> setTimeout(normalizeAll, 50));
+</script>
+</body>
+</html>

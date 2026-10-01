@@ -1,0 +1,180 @@
+VIBE-CODED APPLICATION SECURITY CHECKLIST
+
+
+Integrated Production Security Review
+Prepared by Sid
+
+Purpose
+This is a practical security checklist for applications built with AI coding tools. It is intended to help with a production security review and launch decision. It is not a penetration test or a compliance certification.
+
+How to use this checklist
+Read each check and verify it against the actual application, source code, configuration, infrastructure, and deployed behavior. Mark the result separately if this checklist is used as an assessment worksheet.
+
+SECRETS AND CREDENTIALS
+1. Database credentials are kept on the server and are not exposed to users or frontend code.
+2. Environment files such as .env are not committed to source control or exposed through public hosting.
+3. API keys, tokens, private keys, and other secrets are stored in a proper secret store or protected server-side configuration.
+4. Secrets are not hardcoded in source code or frontend JavaScript.
+5. Production secrets are rotated after suspected exposure.
+6. Git history has been checked for previously committed secrets.
+7. CI/CD logs do not print credentials, tokens, or other secrets.
+8. Default passwords, keys, and vendor credentials have been removed or changed.
+
+AUTHENTICATION AND ACCOUNT SECURITY
+9. Authentication is required for every private route and API.
+10. Authentication is implemented with a trusted framework or provider.
+11. Privileged accounts use MFA.
+12. Password reset links are short-lived, single-use, and protected against replay.
+13. Account recovery and MFA recovery are protected against takeover.
+14. Email verification and invitation links are protected and expire appropriately.
+15. Sessions use strong identifiers, sensible expiry, and secure invalidation.
+16. JWTs are validated for signature, issuer, audience, expiry, and allowed algorithms.
+17. OAuth/OIDC redirect URIs and state/nonce checks are correctly configured.
+18. Authentication endpoints have protection against brute force and credential stuffing.
+19. Responses do not unnecessarily reveal whether an account exists.
+
+AUTHORIZATION AND ACCESS CONTROL
+20. Authorization is checked on the server for every sensitive action.
+21. Users cannot access another user's records by changing an ID or request parameter.
+22. Object-level authorization prevents IDOR/BOLA.
+23. Admin routes require server-side administrator authorization.
+24. Users cannot change protected fields such as role, owner, balance, or approval status.
+25. Tenant isolation is enforced in queries, storage, APIs, and business logic.
+26. Database permissions follow least privilege.
+27. Cloud IAM roles, trust policies, and service identities follow least privilege.
+28. Role-assumption and privilege-escalation paths have been reviewed.
+29. A role, action, and resource authorization matrix exists and has been tested.
+
+INPUT AND APPLICATION SECURITY
+30. All important user input is validated on the server.
+31. SQL injection is prevented with parameterized queries or safe database APIs.
+32. NoSQL injection is prevented through strict validation and safe query construction.
+33. XSS is prevented through correct output encoding and safe HTML handling.
+34. CSRF protection is used where browser authentication makes it necessary.
+35. File uploads have type, size, storage, and filename restrictions.
+36. Path traversal is prevented.
+37. Command and OS injection is prevented.
+38. Unsafe deserialization is not used with untrusted data.
+39. Open redirects are prevented.
+40. SSRF protections prevent access to internal and private network destinations.
+
+APIS, WEBHOOKS AND REALTIME
+41. APIs authenticate and authorize requests correctly.
+42. Rate limits are applied to authentication, APIs, expensive operations, and AI endpoints where appropriate.
+43. CORS only allows required origins, methods, headers, and credential combinations.
+44. Webhook signatures are verified before events are trusted.
+45. Webhook event IDs or equivalent controls prevent replay and duplicate processing.
+46. API pagination, batching, upload sizes, and request sizes have sensible limits.
+47. GraphQL queries are limited or protected against excessive resource use where GraphQL is used.
+48. WebSocket or realtime connections are authenticated and each operation is authorized.
+49. API business flows are tested for unexpected sequences and quota bypasses.
+
+PAYMENTS AND BUSINESS LOGIC
+50. Payment status is determined from trusted server-side information.
+51. Subscription and entitlement checks are enforced server-side.
+52. Prices, credits, balances, and trial status cannot be changed from the client.
+53. Usage limits and quotas cannot be bypassed by changing request parameters.
+54. Sensitive financial operations are logged.
+55. Race conditions cannot create duplicate purchases, credits, or state changes.
+56. Idempotency is used for operations that may be retried.
+
+AI AND AGENT SECURITY
+57. Untrusted content cannot override trusted system or application instructions.
+58. AI tools enforce the real user's permissions before accessing data or performing actions.
+59. AI agents have only the tools and scopes they actually need.
+60. AI tools cannot be used to bypass application authorization.
+61. Sensitive data is minimized before being sent to AI providers.
+62. AI provider retention, training-use, processing, and third-party integration settings have been reviewed.
+63. AI output is treated as untrusted before being used as HTML, SQL, code, URLs, filenames, commands, or control input.
+64. AI-generated code receives the same security review as human-written code.
+65. High-impact actions such as deletion, spending, or external communication require appropriate confirmation.
+66. AI usage has cost, rate, and resource limits.
+67. AI-specific data and tool access are included in audit logs where appropriate.
+
+DEPENDENCIES AND SOFTWARE SUPPLY CHAIN
+68. Dependencies are scanned for known vulnerabilities.
+69. Unsupported or abandoned dependencies are identified and replaced where necessary.
+70. Packages and package sources are reviewed for suspicious or unexpected behavior.
+71. Dependency versions are locked where practical.
+72. CI/CD actions, plugins, and build scripts are reviewed before being trusted.
+73. Build artifacts are protected against unauthorized modification.
+74. Software provenance or an SBOM is maintained where required by the project.
+75. Build and deployment credentials use least privilege and short-lived credentials where practical.
+
+CLOUD AND INFRASTRUCTURE
+76. Production debug endpoints, consoles, and test routes are disabled or protected.
+77. Staging and test environments require appropriate authentication.
+78. Production data and production secrets are not unnecessarily copied into lower environments.
+79. Internal dashboards, databases, queues, and monitoring tools are protected.
+80. Security groups, firewall rules, network policies, and exposed services have been reviewed.
+81. Cloud IAM permissions and trust relationships have been reviewed for unnecessary access.
+82. Containers run with appropriate least privilege where containers are used.
+83. Kubernetes security controls are reviewed where Kubernetes is used.
+84. Resource quotas, timeouts, concurrency limits, and storage limits prevent resource exhaustion.
+85. Production configuration is reviewed separately from development configuration.
+
+LOGGING, MONITORING AND INCIDENT RESPONSE
+86. Sensitive actions are audit logged with the actor, action, target, time, and result.
+87. Logs do not contain unnecessary passwords, tokens, payment data, or personal information.
+88. Security alerts exist for important authentication, authorization, privilege, and infrastructure events.
+89. Logs and alerts are protected against unauthorized modification.
+90. Incident response procedures are documented.
+91. Incident response procedures are tested.
+92. Backups are protected against unauthorized access and accidental deletion.
+93. Backup restoration is tested regularly.
+94. Disaster recovery procedures are documented and tested.
+95. Recovery time and recovery point objectives are defined where required.
+
+DATA PROTECTION AND PRIVACY
+96. Sensitive data is protected in transit with HTTPS/TLS.
+97. Sensitive data is encrypted at rest where required.
+98. Cryptographic keys have controlled access, ownership, rotation, and recovery procedures.
+99. Data classification is defined for sensitive and personal information.
+100. Data retention periods are defined.
+101. Data deletion requirements are defined and tested.
+102. Backups and replicas are considered in the data-retention and deletion process.
+103. Third-party processors and AI services that handle sensitive data are reviewed.
+104. Applicable privacy and regulatory requirements have been identified.
+
+SECURE DEVELOPMENT AND RELEASE
+105. A threat model has been completed for important assets, trust boundaries, and abuse cases.
+106. Security requirements are included in development and review.
+107. SAST is used where appropriate.
+108. Dependency and software composition scanning is used.
+109. Secret scanning is used.
+110. DAST and API security testing are used where appropriate.
+111. Manual security testing covers high-risk flows such as authentication, authorization, payments, uploads, webhooks, and AI tools.
+112. Production branches and deployment credentials are protected.
+113. Production changes receive appropriate review and approval.
+114. Rollback procedures are available and tested.
+115. Security findings have owners, priorities, and target dates.
+116. Residual risks are documented and formally accepted before release when they cannot be fixed in time.
+
+BEFORE GOING LIVE
+1. Build a simple threat model and identify sensitive assets, trust boundaries, and high-risk user actions.
+2. Create and test a role, action, and resource authorization matrix.
+3. Run the checklist against the real deployed application, not only the source code.
+4. Run appropriate SAST, dependency/SCA, secret scanning, and DAST/API tests.
+5. Manually test the high-risk areas: authentication, authorization, IDOR/BOLA, business logic, payments, file uploads, SSRF, webhooks, and AI tools.
+6. Review cloud IAM, CI/CD credentials, network exposure, backups, logging, monitoring, and recovery.
+7. Record every FAIL and UNKNOWN item with an owner and remediation date.
+8. Document residual risk before release instead of silently accepting unresolved findings.
+9. Repeat the review after major changes to authentication, authorization, data handling, infrastructure, payments, dependencies, or AI features.
+
+REFERENCES AND STANDARDS
+OWASP ASVS 5.0.0
+OWASP ASVS is the main application-security reference used for this checklist. The current stable release is 5.0.0. This document is a practical subset and is not a replacement for the full ASVS.
+NIST SP 800-218 SSDF 1.1
+Used as the secure software development lifecycle reference.
+NIST SP 800-218A
+Used for generative-AI-specific secure development considerations.
+Version note: NIST SP 800-218 Rev. 1 / SSDF 1.2 is currently a draft, so this document uses the finalized SSDF 1.1 and SP 800-218A references.
+
+Official sources
+OWASP ASVS: https://owasp.org/www-project-application-security-verification-standard/
+OWASP ASVS 5.0.0: https://github.com/OWASP/ASVS
+NIST SP 800-218: https://csrc.nist.gov/pubs/sp/800/218/final
+NIST SP 800-218A: https://csrc.nist.gov/pubs/sp/800/218/a/final
+
+Document attribution
+Prepared by Sid

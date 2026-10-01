@@ -1,0 +1,7 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+  <mask id="ctm">
+    <rect width="100" height="100" fill="#fff"/>
+    <text x="50" y="48" text-anchor="middle" dominant-baseline="central" font-family="Space Grotesk, Arial, sans-serif" font-weight="700" font-size="24" letter-spacing="1" fill="#000">CTM</text>
+  </mask>
+  <path d="M50 14 82 24v22c0 24-16 42-32 52C34 88 18 70 18 46V24Z" mask="url(#ctm)"/>
+</svg>

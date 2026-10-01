@@ -1,0 +1,1748 @@
+// --- Component ---
+'use client';
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { MenuToggleIcon } from '@/components/ui/menu-toggle-icon';
+import { createPortal } from 'react-dom';
+import {
+	NavigationMenu,
+	NavigationMenuContent,
+	NavigationMenuItem,
+	NavigationMenuLink,
+	NavigationMenuList,
+	NavigationMenuTrigger,
+} from '@/components/ui/navigation-menu';
+import { LucideIcon } from 'lucide-react';
+import {
+	CodeIcon,
+	GlobeIcon,
+	LayersIcon,
+	UserPlusIcon,
+	Users,
+	Star,
+	FileText,
+	Shield,
+	RotateCcw,
+	Handshake,
+	Leaf,
+	HelpCircle,
+	BarChart,
+	PlugIcon,
+} from 'lucide-react';
+
+type LinkItem = {
+	title: string;
+	href: string;
+	icon: LucideIcon;
+	description?: string;
+};
+
+export function Header() {
+	const [open, setOpen] = React.useState(false);
+	const scrolled = useScroll(10);
+
+	React.useEffect(() => {
+		if (open) {
+			document.body.style.overflow = 'hidden';
+		} else {
+			document.body.style.overflow = '';
+		}
+		return () => {
+			document.body.style.overflow = '';
+		};
+	}, [open]);
+
+	return (
+		<header
+			className={cn('sticky top-0 z-50 w-full border-b border-transparent', {
+				'bg-background/95 supports-[backdrop-filter]:bg-background/50 border-border backdrop-blur-lg':
+					scrolled,
+			})}
+		>
+			<nav className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-4">
+				<div className="flex items-center gap-5">
+					<a href="#" className="hover:bg-accent rounded-md p-2">
+						<WordmarkIcon className="h-4" />
+					</a>
+					<NavigationMenu className="hidden md:flex">
+						<NavigationMenuList>
+							<NavigationMenuItem>
+								<NavigationMenuTrigger className="bg-transparent">Product</NavigationMenuTrigger>
+								<NavigationMenuContent className="bg-background p-1 pr-1.5">
+									<ul className="bg-popover grid w-lg grid-cols-2 gap-2 rounded-md border p-2 shadow">
+										{productLinks.map((item, i) => (
+											<li key={i}>
+												<ListItem {...item} />
+											</li>
+										))}
+									</ul>
+									<div className="p-2">
+										<p className="text-muted-foreground text-sm">
+											Interested?{' '}
+											<a href="#" className="text-foreground font-medium hover:underline">
+												Schedule a demo
+											</a>
+										</p>
+									</div>
+								</NavigationMenuContent>
+							</NavigationMenuItem>
+							<NavigationMenuItem>
+								<NavigationMenuTrigger className="bg-transparent">Company</NavigationMenuTrigger>
+								<NavigationMenuContent className="bg-background p-1 pr-1.5 pb-1.5">
+									<div className="grid w-lg grid-cols-2 gap-2">
+										<ul className="bg-popover space-y-2 rounded-md border p-2 shadow">
+											{companyLinks.map((item, i) => (
+												<li key={i}>
+													<ListItem {...item} />
+												</li>
+											))}
+										</ul>
+										<ul className="space-y-2 p-3">
+											{companyLinks2.map((item, i) => (
+												<li key={i}>
+													<NavigationMenuLink
+														href={item.href}
+														className="flex p-2 hover:bg-accent flex-row rounded-md items-center gap-x-2"
+													>
+														<item.icon className="text-foreground size-4" />
+														<span className="font-medium">{item.title}</span>
+													</NavigationMenuLink>
+												</li>
+											))}
+										</ul>
+									</div>
+								</NavigationMenuContent>
+							</NavigationMenuItem>
+							<NavigationMenuLink className="px-4" asChild>
+								<a href="#" className="hover:bg-accent rounded-md p-2">
+									Pricing
+								</a>
+							</NavigationMenuLink>
+						</NavigationMenuList>
+					</NavigationMenu>
+				</div>
+				<div className="hidden items-center gap-2 md:flex">
+					<Button variant="outline">Sign In</Button>
+					<Button>Get Started</Button>
+				</div>
+				<Button
+					size="icon"
+					variant="outline"
+					onClick={() => setOpen(!open)}
+					className="md:hidden"
+					aria-expanded={open}
+					aria-controls="mobile-menu"
+					aria-label="Toggle menu"
+				>
+					<MenuToggleIcon open={open} className="size-5" duration={300} />
+				</Button>
+			</nav>
+			<MobileMenu open={open} className="flex flex-col justify-between gap-2 overflow-y-auto">
+				<NavigationMenu className="max-w-full">
+					<div className="flex w-full flex-col gap-y-2">
+						<span className="text-sm">Product</span>
+						{productLinks.map((link) => (
+							<ListItem key={link.title} {...link} />
+						))}
+						<span className="text-sm">Company</span>
+						{companyLinks.map((link) => (
+							<ListItem key={link.title} {...link} />
+						))}
+						{companyLinks2.map((link) => (
+							<ListItem key={link.title} {...link} />
+						))}
+					</div>
+				</NavigationMenu>
+				<div className="flex flex-col gap-2">
+					<Button variant="outline" className="w-full bg-transparent">
+						Sign In
+					</Button>
+					<Button className="w-full">Get Started</Button>
+				</div>
+			</MobileMenu>
+		</header>
+	);
+}
+
+type MobileMenuProps = React.ComponentProps<'div'> & {
+	open: boolean;
+};
+
+function MobileMenu({ open, children, className, ...props }: MobileMenuProps) {
+	if (!open || typeof window === 'undefined') return null;
+
+	return createPortal(
+		<div
+			id="mobile-menu"
+			className={cn(
+				'bg-background/95 supports-[backdrop-filter]:bg-background/50 backdrop-blur-lg',
+				'fixed top-14 right-0 bottom-0 left-0 z-40 flex flex-col overflow-hidden border-y md:hidden',
+			)}
+		>
+			<div
+				data-slot={open ? 'open' : 'closed'}
+				className={cn(
+					'data-[slot=open]:animate-in data-[slot=open]:zoom-in-97 ease-out',
+					'size-full p-4',
+					className,
+				)}
+				{...props}
+			>
+				{children}
+			</div>
+		</div>,
+		document.body,
+	);
+}
+
+function ListItem({
+	title,
+	description,
+	icon: Icon,
+	className,
+	href,
+	...props
+}: React.ComponentProps<typeof NavigationMenuLink> & LinkItem) {
+	return (
+		<NavigationMenuLink className={cn('w-full flex flex-row gap-x-2 data-[active=true]:focus:bg-accent data-[active=true]:hover:bg-accent data-[active=true]:bg-accent/50 data-[active=true]:text-accent-foreground hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground rounded-sm p-2', className)} {...props} asChild>
+			<a href={href}>
+				<div className="bg-background/40 flex aspect-square size-12 items-center justify-center rounded-md border shadow-sm">
+					<Icon className="text-foreground size-5" />
+				</div>
+				<div className="flex flex-col items-start justify-center">
+					<span className="font-medium">{title}</span>
+					<span className="text-muted-foreground text-xs">{description}</span>
+				</div>
+			</a>
+		</NavigationMenuLink>
+	);
+}
+
+const productLinks: LinkItem[] = [
+	{
+		title: 'Website Builder',
+		href: '#',
+		description: 'Create responsive websites with ease',
+		icon: GlobeIcon,
+	},
+	{
+		title: 'Cloud Platform',
+		href: '#',
+		description: 'Deploy and scale apps in the cloud',
+		icon: LayersIcon,
+	},
+	{
+		title: 'Team Collaboration',
+		href: '#',
+		description: 'Tools to help your teams work better together',
+		icon: UserPlusIcon,
+	},
+	{
+		title: 'Analytics',
+		href: '#',
+		description: 'Track and analyze your website traffic',
+		icon: BarChart,
+	},
+	{
+		title: 'Integrations',
+		href: '#',
+		description: 'Connect your apps and services',
+		icon: PlugIcon,
+	},
+	{
+		title: 'API',
+		href: '#',
+		description: 'Build custom integrations with our API',
+		icon: CodeIcon,
+	},
+];
+
+const companyLinks: LinkItem[] = [
+	{
+		title: 'About Us',
+		href: '#',
+		description: 'Learn more about our story and team',
+		icon: Users,
+	},
+	{
+		title: 'Customer Stories',
+		href: '#',
+		description: 'See how we’ve helped our clients succeed',
+		icon: Star,
+	},
+	{
+		title: 'Partnerships',
+		href: '#',
+		icon: Handshake,
+		description: 'Collaborate with us for mutual growth',
+	},
+];
+
+const companyLinks2: LinkItem[] = [
+	{
+		title: 'Terms of Service',
+		href: '#',
+		icon: FileText,
+	},
+	{
+		title: 'Privacy Policy',
+		href: '#',
+		icon: Shield,
+	},
+	{
+		title: 'Refund Policy',
+		href: '#',
+		icon: RotateCcw,
+	},
+	{
+		title: 'Blog',
+		href: '#',
+		icon: Leaf,
+	},
+	{
+		title: 'Help Center',
+		href: '#',
+		icon: HelpCircle,
+	},
+];
+
+
+function useScroll(threshold: number) {
+	const [scrolled, setScrolled] = React.useState(false);
+
+	const onScroll = React.useCallback(() => {
+		setScrolled(window.scrollY > threshold);
+	}, [threshold]);
+
+	React.useEffect(() => {
+		window.addEventListener('scroll', onScroll);
+		return () => window.removeEventListener('scroll', onScroll);
+	}, [onScroll]);
+
+	// also check on first load
+	React.useEffect(() => {
+		onScroll();
+	}, [onScroll]);
+
+	return scrolled;
+}
+
+
+const WordmarkIcon = (props: React.ComponentProps<"svg">) => (
+  <svg viewBox="0 0 84 24" fill="currentColor" {...props}>
+    <path d="M45.035 23.984c-1.34-.062-2.566-.441-3.777-1.16-1.938-1.152-3.465-3.187-4.02-5.36-.199-.784-.238-1.128-.234-2.058 0-.691.008-.87.062-1.207.23-1.5.852-2.883 1.852-4.144.297-.371 1.023-1.09 1.41-1.387 1.399-1.082 2.84-1.68 4.406-1.816.536-.047 1.528-.02 2.047.054 1.227.184 2.227.543 3.106 1.121 1.277.84 2.5 2.184 3.367 3.7.098.168.172.308.172.312-.004 0-1.047.723-2.32 1.598l-2.711 1.867c-.61.422-2.91 2.008-2.993 2.062l-.074.047-1-1.574c-.55-.867-1.008-1.594-1.012-1.61-.007-.019.922-.648 2.188-1.476 1.215-.793 2.2-1.453 2.191-1.46-.02-.032-.508-.27-.691-.34a5 5 0 0 0-.465-.13c-.371-.09-1.105-.125-1.426-.07-1.285.219-2.336 1.3-2.777 2.852-.215.761-.242 1.636-.074 2.355.129.527.383 1.102.691 1.543.234.332.727.82 1.047 1.031.664.434 1.195.586 1.969.555.613-.023 1.027-.129 1.64-.426 1.184-.574 2.16-1.554 2.828-2.843.122-.235.208-.372.227-.368.082.032 3.77 1.938 3.79 1.961.034.032-.407.93-.696 1.414a12 12 0 0 1-1.051 1.477c-.36.422-1.102 1.14-1.492 1.445a9.9 9.9 0 0 1-3.23 1.684 9.2 9.2 0 0 1-2.95.351M74.441 23.996c-1.488-.043-2.8-.363-4.066-.992-1.687-.848-2.992-2.14-3.793-3.774-.605-1.234-.863-2.402-.863-3.894.004-1.149.176-2.156.527-3.11.14-.378.531-1.171.75-1.515 1.078-1.703 2.758-2.934 4.805-3.524.847-.242 1.465-.332 2.433-.351 1.032-.024 1.743.055 2.48.277l.31.09.007 2.48c.004 1.364 0 2.481-.008 2.481a1 1 0 0 1-.12-.055c-.688-.347-2.09-.488-2.962-.296-.754.167-1.296.453-1.785.945a3.7 3.7 0 0 0-1.043 2.11c-.047.382-.02 1.109.055 1.437a3.4 3.4 0 0 0 .941 1.738c.75.75 1.715 1.102 2.875 1.05.645-.03 1.118-.14 1.563-.366q1.721-.864 2.02-3.145c.035-.293.042-1.266.042-7.957V0H84l-.012 8.434c-.008 7.851-.011 8.457-.054 8.757-.196 1.274-.586 2.25-1.301 3.243-1.293 1.808-3.555 3.07-6.145 3.437-.664.098-1.43.14-2.047.125M9.848 23.574a14 14 0 0 1-1.137-.152c-2.352-.426-4.555-1.781-6.117-3.774-.27-.335-.75-1.05-.95-1.406-1.156-2.047-1.695-4.27-1.64-6.77.047-1.995.43-3.66 1.23-5.316.524-1.086 1.04-1.87 1.793-2.715C4.567 1.72 6.652.535 8.793.171 9.68.02 10.093 0 12.297 0h1.789v5.441l-.961.016c-2.36.04-3.441.215-4.441.719-.836.414-1.278.879-1.895 1.976-.219.399-.535 1.02-.535 1.063 0 .02 1.285.027 3.918.027h3.914v5.113h-3.914c-2.54 0-3.918.008-3.918.028 0 .05.254.597.441.953.344.656.649 1.086 1.051 1.48.668.657 1.356.985 2.445 1.16.645.106 1.274.145 2.61.16l1.285.016v5.442l-2.055-.004a120 120 0 0 1-2.183-.016M16.469 14.715c0-5.504.011-9.04.031-9.29a5.54 5.54 0 0 1 1.527-3.48c.778-.82 1.922-1.457 3.118-1.734C21.915.035 22.422 0 24.39 0h1.652v4.914h-1.426c-1.324 0-1.445.004-1.644.055-.739.191-1.059.699-1.106 1.754l-.015.355h4.191v4.914h-4.184v11.602h-5.39ZM27.023 14.727c0-5.223.012-9.04.028-9.278.129-1.98 1.234-3.68 3.012-4.62.87-.462 1.777-.716 2.851-.802A61 61 0 0 1 34.945 0h1.649v4.914h-1.426c-1.32 0-1.441.004-1.64.055-.739.191-1.063.699-1.106 1.754l-.02.355h4.192v4.914H32.41v11.602h-5.387ZM55.48 15.406V7.22h4.66v1.363c0 1.3.005 1.363.051 1.363.04 0 .075-.054.133-.203.38-.98.969-1.68 1.711-2.031.563-.266 1.422-.43 2.492-.48l.414-.02v4.914l-.414.035c-.738.063-1.597.195-2.058.313-.297.082-.688.28-.875.449-.324.289-.532.703-.625 1.254-.094.547-.098.879-.098 5.144v4.274h-5.39Zm0 0" />
+  </svg>
+);
+
+
+
+// --- Demo ---
+import React from 'react';
+import { Header } from "@/components/ui/header-3";
+
+export default function Demo() {
+	return (
+		<div className="w-full">
+			<Header />
+
+			<main className="mx-auto min-h-screen w-full max-w-3xl px-4 py-12">
+				<div  className="space-y-2 mb-4">
+					<div className="bg-accent h-6 w-4/6 rounded-md border" />
+					<div className="bg-accent h-6 w-1/2 rounded-md border" />
+				</div>
+				<div  className="flex gap-2 mb-8">
+					<div className="bg-accent h-3 w-14 rounded-md border" />
+					<div className="bg-accent h-3 w-12 rounded-md border" />
+				</div>
+
+				{Array.from({ length: 7 }).map((_, i) => (
+					<div key={i} className="space-y-2 mb-8">
+						<div className="bg-accent h-4 w-full rounded-md border" />
+						<div className="bg-accent h-4 w-full rounded-md border" />
+						<div className="bg-accent h-4 w-full rounded-md border" />
+						<div className="bg-accent h-4 w-1/2 rounded-md border" />
+					</div>
+				))}
+			</main>
+		</div>
+	);
+}
+
+
+
+--------------------------------------------------------------------------------------------------------
+
+
+
+
+
+2. 
+
+
+// --- Component ---
+import * as React from 'react';
+import * as NavigationMenuPrimitive from '@radix-ui/react-navigation-menu';
+import { ArrowRightIcon, ChevronDownIcon } from 'lucide-react';
+
+import { cn } from '@/lib/utils';
+import { GridCard } from '@/components/ui/grid-card';
+
+type NavItemType = {
+	title: string;
+	href: string;
+	description?: string;
+	icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+};
+
+function NavigationMenu({
+	className,
+	children,
+	viewport = true,
+	...props
+}: React.ComponentProps<typeof NavigationMenuPrimitive.Root> & {
+	viewport?: boolean;
+}) {
+	return (
+		<NavigationMenuPrimitive.Root
+			data-slot="navigation-menu"
+			data-viewport={viewport}
+			className={cn(
+				'group/navigation-menu flex max-w-max flex-1 items-center justify-center',
+				className,
+			)}
+			{...props}
+		>
+			{children}
+			{viewport && <NavigationMenuViewport />}
+		</NavigationMenuPrimitive.Root>
+	);
+}
+
+function NavigationMenuList({
+	className,
+	...props
+}: React.ComponentProps<typeof NavigationMenuPrimitive.List>) {
+	return (
+		<NavigationMenuPrimitive.List
+			data-slot="navigation-menu-list"
+			className={cn(
+				'group flex flex-1 list-none items-center justify-center gap-1',
+				className,
+			)}
+			{...props}
+		/>
+	);
+}
+
+function NavigationMenuItem({
+	className,
+	...props
+}: React.ComponentProps<typeof NavigationMenuPrimitive.Item>) {
+	return (
+		<NavigationMenuPrimitive.Item
+			data-slot="navigation-menu-item"
+			className={cn('relative', className)}
+			{...props}
+		/>
+	);
+}
+
+function NavigationMenuTrigger({
+	className,
+	children,
+	...props
+}: React.ComponentProps<typeof NavigationMenuPrimitive.Trigger>) {
+	return (
+		<NavigationMenuPrimitive.Trigger
+			data-slot="navigation-menu-trigger"
+			className={cn(
+				'group hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-[state=open]:hover:bg-accent data-[state=open]:text-accent-foreground data-[state=open]:focus:bg-accent data-[state=open]:bg-accent/50 focus-visible:ring-ring/50 inline-flex w-max items-center justify-center rounded-md px-4 py-1 text-sm font-medium transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50',
+				className,
+			)}
+			{...props}
+		>
+			{children}{' '}
+			<ChevronDownIcon
+				className="relative top-[1px] ml-1 size-3 transition duration-300 group-data-[state=open]:rotate-180"
+				aria-hidden="true"
+			/>
+		</NavigationMenuPrimitive.Trigger>
+	);
+}
+
+function NavigationMenuContent({
+	className,
+	...props
+}: React.ComponentProps<typeof NavigationMenuPrimitive.Content>) {
+	return (
+		<NavigationMenuPrimitive.Content
+			data-slot="navigation-menu-content"
+			className={cn(
+				'data-[motion^=from-]:animate-in data-[motion^=to-]:animate-out data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 top-0 left-0 w-full md:absolute md:w-auto',
+				'group-data-[viewport=false]/navigation-menu:bg-background/80 group-data-[viewport=false]/navigation-menu:text-foreground group-data-[viewport=false]/navigation-menu:data-[state=open]:animate-in group-data-[viewport=false]/navigation-menu:data-[state=closed]:animate-out group-data-[viewport=false]/navigation-menu:data-[state=closed]:zoom-out-95 group-data-[viewport=false]/navigation-menu:data-[state=open]:zoom-in-95 group-data-[viewport=false]/navigation-menu:data-[state=open]:fade-in-0 group-data-[viewport=false]/navigation-menu:data-[state=closed]:fade-out-0 group-data-[viewport=false]/navigation-menu:top-full group-data-[viewport=false]/navigation-menu:mt-1.5 group-data-[viewport=false]/navigation-menu:overflow-hidden group-data-[viewport=false]/navigation-menu:rounded-md group-data-[viewport=false]/navigation-menu:border group-data-[viewport=false]/navigation-menu:shadow group-data-[viewport=false]/navigation-menu:duration-300 **:data-[slot=navigation-menu-link]:focus:ring-0 **:data-[slot=navigation-menu-link]:focus:outline-none',
+				className,
+			)}
+			{...props}
+		/>
+	);
+}
+
+function NavigationMenuViewport({
+	className,
+	...props
+}: React.ComponentProps<typeof NavigationMenuPrimitive.Viewport>) {
+	return (
+		<div className="absolute top-full left-0 isolate z-50 flex justify-center">
+			<NavigationMenuPrimitive.Viewport
+				data-slot="navigation-menu-viewport"
+				className={cn(
+					'origin-top-center bg-background/95 supports-[backdrop-filter]:bg-background/60 text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-90 relative mt-1.5 h-[var(--radix-navigation-menu-viewport-height)] w-full overflow-hidden rounded-md border shadow backdrop-blur-xl md:w-[var(--radix-navigation-menu-viewport-width)]',
+					className,
+				)}
+				{...props}
+			/>
+		</div>
+	);
+}
+
+function NavigationMenuLink({
+	className,
+	...props
+}: React.ComponentProps<typeof NavigationMenuPrimitive.Link>) {
+	return (
+		<NavigationMenuPrimitive.Link
+			data-slot="navigation-menu-link"
+			className={cn(
+				"data-[active=true]:focus:bg-accent data-[active=true]:hover:bg-accent data-[active=true]:bg-accent/50 data-[active=true]:text-accent-foreground hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-ring/50 [&_svg:not([class*='text-'])]:text-muted-foreground flex flex-col justify-center gap-1 rounded-sm px-4 py-1 text-sm transition-all outline-none focus-visible:ring-[3px] focus-visible:outline-1 [&_svg:not([class*='size-'])]:size-4",
+				className,
+			)}
+			{...props}
+		/>
+	);
+}
+
+function NavigationMenuIndicator({
+	className,
+	...props
+}: React.ComponentProps<typeof NavigationMenuPrimitive.Indicator>) {
+	return (
+		<NavigationMenuPrimitive.Indicator
+			data-slot="navigation-menu-indicator"
+			className={cn(
+				'data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out data-[state=visible]:fade-in top-full z-[1] flex h-1.5 items-end justify-center overflow-hidden',
+				className,
+			)}
+			{...props}
+		>
+			<div className="bg-border relative top-[60%] h-2 w-2 rotate-45 rounded-tl-sm shadow-md" />
+		</NavigationMenuPrimitive.Indicator>
+	);
+}
+
+function NavGridCard({
+	link,
+	...props
+}: React.ComponentProps<'div'> & {
+	link: NavItemType;
+}) {
+	return (
+		<NavigationMenuPrimitive.Link asChild>
+			<GridCard {...props}>
+				{link.icon && (
+					<link.icon className="text-foreground/80 relative size-5" />
+				)}
+				<div className="relative">
+					<span className="text-foreground/80 text-sm font-medium">
+						{link.title}
+					</span>
+					{link.description && (
+						<p className="text-muted-foreground mt-2 text-xs">
+							{link.description}
+						</p>
+					)}
+				</div>
+			</GridCard>
+		</NavigationMenuPrimitive.Link>
+	);
+}
+
+function NavSmallItem({
+	item,
+	className,
+	...props
+}: React.ComponentProps<typeof NavigationMenuLink> & {
+	item: Omit<NavItemType, 'description'>;
+}) {
+	return (
+		<NavigationMenuLink
+			className={cn(
+				'group relative h-max flex-row items-center gap-x-3 px-2 py-2',
+				className,
+			)}
+			{...props}
+		>
+			{item.icon && <item.icon />}
+			<p className="text-sm">{item.title}</p>
+			<div className="relative ml-auto flex h-full w-4 items-center">
+				<ArrowRightIcon className="size-4 -translate-x-2 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100" />
+			</div>
+		</NavigationMenuLink>
+	);
+}
+
+function NavLargeItem({
+	link,
+	className,
+	...props
+}: React.ComponentProps<typeof NavigationMenuLink> & {
+	link: NavItemType;
+}) {
+	return (
+		<NavigationMenuLink
+			className={cn(
+				'bg-background group relative flex flex-col justify-center border p-0',
+				className,
+			)}
+			{...props}
+		>
+			<div className="flex items-center justify-between px-5 py-4">
+				<div className="space-y-1">
+					<span className="text-sm leading-none font-medium">{link.title}</span>
+					{link.description && (
+						<p className="text-muted-foreground line-clamp-1 text-xs">
+							{link.description}
+						</p>
+					)}
+				</div>
+				{link.icon && <link.icon className="text-muted-foreground size-6" />}
+			</div>
+		</NavigationMenuLink>
+	);
+}
+
+function NavItemMobile({
+	item,
+	className,
+	...props
+}: React.ComponentProps<'a'> & {
+	item: NavItemType;
+}) {
+	return (
+		<a
+			className={cn(
+				"data-[active=true]:focus:bg-accent data-[active=true]:hover:bg-accent data-[active=true]:bg-accent/50 data-[active=true]:text-accent-foreground hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-ring/50 [&_svg:not([class*='text-'])]:text-muted-foreground group relative flex gap-1 gap-x-2 rounded-sm p-2 text-sm transition-all outline-none focus-visible:ring-[3px] focus-visible:outline-1 [&_svg:not([class*='size-'])]:size-4",
+				className,
+			)}
+			{...props}
+		>
+			<div
+				className={cn(
+					'bg-muted/20 flex size-10 items-center justify-center rounded-lg border',
+				)}
+			>
+				{item.icon && <item.icon />}
+			</div>
+			<div className={cn('flex h-10 flex-col justify-center')}>
+				<p className="text-sm">{item.title}</p>
+				<span className="text-muted-foreground line-clamp-1 text-xs leading-snug">
+					{item.description}
+				</span>
+			</div>
+		</a>
+	);
+}
+
+export {
+	NavigationMenu,
+	NavigationMenuList,
+	NavigationMenuItem,
+	NavigationMenuContent,
+	NavigationMenuTrigger,
+	NavigationMenuLink,
+	NavigationMenuIndicator,
+	NavigationMenuViewport,
+	NavGridCard,
+	NavSmallItem,
+	NavLargeItem,
+	NavItemMobile,
+	type NavItemType,
+};
+
+
+// --- Demo ---
+import React from 'react';
+import {
+	CodeIcon,
+	Grid2x2PlusIcon,
+	GlobeIcon,
+	LayersIcon,
+	UserPlusIcon,
+	Users,
+	Star,
+	FileText,
+	Shield,
+	RotateCcw,
+	Handshake,
+	Leaf,
+	HelpCircle,
+	DollarSign,
+	BarChart,
+	PlugIcon,
+	MenuIcon,
+	XIcon,
+} from 'lucide-react';
+import {
+	Sheet,
+	SheetClose,
+	SheetContent,
+	SheetTrigger,
+} from '@/components/ui/sheet';
+import { Button } from '@/components/ui/button';
+import {
+	NavigationMenu,
+	NavigationMenuContent,
+	NavigationMenuList,
+	NavigationMenuItem,
+	NavigationMenuTrigger,
+	NavigationMenuLink,
+	type NavItemType,
+	NavGridCard,
+	NavSmallItem,
+	NavLargeItem,
+	NavItemMobile,
+} from '@/components/ui/navigation-menu';
+import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger,
+} from '@/components/ui/accordion';
+import { cn } from '@/lib/utils';
+
+export const productLinks: NavItemType[] = [
+	{
+		title: 'Website Builder',
+		href: '#',
+		description: 'Create responsive websites with ease',
+		icon: GlobeIcon,
+	},
+	{
+		title: 'Cloud Platform',
+		href: '#',
+		description: 'Deploy and scale apps in the cloud',
+		icon: LayersIcon,
+	},
+	{
+		title: 'Team Collaboration',
+		href: '#',
+		description: 'Tools to help your teams work better together',
+		icon: UserPlusIcon,
+	},
+	{
+		title: 'Analytics',
+		href: '#',
+		icon: BarChart,
+	},
+	{
+		title: 'Integrations',
+		href: '#',
+		icon: PlugIcon,
+	},
+	{
+		title: 'E-Commerce',
+		href: '#',
+		icon: DollarSign,
+	},
+	{
+		title: 'Security',
+		href: '#',
+		icon: Shield,
+	},
+	{
+		title: 'API',
+		href: '#',
+		icon: CodeIcon,
+	},
+];
+
+export const companyLinks: NavItemType[] = [
+	{
+		title: 'About Us',
+		href: '#',
+		description: 'Learn more about our story and team',
+		icon: Users,
+	},
+	{
+		title: 'Customer Stories',
+		href: '#',
+		description: 'See how we’ve helped our clients succeed',
+		icon: Star,
+	},
+	{
+		title: 'Terms of Service',
+		href: '#',
+		description: 'Understand how we operate',
+		icon: FileText,
+	},
+	{
+		title: 'Privacy Policy',
+		href: '#',
+		description: 'How we protect your information',
+		icon: Shield,
+	},
+	{
+		title: 'Refund Policy',
+		href: '#',
+		description: 'Details about refunds and cancellations',
+		icon: RotateCcw,
+	},
+	{
+		title: 'Partnerships',
+		href: '#',
+		icon: Handshake,
+		description: 'Collaborate with us for mutual growth',
+	},
+	{
+		title: 'Blog',
+		href: '#',
+		icon: Leaf,
+		description: 'Insights, tutorials, and company news',
+	},
+	{
+		title: 'Help Center',
+		href: '#',
+		icon: HelpCircle,
+		description: 'Find answers to your questions',
+	},
+];
+
+export default function NavigationMenuDemo() {
+	return (
+		<div className="relative min-h-screen w-full px-4">
+			<div
+				aria-hidden="true"
+				className={cn(
+					'absolute inset-0 -z-10 size-full',
+					'bg-[radial-gradient(color-mix(in_oklab,--theme(--color-foreground/.2)30%,transparent)_2px,transparent_2px)]',
+					'bg-[size:12px_12px]',
+				)}
+			/>
+
+			<div className="bg-background sticky top-1/4 z-50 mx-auto h-14 w-full max-w-4xl border px-4  rounded-lg">
+				<div className="flex h-full items-center justify-between">
+					<div className="flex items-center gap-2">
+						<Grid2x2PlusIcon className="size-6" />
+						<p className="font-mono text-lg font-bold">Asme</p>
+					</div>
+					<DesktopMenu />
+
+					<div className="flex items-center gap-2">
+						<Button>Get Started</Button>
+						<MoileNav />
+					</div>
+				</div>
+			</div>
+		</div>
+	);
+}
+
+function DesktopMenu() {
+	return (
+		<NavigationMenu className="hidden lg:block">
+			<NavigationMenuList>
+				<NavigationMenuItem>
+					<NavigationMenuTrigger>Product</NavigationMenuTrigger>
+					<NavigationMenuContent>
+						<div className="grid w-full md:w-4xl md:grid-cols-[1fr_.30fr]">
+							<ul className="grid grow gap-4 p-4 md:grid-cols-3 md:border-r">
+								{productLinks.slice(0, 3).map((link) => (
+									<li key={link.href}>
+										<NavGridCard link={link} />
+									</li>
+								))}
+							</ul>
+							<ul className="space-y-1 p-4">
+								{productLinks.slice(3).map((link) => (
+									<li key={link.href}>
+										<NavSmallItem
+											item={link}
+											href={link.href}
+											className="gap-x-1"
+										/>
+									</li>
+								))}
+							</ul>
+						</div>
+					</NavigationMenuContent>
+				</NavigationMenuItem>
+				<NavigationMenuItem>
+					<NavigationMenuTrigger>Company</NavigationMenuTrigger>
+					<NavigationMenuContent>
+						<div className="grid w-full md:w-4xl md:grid-cols-[1fr_.40fr]">
+							<ul className="grid grow grid-cols-2 gap-4 p-4 md:border-r">
+								{companyLinks.slice(0, 2).map((link) => (
+									<li key={link.href}>
+										<NavGridCard link={link} className="min-h-36" />
+									</li>
+								))}
+								<div className="col-span-2 grid grid-cols-3 gap-x-4">
+									{companyLinks.slice(2, 5).map((link) => (
+										<li key={link.href}>
+											<NavLargeItem href={link.href} link={link} />
+										</li>
+									))}
+								</div>
+							</ul>
+							<ul className="space-y-2 p-4">
+								{companyLinks.slice(5, 10).map((link) => (
+									<li key={link.href}>
+										<NavLargeItem href={link.href} link={link} />
+									</li>
+								))}
+							</ul>
+						</div>
+					</NavigationMenuContent>
+				</NavigationMenuItem>
+				<NavigationMenuItem>
+					<NavigationMenuLink className="cursor-pointer">
+						Pricing
+					</NavigationMenuLink>
+				</NavigationMenuItem>
+			</NavigationMenuList>
+		</NavigationMenu>
+	);
+}
+
+function MoileNav() {
+	const sections = [
+		{
+			id: 'product',
+			name: 'Product',
+			list: productLinks,
+		},
+		{
+			id: 'company',
+			name: 'Company',
+			list: companyLinks,
+		},
+	];
+
+	return (
+		<Sheet>
+			<SheetTrigger asChild>
+				<Button size="icon" variant="ghost" className="rounded-full lg:hidden">
+					<MenuIcon className="size-5" />
+				</Button>
+			</SheetTrigger>
+			<SheetContent
+				className="bg-background/95 supports-[backdrop-filter]:bg-background/80 w-full gap-0 backdrop-blur-lg"
+				showClose={false}
+			>
+				<div className="flex h-14 items-center justify-end border-b px-4">
+					<SheetClose asChild>
+						<Button size="icon" variant="ghost" className="rounded-full">
+							<XIcon className="size-5" />
+							<span className="sr-only">Close</span>
+						</Button>
+					</SheetClose>
+				</div>
+				<div className="container grid gap-y-2 overflow-y-auto px-4 pt-5 pb-12">
+					<Accordion type="single" collapsible>
+						{sections.map((section) => (
+							<AccordionItem key={section.id} value={section.id}>
+								<AccordionTrigger className="capitalize hover:no-underline">
+									{section.id}
+								</AccordionTrigger>
+								<AccordionContent className="space-y-1">
+									<ul className="grid gap-1">
+										{section.list.map((link) => (
+											<li key={link.href}>
+												<SheetClose asChild>
+													<NavItemMobile item={link} href={link.href} />
+												</SheetClose>
+											</li>
+										))}
+									</ul>
+								</AccordionContent>
+							</AccordionItem>
+						))}
+					</Accordion>
+				</div>
+			</SheetContent>
+		</Sheet>
+	);
+}
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------------
+
+3. 
+
+// --- Component ---
+"use client";
+import { cn } from "@/lib/utils";
+import { IconMenu2, IconX } from "@tabler/icons-react";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useMotionValueEvent,
+} from "motion/react";
+
+import React, { useRef, useState } from "react";
+
+
+interface NavbarProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+interface NavBodyProps {
+  children: React.ReactNode;
+  className?: string;
+  visible?: boolean;
+}
+
+interface NavItemsProps {
+  items: {
+    name: string;
+    link: string;
+  }[];
+  className?: string;
+  onItemClick?: () => void;
+}
+
+interface MobileNavProps {
+  children: React.ReactNode;
+  className?: string;
+  visible?: boolean;
+}
+
+interface MobileNavHeaderProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+interface MobileNavMenuProps {
+  children: React.ReactNode;
+  className?: string;
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export const Navbar = ({ children, className }: NavbarProps) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollY } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"],
+  });
+  const [visible, setVisible] = useState<boolean>(false);
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    if (latest > 100) {
+      setVisible(true);
+    } else {
+      setVisible(false);
+    }
+  });
+
+  return (
+    <motion.div
+      ref={ref}
+      // IMPORTANT: Change this to class of `fixed` if you want the navbar to be fixed
+      className={cn("sticky inset-x-0 top-20 z-40 w-full", className)}
+    >
+      {React.Children.map(children, (child) =>
+        React.isValidElement(child)
+          ? React.cloneElement(
+              child as React.ReactElement<{ visible?: boolean }>,
+              { visible },
+            )
+          : child,
+      )}
+    </motion.div>
+  );
+};
+
+export const NavBody = ({ children, className, visible }: NavBodyProps) => {
+  return (
+    <motion.div
+      animate={{
+        backdropFilter: visible ? "blur(10px)" : "none",
+        boxShadow: visible
+          ? "0 0 24px rgba(34, 42, 53, 0.06), 0 1px 1px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(34, 42, 53, 0.04), 0 0 4px rgba(34, 42, 53, 0.08), 0 16px 68px rgba(47, 48, 55, 0.05), 0 1px 0 rgba(255, 255, 255, 0.1) inset"
+          : "none",
+        width: visible ? "40%" : "100%",
+        y: visible ? 20 : 0,
+      }}
+      transition={{
+        type: "spring",
+        stiffness: 200,
+        damping: 50,
+      }}
+      style={{
+        minWidth: "800px",
+      }}
+      className={cn(
+        "relative z-[60] mx-auto hidden w-full max-w-7xl flex-row items-center justify-between self-start rounded-full bg-transparent px-4 py-2 lg:flex dark:bg-transparent",
+        visible && "bg-white/80 dark:bg-neutral-950/80",
+        className,
+      )}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
+  const [hovered, setHovered] = useState<number | null>(null);
+
+  return (
+    <motion.div
+      onMouseLeave={() => setHovered(null)}
+      className={cn(
+        "absolute inset-0 hidden flex-1 flex-row items-center justify-center space-x-2 text-sm font-medium text-zinc-600 transition duration-200 hover:text-zinc-800 lg:flex lg:space-x-2",
+        className,
+      )}
+    >
+      {items.map((item, idx) => (
+        <a
+          onMouseEnter={() => setHovered(idx)}
+          onClick={onItemClick}
+          className="relative px-4 py-2 text-neutral-600 dark:text-neutral-300"
+          key={`link-${idx}`}
+          href={item.link}
+        >
+          {hovered === idx && (
+            <motion.div
+              layoutId="hovered"
+              className="absolute inset-0 h-full w-full rounded-full bg-gray-100 dark:bg-neutral-800"
+            />
+          )}
+          <span className="relative z-20">{item.name}</span>
+        </a>
+      ))}
+    </motion.div>
+  );
+};
+
+export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
+  return (
+    <motion.div
+      animate={{
+        backdropFilter: visible ? "blur(10px)" : "none",
+        boxShadow: visible
+          ? "0 0 24px rgba(34, 42, 53, 0.06), 0 1px 1px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(34, 42, 53, 0.04), 0 0 4px rgba(34, 42, 53, 0.08), 0 16px 68px rgba(47, 48, 55, 0.05), 0 1px 0 rgba(255, 255, 255, 0.1) inset"
+          : "none",
+        width: visible ? "90%" : "100%",
+        paddingRight: visible ? "12px" : "0px",
+        paddingLeft: visible ? "12px" : "0px",
+        borderRadius: visible ? "4px" : "2rem",
+        y: visible ? 20 : 0,
+      }}
+      transition={{
+        type: "spring",
+        stiffness: 200,
+        damping: 50,
+      }}
+      className={cn(
+        "relative z-50 mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col items-center justify-between bg-transparent px-0 py-2 lg:hidden",
+        visible && "bg-white/80 dark:bg-neutral-950/80",
+        className,
+      )}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+export const MobileNavHeader = ({
+  children,
+  className,
+}: MobileNavHeaderProps) => {
+  return (
+    <div
+      className={cn(
+        "flex w-full flex-row items-center justify-between",
+        className,
+      )}
+    >
+      {children}
+    </div>
+  );
+};
+
+export const MobileNavMenu = ({
+  children,
+  className,
+  isOpen,
+  onClose,
+}: MobileNavMenuProps) => {
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className={cn(
+            "absolute inset-x-0 top-16 z-50 flex w-full flex-col items-start justify-start gap-4 rounded-lg bg-white px-4 py-8 shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset] dark:bg-neutral-950",
+            className,
+          )}
+        >
+          {children}
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+
+export const MobileNavToggle = ({
+  isOpen,
+  onClick,
+}: {
+  isOpen: boolean;
+  onClick: () => void;
+}) => {
+  return isOpen ? (
+    <IconX className="text-black dark:text-white" onClick={onClick} />
+  ) : (
+    <IconMenu2 className="text-black dark:text-white" onClick={onClick} />
+  );
+};
+
+export const NavbarLogo = () => {
+  return (
+    <a
+      href="#"
+      className="relative z-20 mr-4 flex items-center space-x-2 px-2 py-1 text-sm font-normal text-black"
+    >
+      <img
+        src="https://assets.aceternity.com/logo-dark.png"
+        alt="logo"
+        width={30}
+        height={30}
+      />
+      <span className="font-medium text-black dark:text-white">Startup</span>
+    </a>
+  );
+};
+
+export const NavbarButton = ({
+  href,
+  as: Tag = "a",
+  children,
+  className,
+  variant = "primary",
+  ...props
+}: {
+  href?: string;
+  as?: React.ElementType;
+  children: React.ReactNode;
+  className?: string;
+  variant?: "primary" | "secondary" | "dark" | "gradient";
+} & (
+  | React.ComponentPropsWithoutRef<"a">
+  | React.ComponentPropsWithoutRef<"button">
+)) => {
+  const baseStyles =
+    "px-4 py-2 rounded-md bg-white button bg-white text-black text-sm font-bold relative cursor-pointer hover:-translate-y-0.5 transition duration-200 inline-block text-center";
+
+  const variantStyles = {
+    primary:
+      "shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]",
+    secondary: "bg-transparent shadow-none dark:text-white",
+    dark: "bg-black text-white shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]",
+    gradient:
+      "bg-gradient-to-b from-blue-500 to-blue-700 text-white shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset]",
+  };
+
+  return (
+    <Tag
+      href={href || undefined}
+      className={cn(baseStyles, variantStyles[variant], className)}
+      {...props}
+    >
+      {children}
+    </Tag>
+  );
+};
+
+
+// --- Demo ---
+"use client";
+import {
+  Navbar,
+  NavBody,
+  NavItems,
+  MobileNav,
+  NavbarLogo,
+  NavbarButton,
+  MobileNavHeader,
+  MobileNavToggle,
+  MobileNavMenu,
+} from "@/components/ui/resizable-navbar";
+import { useState } from "react";
+
+export default function NavbarDemo() {
+  const navItems = [
+    {
+      name: "Features",
+      link: "#features",
+    },
+    {
+      name: "Pricing",
+      link: "#pricing",
+    },
+    {
+      name: "Contact",
+      link: "#contact",
+    },
+  ];
+
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  return (
+    <div className="relative w-full">
+      <Navbar>
+        {/* Desktop Navigation */}
+        <NavBody>
+          <NavbarLogo />
+          <NavItems items={navItems} />
+          <div className="flex items-center gap-4">
+            <NavbarButton variant="secondary">Login</NavbarButton>
+            <NavbarButton variant="primary">Book a call</NavbarButton>
+          </div>
+        </NavBody>
+
+        {/* Mobile Navigation */}
+        <MobileNav>
+          <MobileNavHeader>
+            <NavbarLogo />
+            <MobileNavToggle
+              isOpen={isMobileMenuOpen}
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            />
+          </MobileNavHeader>
+
+          <MobileNavMenu
+            isOpen={isMobileMenuOpen}
+            onClose={() => setIsMobileMenuOpen(false)}
+          >
+            {navItems.map((item, idx) => (
+              <a
+                key={`mobile-link-${idx}`}
+                href={item.link}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="relative text-neutral-600 dark:text-neutral-300"
+              >
+                <span className="block">{item.name}</span>
+              </a>
+            ))}
+            <div className="flex w-full flex-col gap-4">
+              <NavbarButton
+                onClick={() => setIsMobileMenuOpen(false)}
+                variant="primary"
+                className="w-full"
+              >
+                Login
+              </NavbarButton>
+              <NavbarButton
+                onClick={() => setIsMobileMenuOpen(false)}
+                variant="primary"
+                className="w-full"
+              >
+                Book a call
+              </NavbarButton>
+            </div>
+          </MobileNavMenu>
+        </MobileNav>
+      </Navbar>
+      <DummyContent />
+
+      {/* Navbar */}
+    </div>
+  );
+}
+
+const DummyContent = () => {
+  return (
+    <div className="container mx-auto p-8 pt-24">
+      <h1 className="mb-4 text-center text-3xl font-bold">
+        Check the navbar at the top of the container
+      </h1>
+      <p className="mb-10 text-center text-sm text-zinc-500">
+        For demo purpose we have kept the position as{" "}
+        <span className="font-medium">Sticky</span>. Keep in mind that this
+        component is <span className="font-medium">fixed</span> and will not
+        move when scrolling.
+      </p>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+        {[
+          {
+            id: 1,
+            title: "The",
+            width: "md:col-span-1",
+            height: "h-60",
+            bg: "bg-neutral-100 dark:bg-neutral-800",
+          },
+          {
+            id: 2,
+            title: "First",
+            width: "md:col-span-2",
+            height: "h-60",
+            bg: "bg-neutral-100 dark:bg-neutral-800",
+          },
+          {
+            id: 3,
+            title: "Rule",
+            width: "md:col-span-1",
+            height: "h-60",
+            bg: "bg-neutral-100 dark:bg-neutral-800",
+          },
+          {
+            id: 4,
+            title: "Of",
+            width: "md:col-span-3",
+            height: "h-60",
+            bg: "bg-neutral-100 dark:bg-neutral-800",
+          },
+          {
+            id: 5,
+            title: "F",
+            width: "md:col-span-1",
+            height: "h-60",
+            bg: "bg-neutral-100 dark:bg-neutral-800",
+          },
+          {
+            id: 6,
+            title: "Club",
+            width: "md:col-span-2",
+            height: "h-60",
+            bg: "bg-neutral-100 dark:bg-neutral-800",
+          },
+          {
+            id: 7,
+            title: "Is",
+            width: "md:col-span-2",
+            height: "h-60",
+            bg: "bg-neutral-100 dark:bg-neutral-800",
+          },
+          {
+            id: 8,
+            title: "You",
+            width: "md:col-span-1",
+            height: "h-60",
+            bg: "bg-neutral-100 dark:bg-neutral-800",
+          },
+          {
+            id: 9,
+            title: "Do NOT TALK about",
+            width: "md:col-span-2",
+            height: "h-60",
+            bg: "bg-neutral-100 dark:bg-neutral-800",
+          },
+          {
+            id: 10,
+            title: "F Club",
+            width: "md:col-span-1",
+            height: "h-60",
+            bg: "bg-neutral-100 dark:bg-neutral-800",
+          },
+        ].map((box) => (
+          <div
+            key={box.id}
+            className={`${box.width} ${box.height} ${box.bg} flex items-center justify-center rounded-lg p-4 shadow-sm`}
+          >
+            <h2 className="text-xl font-medium">{box.title}</h2>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+// --- Component ---
+"use client";
+
+import { useState, type ReactNode } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { ArrowRight, ChevronDown, Menu, X } from "lucide-react";
+
+type NavItem = {
+  label: string;
+  href?: string;
+  panelId?: "product" | "solution" | "pricing";
+};
+
+type ProductCard = {
+  title: string;
+  description?: string;
+  mediaType?: "component" | "image";
+  imageSrc?: string;
+  component?: ReactNode;
+};
+
+type MenuPanel = {
+  id: NonNullable<NavItem["panelId"]>;
+  items: ProductCard[];
+};
+
+const navItems: NavItem[] = [
+  { label: "Product", panelId: "product" },
+  { label: "Solution", panelId: "solution" },
+  { label: "Developers", href: "#" },
+  { label: "Company", href: "#" },
+  { label: "Pricing", panelId: "pricing" },
+  { label: "News", href: "#" },
+];
+
+const menuPanels: MenuPanel[] = [
+  {
+    id: "product",
+    items: [
+      { title: "Chat", mediaType: "component", component: <ChatPreview /> },
+      { title: "Build", mediaType: "component", component: <BuildPreview /> },
+      { title: "Imagine", description: "Generate and edit images and videos from text" },
+      { title: "Voice", description: "Build voice agents with sub-second latency" },
+    ],
+  },
+  {
+    id: "solution",
+    items: [
+      { title: "Research", description: "Explore, compare, and synthesize complex work with long-context reasoning." },
+      { title: "Engineering", description: "Move from issue to tested patch with agents that understand your codebase." },
+      { title: "Operations", description: "Turn messy requests, documents, and workflows into structured execution." },
+    ],
+  },
+  {
+    id: "pricing",
+    items: [
+      { title: "Free", description: "Start experimenting with core models, chat, and lightweight automation." },
+      { title: "Pro", description: "Higher limits, faster responses, and advanced tools for serious builders." },
+      { title: "Enterprise", description: "Security, admin controls, dedicated support, and custom deployment paths." },
+    ],
+  },
+];
+
+function getPanel(panelId: string | null) {
+  return menuPanels.find((panel) => panel.id === panelId);
+}
+
+function XaiLogo({ className = "" }: { className?: string }) {
+  return (
+    <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} aria-hidden="true">
+      <path d="M3.64241 13.8959L19.075 36.4167H25.9348L10.5004 13.8959H3.64241ZM10.4951 26.404L3.63362 36.4167H10.4986L13.9267 31.4113L10.4951 26.404ZM27.5039 1.58337L15.6434 18.8905L19.075 23.8995L34.3689 1.58337H27.5039ZM28.7462 12.2926V36.4167H34.3689V4.08789L28.7462 12.2926Z" fill="currentColor" />
+    </svg>
+  );
+}
+
+function ChatPreview() {
+  return (
+    <div className="relative z-10 flex w-full flex-col gap-2 rounded-lg border border-zinc-900/80 bg-zinc-950 p-2 shadow-sm">
+      <div className="flex justify-start gap-1.5">
+        <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-zinc-800 text-[8px] font-bold text-zinc-400">U</span>
+        <div className="max-w-[85%] rounded bg-white p-1.5 text-[8px] font-medium leading-normal text-black">
+          I am building a block library featuring xai, what kind of ui blocks should i design
+        </div>
+      </div>
+      <div className="flex justify-start gap-1.5">
+        <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-blue-600 text-[8px] font-bold text-white">G</span>
+        <div className="max-w-[85%] rounded bg-blue-600 p-1.5 text-[8px] font-medium leading-normal text-white">
+          Design cosmic themes, Grok chat blocks, AI response cards, and sharp truth-seeking components.
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BuildPreview() {
+  return (
+    <div className="relative z-10 w-full space-y-1.5 overflow-hidden rounded-lg border border-zinc-900/80 bg-zinc-950 p-2 font-mono text-[7.5px] leading-normal text-zinc-400 shadow-sm">
+      <div className="flex items-center justify-between text-zinc-500"><span>Find session references</span><span className="rounded bg-zinc-900 px-1 py-px text-[6.5px] text-zinc-400">explore</span></div>
+      <div className="flex items-center gap-1 text-zinc-500"><span className="h-1 w-1 rounded-full bg-emerald-500" />Thought for 4.1s</div>
+      <div className="overflow-hidden rounded border border-zinc-900 bg-[#09090b] text-[6.5px]">
+        <div className="border-b border-zinc-900/60 bg-[#0c0c0e] px-2 py-0.5 text-zinc-500">Edit src/middleware/auth.ts</div>
+        <div className="space-y-px p-1 font-mono text-zinc-400">
+          <p><span className="mr-1 text-zinc-600">42</span> export async function handler(req) &#123;</p>
+          <p className="bg-red-950/20 text-red-300"><span className="mr-1 text-zinc-600">43</span> - const token = extract(req);</p>
+          <p className="bg-emerald-950/30 text-emerald-300"><span className="mr-1 text-zinc-600">44</span> + const token = extractRequest(req);</p>
+          <p className="text-zinc-300"><span className="mr-1 text-zinc-600">45</span> if (!token) return unauthorized();</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PanelCard({ item, compact = false }: { item: ProductCard; compact?: boolean }) {
+  if (item.component || item.imageSrc) {
+    return (
+      <div className="group relative flex h-[180px] flex-col justify-between overflow-hidden rounded-xl border border-zinc-900 bg-zinc-950/40 p-3 transition-all duration-300 hover:border-zinc-800 hover:bg-zinc-900/15">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(59,130,246,0.045),transparent_50%)] opacity-0 transition-opacity group-hover:opacity-100" />
+        {item.mediaType === "image" && item.imageSrc ? (
+          <img src={item.imageSrc} alt="" className="relative z-10 h-full w-full rounded-lg object-cover" />
+        ) : item.component}
+        <span className="relative z-10 mt-auto block text-center text-xs font-medium text-zinc-400 transition-colors group-hover:text-white">{item.title}</span>
+      </div>
+    );
+  }
+
+  return (
+    <a href="#" className={compact ? "group relative flex h-[86px] flex-col justify-center overflow-hidden rounded-xl border border-zinc-900 bg-zinc-950/40 p-3 transition-all hover:border-zinc-800 hover:bg-zinc-900/15" : "group relative flex min-h-[132px] flex-col justify-between overflow-hidden rounded-xl border border-zinc-900 bg-zinc-950/40 p-4 transition-all hover:border-zinc-800 hover:bg-zinc-900/15"}>
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(59,130,246,0.025),transparent_50%)] opacity-0 transition-opacity group-hover:opacity-100" />
+      <div className="relative z-10">
+        <h4 className={compact ? "text-sm font-medium text-white" : "text-base font-medium text-white"}>{item.title}</h4>
+        <p className="mt-1 text-[10px] leading-normal text-zinc-500 transition-colors group-hover:text-zinc-400">{item.description}</p>
+      </div>
+      {!compact && <span className="relative z-10 mt-5 text-[10px] font-medium text-zinc-500">Explore <ArrowRight className="ml-1 inline size-3" /></span>}
+    </a>
+  );
+}
+
+function DropdownPanel({ panel }: { panel: MenuPanel }) {
+  if (panel.id === "product") {
+    const [chat, build, imagine, voice] = panel.items;
+    return (
+      <div className="grid grid-cols-[1.2fr_1.2fr_1fr] gap-4 bg-black p-4">
+        <PanelCard item={chat} />
+        <PanelCard item={build} />
+        <div className="flex flex-col gap-2"><PanelCard item={imagine} compact /><PanelCard item={voice} compact /></div>
+      </div>
+    );
+  }
+
+  return <div className="grid grid-cols-3 gap-4 bg-black p-4">{panel.items.map((item) => <PanelCard key={item.title} item={item} />)}</div>;
+}
+
+export default function NavbarTwo() {
+  const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileActiveMenu, setMobileActiveMenu] = useState<string | null>(null);
+  const activePanel = getPanel(activeMenu);
+
+  const toggleMenu = (menuName: string) => setActiveMenu(activeMenu === menuName ? null : menuName);
+
+  return (
+    <div className="relative flex min-h-[720px] w-full select-none flex-col items-center overflow-hidden bg-white px-6 pb-6 pt-0 font-sans text-zinc-900 transition-colors duration-300">
+      <div className="relative z-30 hidden h-12 w-full max-w-7xl items-center justify-between lg:flex">
+        <a href="#" className="flex items-center text-black"><XaiLogo /></a>
+
+        <div className="absolute left-1/2 top-0 hidden w-[700px] -translate-x-1/2 lg:block" style={{ filter: "drop-shadow(0 12px 20px rgba(0, 0, 0, 0.18))" }}>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pointer-events-none absolute -left-[18px] top-0 z-10 text-black"><path d="M 20 20 L 20 0 L 0 0 C 11.046 0 20 11.046 20 20 Z" fill="currentColor" /></svg>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pointer-events-none absolute -right-[18px] top-0 z-10 text-black"><path d="M 0 0 L 20 0 C 8.954 0 0 8.954 0 20 Z" fill="currentColor" /></svg>
+
+          <motion.div animate={{ height: activePanel ? 260 : 48 }} transition={{ type: "spring", stiffness: 300, damping: 28 }} className="relative flex w-full flex-col justify-start overflow-hidden bg-black" style={{ borderBottomLeftRadius: "16px", borderBottomRightRadius: "16px" }}>
+            <div className="z-20 flex h-12 items-center justify-center px-6">
+              <nav className="flex w-full items-center justify-center gap-5 text-xs font-medium text-zinc-400">
+                {navItems.map((item) => item.panelId ? (
+                  <button key={item.label} onClick={() => toggleMenu(item.panelId!)} className={`flex cursor-pointer items-center gap-1 rounded-md px-3 py-1 outline-none transition-all hover:text-white ${activeMenu === item.panelId ? "bg-[#18181b] text-white" : "text-zinc-400"}`}>
+                    {item.label}<ChevronDown className={`h-3.5 w-3.5 opacity-70 transition-transform duration-300 ${activeMenu === item.panelId ? "rotate-180" : ""}`} />
+                  </button>
+                ) : <a key={item.label} href={item.href} className="px-2 py-1 text-zinc-400 transition-colors duration-250 hover:text-white">{item.label}</a>)}
+              </nav>
+            </div>
+
+            <AnimatePresence mode="wait">
+              {activePanel && (
+                <motion.div key={activePanel.id} initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.18 }} className="overflow-hidden border-t border-zinc-900 bg-black">
+                  <DropdownPanel panel={activePanel} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        </div>
+
+        <a href="#" className="group flex items-center gap-1 rounded-lg bg-blue-600 px-3.5 py-1.5 text-[12px] font-semibold text-white shadow-sm transition-colors hover:bg-blue-700">Try it now<ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" /></a>
+      </div>
+
+      <div className="relative z-30 flex h-14 w-full items-center justify-between lg:hidden">
+        <a href="#" className="text-black"><XaiLogo /></a>
+        <div className="flex items-center gap-2">
+          <a href="#" className="group flex items-center gap-1 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm">Try it now<ArrowRight className="h-3 w-3" /></a>
+          <button onClick={() => setMobileOpen((open) => !open)} className="grid size-9 place-items-center rounded-lg border border-zinc-200 text-zinc-900">{mobileOpen ? <X className="size-4" /> : <Menu className="size-4" />}</button>
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="relative z-20 w-full overflow-hidden rounded-xl bg-black text-white shadow-xl lg:hidden">
+            <div className="grid gap-1 p-4">
+              {navItems.map((item) => {
+                const panel = item.panelId ? getPanel(item.panelId) : null;
+                const isOpen = mobileActiveMenu === item.panelId;
+
+                if (!item.panelId) {
+                  return <a key={item.label} href={item.href || "#"} className="flex items-center justify-between rounded-lg px-3 py-2 text-sm text-zinc-300 hover:bg-white/10 hover:text-white">{item.label}</a>;
+                }
+
+                return (
+                  <div key={item.label}>
+                    <button type="button" onClick={() => setMobileActiveMenu(isOpen ? null : item.panelId!)} className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm text-zinc-300 hover:bg-white/10 hover:text-white">
+                      {item.label}
+                      <ChevronDown className={`size-4 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+                    </button>
+                    <AnimatePresence initial={false}>
+                      {isOpen && panel && (
+                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden">
+                          <div className="mx-3 mb-2 grid gap-2 border-l border-white/10 pl-3 pt-1">
+                            {panel.items.map((panelItem) => (
+                              <a key={panelItem.title} href="#" className="rounded-md px-3 py-2 hover:bg-white/5">
+                                <span className="block text-sm font-medium text-white">{panelItem.title}</span>
+                                {panelItem.description && <span className="mt-0.5 block text-xs leading-5 text-zinc-500">{panelItem.description}</span>}
+                              </a>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="relative z-10 mt-14 w-full max-w-[700px] bg-white text-center lg:mt-14">
+        <div className="flex flex-col items-center px-6 pt-10">
+          <a href="#" className="group mb-8 inline-flex items-center gap-2 rounded-full border border-neutral-200 px-2 py-1 text-sm text-neutral-400 transition-colors hover:text-black md:px-3"><span className="rounded-full bg-neutral-200 px-2 py-0.5 text-neutral-500 transition-colors group-hover:bg-neutral-900 group-hover:text-white">Hiring</span>Apply for Design Engineers<ArrowRight className="size-3 text-neutral-400 transition-transform group-hover:translate-x-1 group-hover:text-black" /></a>
+          <h1 className="max-w-2xl text-3xl font-semibold tracking-tighter text-black md:text-5xl">Frontier AI models for <br className="hidden md:block" />everything you build</h1>
+          <p className="mt-4 max-w-lg text-center text-sm leading-relaxed text-black/60 md:text-lg">Autonomous agents that debug, refactor, and ship features while you focus on architecture and strategy</p>
+          <div className="mb-10 mt-6 flex flex-row gap-4"><a href="#" className="flex min-w-[100px] items-center justify-center rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 md:min-w-[190px] md:text-lg">Get API Access</a><a href="#" className="flex min-w-[100px] items-center justify-center rounded-lg border border-neutral-300 px-3 py-1.5 text-sm font-medium text-black transition-colors hover:bg-gray-50 md:min-w-[190px] md:text-lg">View Documentation</a></div>
+        </div>
+        <div className="relative overflow-hidden rounded-b-[16px] bg-gray-50"><img src="https://res.cloudinary.com/harshitproject/image/upload/v1774017120/hero-light.png" alt="Dashboard Preview" className="h-auto w-full object-cover object-top" /><div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-white via-white/80 to-transparent" /></div>
+      </div>
+    </div>
+  );
+}
+
+
+// --- Demo ---
+import NavbarSectionTwo from "@/components/ui/navbar-section-2";
+
+export default function DemoNavbarSectionTwo() {
+  return (
+    <div className="w-full">
+      <NavbarSectionTwo />
+    </div>
+  );
+}
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+

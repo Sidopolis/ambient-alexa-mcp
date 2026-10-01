@@ -1,0 +1,6 @@
+orbiting circles
+icon cloud
+logo carousel
+marquee
+infinite scroll logos
+animated list

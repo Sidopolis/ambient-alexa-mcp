@@ -1,0 +1,2975 @@
+import { cn } from "@/lib/utils";
+import { useState } from "react";
+
+export const Component = () => {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div className={cn("flex flex-col items-center gap-4 p-4 rounded-lg")}>
+      <h1 className="text-2xl font-bold mb-2">Component Example</h1>
+      <h2 className="text-xl font-semibold">{count}</h2>
+      <div className="flex gap-2">
+        <button onClick={() => setCount((prev) => prev - 1)}>-</button>
+        <button onClick={() => setCount((prev) => prev + 1)}>+</button>
+      </div>
+    </div>
+  );
+};
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+// --- Component ---
+import { cn } from "@/lib/utils";
+import { useState } from "react";
+
+export const Component = () => {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div className={cn("flex flex-col items-center gap-4 p-4 rounded-lg")}>
+      <h1 className="text-2xl font-bold mb-2">Component Example</h1>
+      <h2 className="text-xl font-semibold">{count}</h2>
+      <div className="flex gap-2">
+        <button onClick={() => setCount((prev) => prev - 1)}>-</button>
+        <button onClick={() => setCount((prev) => prev + 1)}>+</button>
+      </div>
+    </div>
+  );
+};
+
+
+// --- Demo ---
+import { Badge } from '@/components/ui/badge-2';
+import { Button } from '@/components/ui/button-1';
+import { Card, CardContent, CardHeader, CardTitle, CardToolbar } from '@/components/ui/card';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { ArrowDown, ArrowUp, MoreHorizontal, Pin, Settings, Share2, Trash, TriangleAlert } from 'lucide-react';
+
+const stats = [
+  {
+    title: 'All Orders',
+    value: 122380,
+    delta: 15.1,
+    lastMonth: 105922,
+    positive: true,
+    prefix: '',
+    suffix: '',
+  },
+  {
+    title: 'Order Created',
+    value: 1902380,
+    delta: -2.0,
+    lastMonth: 2002098,
+    positive: false,
+    prefix: '',
+    suffix: '',
+  },
+  {
+    title: 'Organic Sales',
+    value: 98100000,
+    delta: 0.4,
+    lastMonth: 97800000,
+    positive: true,
+    prefix: '$',
+    suffix: 'M',
+    format: (v: number) => `$${(v / 1_000_000).toFixed(1)}M`,
+    lastFormat: (v: number) => `$${(v / 1_000_000).toFixed(1)}M`,
+  },
+  {
+    title: 'Active Users',
+    value: 48210,
+    delta: 3.7,
+    lastMonth: 46480,
+    positive: true,
+    prefix: '',
+    suffix: '',
+  },
+];
+
+function formatNumber(n: number) {
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + 'M';
+  if (n >= 1_000) return n.toLocaleString();
+  return n.toString();
+}
+
+export default function StatisticCard1() {
+  return (
+    <div className="min-h-screen flex items-center justify-center p-6 lg:p-8">
+      <div className="grow grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {stats.map((stat, index) => (
+          <Card key={index}>
+            <CardHeader className="border-0">
+              <CardTitle className="text-muted-foreground text-sm font-medium">{stat.title}</CardTitle>
+              <CardToolbar>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="dim" size="sm" mode="icon" className="-me-1.5">
+                      <MoreHorizontal />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" side="bottom">
+                    <DropdownMenuItem>
+                      <Settings />
+                      Settings
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <TriangleAlert /> Add Alert
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Pin /> Pin to Dashboard
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Share2 /> Share
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem variant="destructive">
+                      <Trash />
+                      Remove
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </CardToolbar>
+            </CardHeader>
+            <CardContent className="space-y-2.5">
+              <div className="flex items-center gap-2.5">
+                <span className="text-2xl font-medium text-foreground tracking-tight">
+                  {stat.format ? stat.format(stat.value) : stat.prefix + formatNumber(stat.value) + stat.suffix}
+                </span>
+                <Badge variant={stat.positive ? 'success' : 'destructive'} appearance="light">
+                  {stat.delta > 0 ? <ArrowUp /> : <ArrowDown />}
+                  {stat.delta}%
+                </Badge>
+              </div>
+              <div className="text-xs text-muted-foreground mt-2 border-t pt-2.5">
+                Vs last month:{' '}
+                <span className="font-medium text-foreground">
+                  {stat.lastFormat
+                    ? stat.lastFormat(stat.lastMonth)
+                    : stat.prefix + formatNumber(stat.lastMonth) + stat.suffix}
+                </span>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+// --- Component ---
+import { cn } from "@/lib/utils";
+import { useState } from "react";
+
+export const Component = () => {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div className={cn("flex flex-col items-center gap-4 p-4 rounded-lg")}>
+      <h1 className="text-2xl font-bold mb-2">Component Example</h1>
+      <h2 className="text-xl font-semibold">{count}</h2>
+      <div className="flex gap-2">
+        <button onClick={() => setCount((prev) => prev - 1)}>-</button>
+        <button onClick={() => setCount((prev) => prev + 1)}>+</button>
+      </div>
+    </div>
+  );
+};
+
+
+// --- Demo ---
+import { Badge } from '@/components/ui/badge-2';
+import { Button } from '@/components/ui/button-1';
+import { Card, CardContent, CardHeader, CardTitle, CardToolbar } from '@/components/ui/card';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { BarChart2, MoreHorizontal } from 'lucide-react';
+
+export default function StatisticCard10() {
+  return (
+    <div className="min-h-screen w-full flex items-center justify-center p-6 lg:p-8">
+      <Card className="w-full max-w-md">
+        <CardHeader className="border-0 py-6 min-h-auto">
+          <CardTitle className="inline-flex items-center gap-2">
+            <BarChart2 className="size-8 text-primary" />
+            Total Revenue
+          </CardTitle>
+          <CardToolbar>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="dim" size="sm" mode="icon">
+                  <MoreHorizontal className="size-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" side="bottom">
+                <DropdownMenuItem>Settings</DropdownMenuItem>
+                <DropdownMenuItem>Export Data</DropdownMenuItem>
+                <DropdownMenuItem>Pin to Dashboard</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem variant="destructive">Remove</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </CardToolbar>
+        </CardHeader>
+        <CardContent className="flex flex-col justify-between gap-3.5">
+          <div className="space-y-3.5">
+            {/* Revenue */}
+            <div className="flex items-center gap-2.5 mb-2.5">
+              <span className="text-3xl font-bold text-foreground tracking-tight">$ 1,120,500</span>
+              <span className="text-xs text-muted-foreground font-medium leading-none">USD</span>
+            </div>
+
+            {/* Revenue trend */}
+            <div className="flex items-center gap-2 mb-4">
+              <Badge variant="success" appearance="light">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="inline-block">
+                  <path
+                    d="M3 5.5L7 9.5L11 5.5"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                -12.7%
+              </Badge>
+              <span className="text-sm text-muted-foreground">decreased from last quarter</span>
+            </div>
+          </div>
+
+          <div className="space-y-1">
+            <div className="p-2.5 bg-muted/60 flex items-center justify-between rounded-lg">
+              <span className="text-sm text-accent-foreground">Avg. Subscription Value:</span>
+              <span className="text-base font-semibold text-foreground">$320</span>
+            </div>
+            <div className="p-2.5 bg-muted/60 flex items-center justify-between rounded-lg">
+              <span className="text-sm text-accent-foreground">Enterprise Clients:</span>
+              <span className="text-base font-semibold text-foreground">42</span>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+// --- Component ---
+import { useId, useMemo, useState } from 'react';
+import { ArrowDown, ArrowRight, ArrowUp } from 'lucide-react';
+import {
+  ACCENTS,
+  formatCompact,
+  MetricChart,
+  SERIES_COLORS,
+  type ChartSeries,
+  type ChartView,
+  type MetricAccent,
+  type MetricSeries,
+  type SeriesPoint,
+} from './metric-chart';
+import { PeriodSelect, ViewToggle, type PeriodOption } from './metric-controls';
+
+// Ré-export des types pour que les consommateurs n'importent que ce fichier.
+export type { SeriesPoint, MetricSeries, MetricAccent, ChartView, PeriodOption };
+
+export type CardSize = 'sm' | 'md' | 'lg';
+
+export interface ProgressMetricCardProps {
+  title: string;
+  total?: string | number;
+  delta?: string;
+  deltaLabel?: string;
+  percent?: string;
+  trend?: 'up' | 'down';
+  unit?: string;
+  period?: string;
+  periodOptions?: PeriodOption[];
+  onPeriodChange?: (option: PeriodOption) => void;
+  defaultView?: ChartView;
+  accent?: MetricAccent;
+  /** Série unique. À fournir, OU `series`. */
+  data?: SeriesPoint[];
+  /** Plusieurs séries nommées. Prioritaire sur `data`. */
+  series?: MetricSeries[];
+  defaultIndex?: number;
+  size?: CardSize;
+  /** Affiche les stats secondaires (peak / low / avg) dans le footer. */
+  showStats?: boolean;
+  /** Format des valeurs. Par défaut : compact en titre, exact en tooltip. */
+  valueFormatter?: (value: number) => string;
+  dateFormatter?: (date: string) => string;
+  loading?: boolean;
+  className?: string;
+}
+
+const DEFAULT_PERIODS: PeriodOption[] = [
+  { label: 'Past 7 days', points: 4 },
+  { label: 'Past 14 days', points: 7 },
+  { label: 'Past 30 days' },
+];
+
+// Part de la card (depuis la droite) occupée par le graphe.
+const REGION_W = 62; // %
+// Variation sous ce seuil = "stable" → accent neutre.
+const NEUTRAL_PCT = 0.5;
+
+const SIZES: Record<
+  CardSize,
+  { minH: string; pad: string; footer: string; title: string; headline: string }
+> = {
+  sm: { minH: 'min-h-[260px]', pad: 'px-6 pt-5', footer: 'px-6 py-3', title: 'text-[15px]', headline: 'text-[46px]' },
+  md: { minH: 'min-h-[380px]', pad: 'px-8 pt-7', footer: 'px-8 py-4', title: 'text-[17px]', headline: 'text-[72px]' },
+  lg: { minH: 'min-h-[460px]', pad: 'px-10 pt-9', footer: 'px-10 py-5', title: 'text-[19px]', headline: 'text-[88px]' },
+};
+
+const sliceWindow = (points: SeriesPoint[], n?: number) =>
+  n && n < points.length ? points.slice(-n) : points;
+
+export default function ProgressMetricCard({
+  title,
+  total,
+  delta,
+  deltaLabel = 'today',
+  percent,
+  trend,
+  unit,
+  period = 'Past 30 days',
+  periodOptions,
+  onPeriodChange,
+  defaultView = 'curve',
+  accent,
+  data,
+  series,
+  defaultIndex,
+  size = 'md',
+  showStats = true,
+  valueFormatter,
+  dateFormatter,
+  loading = false,
+  className = '',
+}: ProgressMetricCardProps) {
+  const gridId = `grid-${useId().replace(/:/g, '')}`;
+  const sz = SIZES[size];
+  const shell = `relative flex ${sz.minH} w-full flex-col overflow-hidden rounded-[28px] border border-border bg-card shadow-[0_2px_10px_rgba(0,0,0,0.04)] ${className}`;
+
+  const periods = periodOptions ?? DEFAULT_PERIODS;
+  const [selectedLabel, setSelectedLabel] = useState(period);
+  const [view, setView] = useState<ChartView>(defaultView);
+
+  // Normalise l'entrée en liste de séries (un `data` simple → une seule série).
+  const baseSeries: MetricSeries[] = useMemo(
+    () => (series?.length ? series : [{ name: title, data: data ?? [], accent }]),
+    [series, data, title, accent],
+  );
+
+  const selectedOption =
+    periods.find((p) => p.label === selectedLabel) ?? periods[periods.length - 1];
+
+  // Découpe chaque série sur la période choisie.
+  const visibleSeries = useMemo(
+    () => baseSeries.map((s) => ({ ...s, data: sliceWindow(s.data, selectedOption?.points) })),
+    [baseSeries, selectedOption],
+  );
+
+  const primary = visibleSeries[0];
+  const isMulti = visibleSeries.length > 1;
+  const hasData = (primary?.data.length ?? 0) >= 2;
+
+  // Tous les chiffres dérivent de la série principale → la card reste cohérente
+  // et réagit au changement de période. Les props restent prioritaires.
+  const stats = useMemo(() => {
+    const vals = primary?.data.map((d) => d.value) ?? [];
+    const sum = vals.reduce((a, b) => a + b, 0);
+    const first = vals[0] ?? 0;
+    const last = vals[vals.length - 1] ?? 0;
+    const prev = vals[vals.length - 2] ?? first;
+    const net = last - first;
+    return {
+      sum,
+      net,
+      pct: first ? (net / first) * 100 : 0,
+      step: last - prev,
+      peak: vals.length ? Math.max(...vals) : 0,
+      low: vals.length ? Math.min(...vals) : 0,
+      avg: vals.length ? sum / vals.length : 0,
+    };
+  }, [primary]);
+
+  // La couleur dépend du sens (dernier vs premier point), avec une zone neutre.
+  const resolvedTrend: 'up' | 'down' | 'flat' =
+    trend ?? (Math.abs(stats.pct) < NEUTRAL_PCT ? 'flat' : stats.net >= 0 ? 'up' : 'down');
+  const resolvedAccent: MetricAccent =
+    accent ?? (resolvedTrend === 'up' ? 'emerald' : resolvedTrend === 'down' ? 'rose' : 'neutral');
+  const color = ACCENTS[resolvedAccent];
+  const TrendIcon =
+    resolvedTrend === 'flat' ? ArrowRight : resolvedTrend === 'down' ? ArrowDown : ArrowUp;
+
+  const fmtCompact = valueFormatter ?? formatCompact;
+  const fmtFull = valueFormatter ?? ((n: number) => n.toLocaleString() + (unit ? ` ${unit}` : ''));
+  const fmtDate = dateFormatter ?? ((d: string) => d);
+  const sign = (n: number) => (n >= 0 ? '+' : '−') + fmtCompact(Math.abs(n));
+
+  const displayTotal = total ?? fmtCompact(stats.sum);
+  const displayDelta = delta ?? sign(stats.step);
+  const displayPercent = percent ?? `${Math.abs(stats.pct).toFixed(1)}%`;
+
+  // Couleur de chaque série : accent défini → palette → couleur du titre.
+  const chartSeries: ChartSeries[] = visibleSeries.map((s, i) => ({
+    name: s.name,
+    data: s.data,
+    color: s.accent
+      ? ACCENTS[s.accent].stroke
+      : isMulti
+        ? SERIES_COLORS[i % SERIES_COLORS.length]
+        : color.stroke,
+  }));
+
+  const lastIndex = (primary?.data.length ?? 1) - 1;
+  const fallback = Math.min(defaultIndex ?? lastIndex, lastIndex);
+
+  const handlePeriodChange = (option: PeriodOption) => {
+    setSelectedLabel(option.label);
+    onPeriodChange?.(option);
+  };
+
+  if (loading) {
+    return (
+      <div className={shell} aria-busy="true">
+        <div className={`flex flex-1 flex-col ${sz.pad}`}>
+          <div className="flex items-center justify-between">
+            <div className="h-5 w-32 animate-pulse rounded bg-muted" />
+            <div className="h-5 w-24 animate-pulse rounded bg-muted" />
+          </div>
+          <div className="mt-6 h-14 w-48 animate-pulse rounded-lg bg-muted" />
+          <div className="mt-auto h-24 w-full animate-pulse rounded-lg bg-muted/50" />
+        </div>
+        <div className={`border-t border-foreground/[0.06] ${sz.footer}`}>
+          <div className="h-4 w-40 animate-pulse rounded bg-muted" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!hasData) {
+    return (
+      <div className={shell}>
+        <div className={`flex flex-1 flex-col ${sz.pad}`}>
+          <h3 className={`${sz.title} font-semibold tracking-tight text-foreground`}>{title}</h3>
+          <div className="flex flex-1 flex-col items-center justify-center gap-1 py-10 text-center">
+            <p className="text-sm font-medium text-foreground">No data yet</p>
+            <p className="text-xs text-muted-foreground">
+              Metrics will appear once data is available.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={shell}>
+      {/* Zone du graphe (à droite, derrière le contenu) */}
+      <div className="absolute inset-y-0 right-0 z-0" style={{ width: `${REGION_W}%` }}>
+        <div
+          className="absolute inset-0"
+          style={{ background: `linear-gradient(to left, ${color.stroke}1f, transparent 75%)` }}
+        />
+        <div
+          className="absolute inset-0 text-foreground/[0.13]"
+          style={{
+            WebkitMaskImage: 'linear-gradient(to right, transparent, black 55%)',
+            maskImage: 'linear-gradient(to right, transparent, black 55%)',
+          }}
+        >
+          <svg className="h-full w-full" aria-hidden>
+            <defs>
+              <pattern id={gridId} width="14" height="14" patternUnits="userSpaceOnUse">
+                <circle cx="1" cy="1" r="1" fill="currentColor" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill={`url(#${gridId})`} />
+          </svg>
+        </div>
+
+        <MetricChart
+          series={chartSeries}
+          view={view}
+          defaultIndex={fallback}
+          valueFormatter={fmtFull}
+          dateFormatter={fmtDate}
+        />
+      </div>
+
+      {/* Contenu principal */}
+      <div className={`pointer-events-none relative z-10 flex flex-1 flex-col ${sz.pad}`}>
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <h3 className={`${sz.title} font-semibold tracking-tight text-foreground`}>{title}</h3>
+            <ViewToggle value={view} onChange={setView} />
+          </div>
+          <div className="flex items-center gap-3.5 text-[14px]">
+            <span className="flex items-center gap-1 font-medium" style={{ color: color.text }}>
+              <TrendIcon size={16} strokeWidth={2.5} />
+              {displayPercent}
+            </span>
+            <PeriodSelect
+              value={selectedLabel}
+              options={periods}
+              onChange={handlePeriodChange}
+              accentText={color.text}
+            />
+          </div>
+        </div>
+
+        {/* Légende (seulement en multi-séries) */}
+        {isMulti && (
+          <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1">
+            {chartSeries.map((s) => (
+              <span
+                key={s.name}
+                className="flex items-center gap-1.5 text-[12px] text-muted-foreground"
+              >
+                <span className="h-2 w-2 rounded-full" style={{ background: s.color }} />
+                {s.name}
+              </span>
+            ))}
+          </div>
+        )}
+
+        <div
+          className={`mt-5 ${sz.headline} font-medium leading-none tracking-tight text-foreground`}
+        >
+          {displayTotal}
+        </div>
+      </div>
+
+      {/* Footer opaque : delta à gauche, stats secondaires à droite */}
+      <div
+        className={`relative z-10 flex items-center justify-between gap-4 border-t border-foreground/[0.06] bg-card ${sz.footer} text-[14px]`}
+      >
+        <div>
+          <span className="font-medium" style={{ color: color.text }}>
+            {displayDelta}
+          </span>{' '}
+          <span className="text-muted-foreground">{deltaLabel}</span>
+        </div>
+        {showStats && (
+          <div className="flex items-center gap-2.5 text-[12px] text-muted-foreground">
+            <span>
+              <span className="font-medium text-foreground/80">{fmtCompact(stats.peak)}</span> peak
+            </span>
+            <span className="opacity-40">·</span>
+            <span>
+              <span className="font-medium text-foreground/80">{fmtCompact(stats.low)}</span> low
+            </span>
+            <span className="opacity-40">·</span>
+            <span>
+              <span className="font-medium text-foreground/80">
+                {fmtCompact(Math.round(stats.avg))}
+              </span>{' '}
+              avg
+            </span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+
+// --- Demo ---
+import ProgressMetricCard, { type SeriesPoint } from '@/components/ui/progress-metric-card';
+
+const ordersSeries: SeriesPoint[] = [
+  { value: 100, date: '18 Mar, 2025' },
+  { value: 115, date: '21 Mar, 2025' },
+  { value: 120, date: '24 Mar, 2025' },
+  { value: 110, date: '27 Mar, 2025' },
+  { value: 178, date: '30 Mar, 2025' },
+  { value: 180, date: '02 Apr, 2025' },
+  { value: 205, date: '05 Apr, 2025' },
+  { value: 185, date: '08 Apr, 2025' },
+  { value: 180, date: '11 Apr, 2025' },
+  { value: 183, date: '14 Apr, 2025' },
+  { value: 185, date: '17 Apr, 2025' },
+  { value: 185, date: '20 Apr, 2025' },
+  { value: 166, date: '23 Apr, 2025' },
+  { value: 181, date: '26 Apr, 2025' },
+  { value: 168, date: '29 Apr, 2025' },
+  { value: 195, date: '02 May, 2025' },
+  { value: 188, date: '05 May, 2025' },
+  { value: 162, date: '08 May, 2025' },
+  { value: 166, date: '11 May, 2025' },
+];
+
+export default function ProgressMetricCardDemo() {
+  return (
+    <div className="flex w-full max-w-[760px] flex-col gap-4 p-12">
+      <ProgressMetricCard title="Total orders" unit="orders" data={ordersSeries} defaultIndex={6} />
+    </div>
+  );
+}
+
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+// --- Component ---
+"use client";
+
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+ChevronDown,
+ChevronUp,
+Circle,
+AlertTriangle,
+CheckCircle,
+} from "lucide-react";
+
+const SERVICES = [
+{
+  name: "API",
+  status: "operational",
+  lastIncident: { date: "2024-05-01", desc: "Minor outage resolved." },
+},
+{
+  name: "Database",
+  status: "degraded",
+  lastIncident: { date: "2024-04-28", desc: "Performance issues resolved." },
+},
+{ name: "Auth", status: "operational", lastIncident: null },
+{
+  name: "Email",
+  status: "down",
+  lastIncident: { date: "2024-05-02", desc: "Email delivery outage." },
+},
+];
+
+const INCIDENTS = [
+{
+  service: "Email",
+  date: "2024-05-02",
+  desc: "Email delivery outage. Resolved in 2h.",
+},
+{
+  service: "Database",
+  date: "2024-04-28",
+  desc: "Performance issues. Resolved in 1h.",
+},
+{
+  service: "API",
+  date: "2024-05-01",
+  desc: "Minor outage. Resolved in 30m.",
+},
+];
+
+// Mock uptime history: 1 = up (green), 0 = incident (red)
+const UPTIME_HISTORY: Record<string, number[]> = {
+API: [
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+  1, 1, 0, 1, 1,
+],
+Database: [
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1,
+  1, 1, 1, 1, 1,
+],
+Auth: [
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+  1, 1, 1, 1, 1,
+],
+Email: [
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1,
+  1, 1, 1, 1, 1,
+],
+};
+
+function UptimeBar({ history }: { history: number[] }) {
+return (
+  <div className="flex gap-0.5 mt-1">
+    {history.map((v, i) => (
+      <div
+        key={i}
+        className={`h-6 w-1 rounded-sm ${v ? "bg-green-400" : "bg-red-400"}`}
+        title={v ? "Up" : "Incident"}
+      />
+    ))}
+  </div>
+);
+}
+
+function getStatusIcon(status: string) {
+if (status === "operational")
+  return <CheckCircle className="text-green-500 w-4 h-4" />;
+if (status === "degraded")
+  return <AlertTriangle className="text-yellow-500 w-4 h-4" />;
+if (status === "down") return <Circle className="text-red-500 w-4 h-4" />;
+return <Circle className="text-muted-foreground w-4 h-4" />;
+}
+
+const SystemStatusBlock = () => {
+const [showIncidents, setShowIncidents] = useState(false);
+return (
+  <Card className="w-full max-w-xl mx-auto p-2 md:p-4">
+    <CardContent className="p-6 flex flex-col gap-6">
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <span className="font-semibold text-lg">System Status</span>
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() => setShowIncidents((v) => !v)}
+            aria-label={
+              showIncidents
+                ? "Hide incident history"
+                : "Show incident history"
+            }
+          >
+            {showIncidents ? (
+              <ChevronUp className="w-4 h-4" />
+            ) : (
+              <ChevronDown className="w-4 h-4" />
+            )}
+            <span className="text-xs">
+              {showIncidents ? "Hide" : "Incident History"}
+            </span>
+          </Button>
+        </div>
+        <div className="flex flex-col gap-3">
+          {SERVICES.map((svc) => (
+            <div key={svc.name} className="flex flex-col gap-1">
+              <div className="flex items-center gap-4 flex-wrap">
+                {getStatusIcon(svc.status)}
+                <span className="font-medium">{svc.name}</span>
+                <span className="text-xs text-muted-foreground">
+                  {svc.status.charAt(0).toUpperCase() + svc.status.slice(1)}
+                </span>
+                {svc.lastIncident && (
+                  <span className="text-xs text-muted-foreground ml-auto">
+                    Last: {svc.lastIncident.date}
+                  </span>
+                )}
+              </div>
+              <UptimeBar history={UPTIME_HISTORY[svc.name] || []} />
+            </div>
+          ))}
+        </div>
+      </div>
+      {showIncidents && (
+        <div className="flex flex-col gap-2 bg-accent rounded-card p-4 mt-2">
+          <span className="font-semibold text-sm mb-2">Incident History</span>
+          {INCIDENTS.map((inc, i) => (
+            <div
+              key={i}
+              className="flex flex-col gap-1 border-b last:border-b-0 border-muted-foreground/10 pb-2 last:pb-0"
+            >
+              <span className="text-xs font-medium">
+                {inc.service} - {inc.date}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {inc.desc}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </CardContent>
+  </Card>
+);
+}
+
+export default SystemStatusBlock;
+
+// --- Demo ---
+import  SystemStatusBlock  from "@/components/ui/system-status-block";
+
+export default function DemoOne() {
+  return <SystemStatusBlock />;
+}
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+// --- Component ---
+"use client"
+
+import type React from "react"
+import { useState, useRef, useMemo } from "react"
+
+const weekData = [
+  { day: "Sun", value: 450 },
+  { day: "Mon", value: 520 },
+  { day: "Tue", value: 680 },
+  { day: "Wed", value: 750 },
+  { day: "Thu", value: 620 },
+  { day: "Fri", value: 780 },
+  { day: "Sat", value: 920 },
+]
+
+export function BudgetCard() {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(3)
+  const chartRef = useRef<SVGSVGElement>(null)
+
+  const maxValue = Math.max(...weekData.map((d) => d.value))
+  const minValue = Math.min(...weekData.map((d) => d.value))
+  const chartHeight = 160
+  const chartWidth = 360
+  const padding = { top: 40, bottom: 35, left: 10, right: 10 }
+
+  const getY = (value: number) => {
+    const range = maxValue - minValue
+    const normalized = (value - minValue) / range
+    return chartHeight - padding.bottom - normalized * (chartHeight - padding.top - padding.bottom)
+  }
+
+  const getX = (index: number) => {
+    return padding.left + (index / (weekData.length - 1)) * (chartWidth - padding.left - padding.right)
+  }
+
+  const generatePath = () => {
+    const points = weekData.map((d, i) => ({ x: getX(i), y: getY(d.value) }))
+
+    let path = `M ${points[0].x} ${points[0].y}`
+
+    for (let i = 0; i < points.length - 1; i++) {
+      const p0 = points[i - 1] || points[i]
+      const p1 = points[i]
+      const p2 = points[i + 1]
+      const p3 = points[i + 2] || p2
+
+      const tension = 0.35
+      const cp1x = p1.x + (p2.x - p0.x) * tension
+      const cp1y = p1.y + (p2.y - p0.y) * tension
+      const cp2x = p2.x - (p3.x - p1.x) * tension
+      const cp2y = p2.y - (p3.y - p1.y) * tension
+
+      path += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`
+    }
+
+    return path
+  }
+
+  const generateAreaPath = () => {
+    const linePath = generatePath()
+    const lastPoint = weekData.length - 1
+    return `${linePath} L ${getX(lastPoint)} ${chartHeight - padding.bottom} L ${getX(0)} ${chartHeight - padding.bottom} Z`
+  }
+
+  const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
+    if (!chartRef.current) return
+    const rect = chartRef.current.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const relativeX = (x / rect.width) * chartWidth
+
+    let closestIndex = 0
+    let closestDist = Number.POSITIVE_INFINITY
+    weekData.forEach((_, i) => {
+      const dist = Math.abs(getX(i) - relativeX)
+      if (dist < closestDist) {
+        closestDist = dist
+        closestIndex = i
+      }
+    })
+    setHoveredIndex(closestIndex)
+  }
+
+  const handleMouseLeave = () => {
+    setHoveredIndex(3)
+  }
+
+  const scatteredDots = useMemo(
+    () =>
+      Array.from({ length: 35 }, (_, i) => ({
+        x: 40 + (i % 7) * 42 + (Math.random() - 0.5) * 30,
+        y: padding.top + 15 + Math.floor(i / 7) * 15 + (Math.random() - 0.5) * 10,
+        opacity: 0.4 + Math.random() * 0.4,
+        size: 1.2 + Math.random() * 1.8,
+      })),
+    [],
+  )
+
+  return (
+    <div className="relative w-[420px] rounded-[40px] bg-gradient-to-b from-muted/50 to-muted/60 p-3.5 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.15),0_0_0_1px_rgba(255,255,255,0.4)_inset] dark:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.4),0_0_0_1px_rgba(255,255,255,0.05)_inset]">
+      {/* Inner highlight */}
+      <div
+        className="absolute inset-[1px] rounded-[39px] bg-gradient-to-b from-background/60 to-transparent pointer-events-none dark:from-background/30"
+        style={{ height: "50%" }}
+      />
+
+      <div className="relative overflow-hidden rounded-[28px] bg-card p-7 pb-5 shadow-[0_2px_8px_rgba(0,0,0,0.08),0_0_0_1px_rgba(0,0,0,0.04)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.2),0_0_0_1px_rgba(255,255,255,0.05)]">
+        {/* Header Section */}
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <p className="text-[15px] font-medium tracking-wide text-muted-foreground">Budget</p>
+            <h2 className="mt-1.5 text-[46px] font-semibold leading-[1] tracking-[-0.02em] text-card-foreground">
+              $30.739
+            </h2>
+            <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-border bg-background/40 px-4 py-2 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.03)] dark:shadow-[0_1px_3px_rgba(0,0,0,0.2),0_1px_3px_rgba(255,255,255,0.05)]">
+              <span className="text-[14px] font-semibold text-foreground">+ $317</span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-foreground">
+                <path
+                  d="M2 11L6 7L9 10L14 4"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M10 4H14V8"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <div className="relative -mr-1 -mt-1 h-[110px] w-[130px]">
+            <MoneyIllustration />
+          </div>
+        </div>
+
+        {/* Chart Section */}
+        <div className="relative mt-2">
+          <svg
+            ref={chartRef}
+            viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+            className="w-full"
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            style={{ cursor: "default" }}
+          >
+            <defs>
+              <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#5B52E5" stopOpacity="0.35" className="dark:stop-opacity-40" />
+                <stop offset="50%" stopColor="#5B52E5" stopOpacity="0.15" className="dark:stop-opacity-20" />
+                <stop offset="100%" stopColor="#5B52E5" stopOpacity="0.02" className="dark:stop-opacity-5" />
+              </linearGradient>
+              <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="#5B52E5" />
+                <stop offset="100%" stopColor="#4F46E5" />
+              </linearGradient>
+              <filter id="tooltipShadow" x="-50%" y="-50%" width="200%" height="200%">
+                <feDropShadow dx="0" dy="4" stdDeviation="6" floodOpacity="0.2" />
+              </filter>
+              <filter id="dotGlow" x="-100%" y="-100%" width="300%" height="300%">
+                <feGaussianBlur stdDeviation="2" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+
+            {/* Vertical dashed lines */}
+            {weekData.map((_, i) => (
+              <line
+                key={i}
+                x1={getX(i)}
+                y1={padding.top}
+                x2={getX(i)}
+                y2={chartHeight - padding.bottom}
+                className="stroke-border transition-opacity duration-200"
+                strokeWidth="1"
+                strokeDasharray="3 5"
+                opacity={hoveredIndex === i ? 0.8 : 0.5}
+              />
+            ))}
+
+            {/* Scattered decorative dots */}
+            {scatteredDots.map((dot, i) => (
+              <circle key={i} cx={dot.x} cy={dot.y} r={dot.size} className="fill-card" opacity={dot.opacity} />
+            ))}
+
+            {/* Area fill */}
+            <path d={generateAreaPath()} fill="url(#areaGradient)" className="transition-all duration-300" />
+
+            {/* Main curve line */}
+            <path
+              d={generatePath()}
+              fill="none"
+              stroke="#4F46E5"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+
+            {/* Hover data point */}
+            {hoveredIndex !== null && (
+              <g className="transition-all duration-150 ease-out">
+                {/* Outer glow ring */}
+                <circle
+                  cx={getX(hoveredIndex)}
+                  cy={getY(weekData[hoveredIndex].value)}
+                  r="12"
+                  className="fill-card"
+                  opacity="0.5"
+                />
+                {/* White fill circle */}
+                <circle
+                  cx={getX(hoveredIndex)}
+                  cy={getY(weekData[hoveredIndex].value)}
+                  r="8"
+                  className="fill-card"
+                  stroke="#4F46E5"
+                  strokeWidth="3"
+                  filter="url(#dotGlow)"
+                />
+              </g>
+            )}
+
+            {/* Day labels */}
+            {weekData.map((d, i) => (
+              <text
+                key={i}
+                x={getX(i)}
+                y={chartHeight - 8}
+                textAnchor="middle"
+                className="text-[12px] font-medium fill-muted-foreground"
+              >
+                {d.day}
+              </text>
+            ))}
+          </svg>
+
+          {/* Floating tooltip */}
+          {hoveredIndex !== null && (
+            <div
+              className="pointer-events-none absolute transition-all duration-150 ease-out"
+              style={{
+                left: `${(getX(hoveredIndex) / chartWidth) * 100}%`,
+                top: `${(getY(weekData[hoveredIndex].value) / chartHeight) * 100}%`,
+                transform: "translate(-50%, -140%)",
+              }}
+            >
+              <div className="relative rounded-xl bg-foreground/90 px-4 py-2 shadow-[0_4px_16px_rgba(0,0,0,0.2)] dark:bg-background/90 backdrop-blur-sm">
+                <span className="text-[14px] font-semibold text-background dark:text-foreground">
+                  ${weekData[hoveredIndex].value}
+                </span>
+                {/* Tooltip arrow */}
+                <div className="absolute left-1/2 -bottom-2 -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent border-t-foreground/90 dark:border-t-background/90" />
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function MoneyIllustration() {
+  return (
+    <svg viewBox="0 0 130 110" className="h-full w-full drop-shadow-lg">
+      <defs>
+        <linearGradient id="bill1" x1="0" y1="0" x2="0.3" y2="1">
+          <stop offset="0%" stopColor="oklch(from var(--card) l c h)" />
+          <stop offset="40%" stopColor="oklch(from var(--muted) l c h / 0.8)" />
+          <stop offset="100%" stopColor="oklch(from var(--muted) l c h / 0.6)" />
+        </linearGradient>
+        <linearGradient id="bill2" x1="0" y1="0" x2="0.2" y2="1">
+          <stop offset="0%" stopColor="oklch(from var(--card) l c h)" />
+          <stop offset="50%" stopColor="oklch(from var(--card) l c h / 0.95)" />
+          <stop offset="100%" stopColor="oklch(from var(--muted) l c h / 0.7)" />
+        </linearGradient>
+        <linearGradient id="bill3" x1="0" y1="0" x2="0.1" y2="1">
+          <stop offset="0%" stopColor="oklch(from var(--card) l c h)" />
+          <stop offset="100%" stopColor="oklch(from var(--muted) l c h / 0.85)" />
+        </linearGradient>
+        <linearGradient id="holeGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="oklch(from var(--border) l c h / 0.8)" />
+          <stop offset="100%" stopColor="oklch(from var(--border) l c h / 0.6)" />
+        </linearGradient>
+        <filter id="billShadow1" x="-30%" y="-30%" width="160%" height="180%">
+          <feDropShadow dx="0" dy="6" stdDeviation="4" floodColor="#000" floodOpacity="0.05" />
+        </filter>
+        <filter id="billShadow2" x="-30%" y="-30%" width="160%" height="180%">
+          <feDropShadow dx="0" dy="4" stdDeviation="3" floodColor="#000" floodOpacity="0.1" />
+        </filter>
+        <filter id="billShadow3" x="-30%" y="-30%" width="160%" height="180%">
+          <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#000" floodOpacity="0.08" />
+        </filter>
+        <filter id="innerShadow">
+          <feOffset dx="0" dy="1" />
+          <feGaussianBlur stdDeviation="1" result="shadow" />
+          <feComposite in="SourceGraphic" in2="shadow" operator="over" />
+        </filter>
+      </defs>
+
+      {/* Back bill - most tilted */}
+      <g transform="translate(8, 12) rotate(-20, 40, 25)" filter="url(#billShadow1)">
+        <rect x="0" y="0" width="80" height="48" rx="6" fill="url(#bill1)" />
+        {/* Circles - filled to match reference */}
+        <circle cx="62" cy="14" r="7" fill="url(#holeGrad)" />
+        <circle cx="62" cy="34" r="5" fill="url(#holeGrad)" />
+      </g>
+
+      {/* Middle bill */}
+      <g transform="translate(22, 28) rotate(-10, 40, 25)" filter="url(#billShadow2)">
+        <rect x="0" y="0" width="80" height="48" rx="6" fill="url(#bill2)" />
+        <circle cx="62" cy="14" r="7" fill="url(#holeGrad)" />
+        <circle cx="62" cy="34" r="5" fill="url(#holeGrad)" />
+      </g>
+
+      {/* Front bill - least tilted */}
+      <g transform="translate(38, 44) rotate(-2, 40, 25)" filter="url(#billShadow3)">
+        <rect x="0" y="0" width="80" height="48" rx="6" fill="url(#bill3)" />
+        <circle cx="62" cy="14" r="7" fill="url(#holeGrad)" />
+        <circle cx="62" cy="34" r="5" fill="url(#holeGrad)" />
+      </g>
+    </svg>
+  )
+}
+
+
+// --- Demo ---
+import { BudgetCard } from "@/components/ui/analytics-bento"
+
+export default function Page() {
+  return (
+    <main className="flex min-h-screen items-center justify-center w-full p-8">
+      <BudgetCard />
+    </main>
+  )
+}
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+// --- Component ---
+import React, { useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowUpRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+export interface TrendDataPoint {
+  month: string;
+  value: number;
+}
+
+export interface InteractiveTrendCardProps {
+  title: string;
+  subtitle: string;
+  totalValue: number;
+  newValue: number;
+  totalValueLabel?: string;
+  newValueLabel?: string;
+  chartData: TrendDataPoint[];
+  className?: string;
+  icon?: React.ReactNode;
+  // New props for customizing bar colors
+  defaultBarColor?: string;
+  barColor?: string;
+  adjacentBarColor?: string;
+}
+
+export const InteractiveTrendCard: React.FC<InteractiveTrendCardProps> = ({
+  title,
+  subtitle,
+  totalValue,
+  newValue,
+  totalValueLabel = 'Total Followers',
+  newValueLabel = 'New Followers',
+  chartData,
+  className,
+  icon = <ArrowUpRight className="h-4 w-4" />,
+  // Set default theme-based colors
+  defaultBarColor = 'hsl(var(--muted))',
+  barColor = 'hsl(var(--primary))',
+  adjacentBarColor = 'hsl(var(--primary) / 0.5)',
+}) => {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const maxValue = useMemo(() => Math.max(...chartData.map((d) => d.value)), [chartData]);
+
+  return (
+    <div
+      className={cn(
+        'w-full max-w-sm rounded-2xl border bg-card p-6 text-card-foreground shadow-sm',
+        className
+      )}
+    >
+      {/* Card Header */}
+      <div className="flex items-start justify-between">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">{title}</h2>
+          <p className="text-2xl font-bold tracking-tight text-muted-foreground">{subtitle}</p>
+        </div>
+        <button className="rounded-full border bg-background p-2 transition-colors hover:bg-muted">
+          {icon}
+        </button>
+      </div>
+
+      {/* Interactive Chart */}
+      <div
+        className="relative mt-16 h-40"
+        onMouseLeave={() => setHoveredIndex(null)}
+        role="figure"
+        aria-label={`Followers trend chart showing data for ${chartData.length} months.`}
+      >
+        {/* Tooltip */}
+        <AnimatePresence>
+          {hoveredIndex !== null && (
+            <motion.div
+              initial={{ opacity: 0, y: -10, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.95 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+              className="pointer-events-none absolute -top-8 left-centre w-10"
+              style={{
+                transform: `translateX(${(hoveredIndex / (chartData.length - 1)) * 100}%) translateX(-50%)`,
+              }}
+            >
+              <div className="rounded-md bg-foreground px-2 py-1 text-xs font-semibold text-background shadow-lg">
+                {chartData[hoveredIndex].value}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Bars and Labels */}
+        <div className="flex h-full w-full items-end justify-between gap-1">
+          {chartData.map((data, index) => {
+            const barHeight = `${(data.value / maxValue) * 100}%`;
+            const isHovered = hoveredIndex === index;
+            const isAdjacent = hoveredIndex !== null && Math.abs(hoveredIndex - index) === 1;
+
+            return (
+              <div key={index} className="flex h-full flex-1 flex-col items-center justify-end">
+                <div
+                  className="group relative h-full w-full flex items-end"
+                  onMouseEnter={() => setHoveredIndex(index)}
+                  aria-label={`${data.month}: ${data.value} followers`}
+                  role="img"
+                >
+                  <motion.div
+                    className="w-full rounded-t-sm"
+                    style={{ height: barHeight }}
+                    initial={{ backgroundColor: defaultBarColor }}
+                    animate={{
+                      backgroundColor: isHovered
+                        ? barColor
+                        : isAdjacent
+                        ? adjacentBarColor
+                        : defaultBarColor,
+                    }}
+                    transition={{ duration: 0.3, ease: 'easeInOut' }}
+                  />
+                </div>
+                <span className="mt-2 text-xs text-muted-foreground">{data.month}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Card Footer Stats */}
+      <div className="mt-8 flex justify-between border-t pt-4">
+        <div>
+          <p className="text-xs font-medium uppercase text-muted-foreground">{totalValueLabel}</p>
+          <p className="text-3xl font-bold">{totalValue.toLocaleString()}</p>
+        </div>
+        <div>
+          <p className="text-xs font-medium uppercase text-muted-foreground">{newValueLabel}</p>
+          <p className="text-3xl font-bold">{newValue.toLocaleString()}</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// --- Demo ---
+import { InteractiveTrendCard, TrendDataPoint } from '@/components/ui/trend-card';
+
+const followerData: TrendDataPoint[] = [
+  { month: '1', value: 520 },
+  { month: '2', value: 550 },
+  { month: '3', value: 580 },
+  { month: '4', value: 553 },
+  { month: '5', value: 520 },
+  { month: '6', value: 520 },
+  { month: '7', value: 550 },
+  { month: '8', value: 580 },
+  { month: '9', value: 553 },
+  { month: '10', value: 520 },
+  { month: '11', value: 520 },
+  { month: '12', value: 550 },
+];
+
+const Demo = () => {
+  return (
+    <div className="flex h-screen w-full items-center justify-center bg-background p-4">
+      <InteractiveTrendCard
+        title="Followers"
+        subtitle="Trend"
+        totalValue={587}
+        newValue={116}
+        chartData={followerData}
+        // FIXED: Using distinct, hardcoded colors to demonstrate the props are working.
+        defaultBarColor="#e5e7eb"      // A light, neutral gray
+        barColor="#4f46e5"             // A vibrant indigo for the hovered bar
+        adjacentBarColor="#a5b4fc"     // A lighter indigo for adjacent bars
+      />
+    </div>
+  );
+};
+
+export default Demo;
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+// --- Component ---
+"use client";
+
+import { motion, useReducedMotion } from "framer-motion";
+
+interface BonusesIncentivesCardProps {
+  // Content
+  bonusText?: string;
+  incentivesText?: string;
+  bonusesValue?: number;
+  incentivesValue?: number;
+
+  // Styling
+  borderColor?: string;
+  backgroundColor?: string;
+  blurColorBlue?: string;
+  blurColorGreen?: string;
+
+  // Dots configuration
+  outerDotsCount?: number;
+  innerDotsCount?: number;
+
+  // Animation controls
+  enableAnimations?: boolean;
+
+  // Callbacks
+  onMoreDetails?: () => void;
+}
+
+const defaultProps: Partial<BonusesIncentivesCardProps> = {
+  bonusText: "Bonus and Incentives",
+  incentivesText: "Incentives",
+  bonusesValue: 1250,
+  incentivesValue: 875,
+  borderColor: "border-border/30",
+  backgroundColor: "bg-muted/20",
+  blurColorBlue: "bg-blue-400/10",
+  blurColorGreen: "bg-green-400/10",
+  outerDotsCount: 48,
+  innerDotsCount: 36,
+  enableAnimations: true,
+};
+
+export function BonusesIncentivesCard(props: BonusesIncentivesCardProps) {
+  const {
+    bonusesValue,
+    incentivesValue,
+    borderColor,
+    backgroundColor,
+    outerDotsCount,
+    innerDotsCount,
+    enableAnimations,
+    onMoreDetails,
+  } = { ...defaultProps, ...props };
+
+  const shouldReduceMotion = useReducedMotion();
+  const shouldAnimate = enableAnimations && !shouldReduceMotion;
+
+  // Generate circular dots positions
+  const generateDots = (count: number, radius: number, centerX: number, centerY: number) => {
+    const dots = [];
+    for (let i = 0; i < count; i++) {
+      const angle = (i / count) * 2 * Math.PI;
+      const x = Math.round((centerX + radius * Math.cos(angle)) * 1000) / 1000;
+      const y = Math.round((centerY + radius * Math.sin(angle)) * 1000) / 1000;
+      dots.push({ x, y, angle, delay: i * 0.02 });
+    }
+    return dots;
+  };
+
+  const outerDots = generateDots(outerDotsCount!, 185, 203, 200);
+  const innerDots = generateDots(innerDotsCount!, 155, 203, 200);
+
+  // Animation variants
+  const containerVariants = {
+    hidden: {
+      opacity: 0,
+      y: 20,
+      scale: 0.95
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 30,
+        staggerChildren: 0.08,
+        delayChildren: 0.1,
+      }
+    }
+  };
+
+  const dotVariants = {
+    hidden: {
+      opacity: 0,
+      scale: 0,
+    },
+    visible: {
+      opacity: 0.6,
+      scale: 1,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut",
+      }
+    }
+  };
+
+
+  return (
+    <motion.div
+      className="w-full max-w-md"
+      initial={shouldAnimate ? "hidden" : "visible"}
+      animate="visible"
+      variants={shouldAnimate ? containerVariants : {}}
+    >
+      <motion.div
+        className={`${backgroundColor} ${borderColor} border rounded-xl overflow-hidden shadow-lg`}
+      >
+
+        {/* Middle Section - Dots */}
+        <div className="relative pl-4 pr-8 pb-4 pt-8 overflow-hidden">
+          {/* Blur backgrounds */}
+          <div className={`absolute inset-0 ${backgroundColor} backdrop-blur-[2px] rounded-lg`} />
+
+          {/* Dots Container */}
+          <div className="relative w-[28rem] h-[28rem] mx-auto">
+            <svg className="w-full h-full" viewBox="0 0 448 448">
+              {/* Outer dots */}
+              {outerDots.map((dot, index) => (
+                <motion.circle
+                  key={`outer-${index}`}
+                  cx={dot.x}
+                  cy={dot.y}
+                  r="10"
+                  fill="currentColor"
+                  style={{ color: '#5A8CEF' }}
+                  variants={shouldAnimate ? dotVariants : {}}
+                  initial="hidden"
+                  animate="visible"
+                />
+              ))}
+
+              {/* Inner dots */}
+              {innerDots.map((dot, index) => (
+                <motion.circle
+                  key={`inner-${index}`}
+                  cx={dot.x}
+                  cy={dot.y}
+                  r="10"
+                  fill="currentColor"
+                  style={{ color: '#4B7A63' }}
+                  variants={shouldAnimate ? dotVariants : {}}
+                  initial="hidden"
+                  animate="visible"
+                />
+              ))}
+            </svg>
+
+            {/* Center Text Overlay */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none -mt-24 -ml-12">
+              <div className="text-center" style={{ zIndex: 20 }}>
+                <motion.div 
+                  className="text-xl font-medium text-foreground mb-2"
+                  initial={shouldAnimate ? { opacity: 0, y: -10, scale: 0.95 } : {}}
+                  animate={shouldAnimate ? { opacity: 1, y: 0, scale: 1 } : {}}
+                  transition={{ 
+                    delay: 0.3,
+                    type: "spring",
+                    stiffness: 400,
+                    damping: 25,
+                    mass: 0.6
+                  }}
+                >
+                  TOTAL
+                </motion.div>
+                <motion.div 
+                  className="text-5xl font-bold text-foreground"
+                  initial={shouldAnimate ? { opacity: 0, y: 20, scale: 0.8, filter: "blur(4px)" } : {}}
+                  animate={shouldAnimate ? { opacity: 1, y: 0, scale: 1, filter: "blur(0px)" } : {}}
+                  transition={{ 
+                    delay: 0.5,
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 28,
+                    mass: 0.8
+                  }}
+                >
+                  ${(bonusesValue! + incentivesValue!).toLocaleString()}
+                </motion.div>
+              </div>
+            </div>
+          </div>
+
+          {/* Gradient fade overlay for bottom half - covers entire card */}
+          <div
+            className="absolute -inset-4 pointer-events-none rounded-xl"
+            style={{
+              background: 'linear-gradient(to bottom, transparent 0%, transparent 35%, rgb(from var(--card) r g b / 0.8) 45%, rgb(from var(--card) r g b / 0.9) 55%, rgb(from var(--card) r g b / 1) 65%)',
+              zIndex: 5
+            }}
+          />
+
+          {/* Bottom Section */}
+          <div className="absolute bottom-0 left-0 right-0 px-6 pb-2 pt-4" style={{ zIndex: 10 }}>
+          <div className="flex items-start justify-between mb-4">
+            {/* Bonuses Section */}
+            <div className="flex flex-col items-center gap-2">
+              <div className="flex items-center gap-2">
+                <motion.div
+                  className="w-0.5 h-4 rounded-full"
+                  style={{ backgroundColor: '#5A8CEF' }}
+                  initial={shouldAnimate ? { opacity: 0, scaleY: 0 } : {}}
+                  animate={shouldAnimate ? { opacity: 1, scaleY: 1 } : {}}
+                  transition={{ delay: 0.4, type: "spring" }}
+                />
+                <motion.div
+                  className="text-sm font-medium text-muted-foreground"
+                  initial={shouldAnimate ? { opacity: 0, y: 20 } : {}}
+                  animate={shouldAnimate ? { opacity: 1, y: 0 } : {}}
+                  transition={{ delay: 0.5 }}
+                >
+                  Bonuses
+                </motion.div>
+              </div>
+              <div className="flex flex-col">
+                <motion.div
+                  className="text-xl font-bold text-foreground text-left"
+                  initial={shouldAnimate ? { opacity: 0, y: -10 } : {}}
+                  animate={shouldAnimate ? { opacity: 1, y: 0 } : {}}
+                  transition={{ delay: 0.6 }}
+                >
+                  ${bonusesValue!.toLocaleString()}
+                </motion.div>
+                <motion.div
+                  className="text-xs font-medium text-left"
+                  style={{ color: '#5A8CEF' }}
+                  initial={shouldAnimate ? { opacity: 0, y: -10 } : {}}
+                  animate={shouldAnimate ? { opacity: 1, y: 0 } : {}}
+                  transition={{ delay: 0.7 }}
+                >
+                  +15.2%
+                </motion.div>
+              </div>
+            </div>
+
+            {/* Incentives Section */}
+            <div className="flex flex-col items-center gap-2 mb-2">
+              <div className="flex items-center gap-2">
+                <motion.div
+                  className="w-0.5 h-4 rounded-full"
+                  style={{ backgroundColor: '#4B7A63' }}
+                  initial={shouldAnimate ? { opacity: 0, scaleY: 0 } : {}}
+                  animate={shouldAnimate ? { opacity: 1, scaleY: 1 } : {}}
+                  transition={{ delay: 0.8, type: "spring" }}
+                />
+                <motion.div
+                  className="text-sm font-medium text-muted-foreground"
+                  initial={shouldAnimate ? { opacity: 0, y: 20 } : {}}
+                  animate={shouldAnimate ? { opacity: 1, y: 0 } : {}}
+                  transition={{ delay: 0.9 }}
+                >
+                  Incentives
+                </motion.div>
+              </div>
+              <div className="flex flex-col">
+                <motion.div
+                  className="text-xl font-bold text-foreground text-left"
+                  initial={shouldAnimate ? { opacity: 0, y: -10 } : {}}
+                  animate={shouldAnimate ? { opacity: 1, y: 0 } : {}}
+                  transition={{ delay: 1.0 }}
+                >
+                  ${incentivesValue!.toLocaleString()}
+                </motion.div>
+                <motion.div
+                  className="text-xs font-medium text-left"
+                  style={{ color: '#5A8CEF' }}
+                  initial={shouldAnimate ? { opacity: 0, y: -10 } : {}}
+                  animate={shouldAnimate ? { opacity: 1, y: 0 } : {}}
+                  transition={{ delay: 1.1 }}
+                >
+                  +8.7%
+                </motion.div>
+              </div>
+            </div>
+          </div>
+
+          <motion.button
+            className="w-full mb-4 bg-transparent border border-border hover:bg-muted/80 text-foreground px-4 py-2 rounded-lg font-medium shadow-sm"
+            initial={shouldAnimate ? { opacity: 0, y: 20 } : {}}
+            animate={shouldAnimate ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 1.1 }}
+            whileHover={shouldAnimate ? { scale: 1.02 } : {}}
+            whileTap={shouldAnimate ? { scale: 0.98 } : {}}
+            onClick={onMoreDetails}
+          >
+            More Details
+          </motion.button>
+        </div>
+        </div>
+
+      </motion.div>
+    </motion.div>
+  );
+}
+
+
+// --- Demo ---
+import { BonusesIncentivesCard } from "@/components/ui/animated-dashboard-card";
+
+export default function DemoOne() {
+  return <BonusesIncentivesCard />;
+}
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+// --- Component ---
+"use client";
+
+import * as React from "react";
+import { useEffect, useState } from "react";
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+// --- Utility Function (from @/lib/utils) ---
+
+/**
+ * A utility function to conditionally join class names.
+ * Requires `clsx` and `tailwind-merge` to be installed.
+ * `npm install clsx tailwind-merge`
+ */
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
+// --- Card Components ---
+
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+export function AnimatedCard({ className, ...props }: CardProps) {
+  return (
+    <div
+      role="region"
+      aria-labelledby="card-title"
+      aria-describedby="card-description"
+      className={cn(
+        "group/animated-card relative w-[356px] overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-900 dark:bg-black",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+export function CardBody({ className, ...props }: CardProps) {
+  return (
+    <div
+      role="group"
+      className={cn(
+        "flex flex-col space-y-1.5 border-t border-zinc-200 p-4 dark:border-zinc-900",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {}
+
+export function CardTitle({ className, ...props }: CardTitleProps) {
+  return (
+    <h3
+      className={cn(
+        "text-lg font-semibold leading-none tracking-tight text-black dark:text-white",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+interface CardDescriptionProps
+  extends React.HTMLAttributes<HTMLParagraphElement> {}
+
+export function CardDescription({ className, ...props }: CardDescriptionProps) {
+  return (
+    <p
+      className={cn(
+        "text-sm text-neutral-500 dark:text-neutral-400",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+export function CardVisual({ className, ...props }: CardProps) {
+  return (
+    <div
+      className={cn("h-[180px] w-[356px] overflow-hidden", className)}
+      {...props}
+    />
+  );
+}
+
+// --- Visual2 Component and its Sub-components ---
+
+interface Visual2Props {
+  mainColor?: string;
+  secondaryColor?: string;
+  gridColor?: string;
+}
+
+export function Visual2({
+  mainColor = "#8b5cf6",
+  secondaryColor = "#fbbf24",
+  gridColor = "#80808015",
+}: Visual2Props) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <>
+      <div
+        className="absolute inset-0 z-20"
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        style={
+          {
+            "--color": mainColor,
+            "--secondary-color": secondaryColor,
+          } as React.CSSProperties
+        }
+      />
+      <div className="relative h-[180px] w-[356px] overflow-hidden rounded-t-lg">
+        <Layer1
+          hovered={hovered}
+          color={mainColor}
+          secondaryColor={secondaryColor}
+        />
+        <Layer2 color={mainColor} />
+        <Layer3 color={mainColor} />
+        <Layer4
+          color={mainColor}
+          secondaryColor={secondaryColor}
+          hovered={hovered}
+        />
+        <EllipseGradient color={mainColor} />
+        <GridLayer color={gridColor} />
+      </div>
+    </>
+  );
+}
+
+interface LayerProps {
+  color: string;
+  secondaryColor?: string;
+  hovered?: boolean;
+}
+
+const EllipseGradient: React.FC<{ color: string }> = ({ color }) => {
+  return (
+    <div className="absolute inset-0 z-[5] flex h-full w-full items-center justify-center">
+      <svg
+        width="356"
+        height="196"
+        viewBox="0 0 356 180"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect width="356" height="180" fill="url(#paint0_radial_12_207)" />
+        <defs>
+          <radialGradient
+            id="paint0_radial_12_207"
+            cx="0"
+            cy="0"
+            r="1"
+            gradientUnits="userSpaceOnUse"
+            gradientTransform="translate(178 98) rotate(90) scale(98 178)"
+          >
+            <stop stopColor={color} stopOpacity="0.25" />
+            <stop offset="0.34" stopColor={color} stopOpacity="0.15" />
+            <stop offset="1" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+      </svg>
+    </div>
+  );
+};
+
+const GridLayer: React.FC<{ color: string }> = ({ color }) => {
+  return (
+    <div
+      style={{ "--grid-color": color } as React.CSSProperties}
+      className="pointer-events-none absolute inset-0 z-[4] h-full w-full bg-transparent bg-[linear-gradient(to_right,var(--grid-color)_1px,transparent_1px),linear-gradient(to_bottom,var(--grid-color)_1px,transparent_1px)] bg-[size:20px_20px] bg-center opacity-70 [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_60%,transparent_100%)]"
+    />
+  );
+};
+
+const Layer1: React.FC<LayerProps> = ({ hovered, color, secondaryColor }) => {
+  const [mainProgress, setMainProgress] = useState(12.5);
+  const [secondaryProgress, setSecondaryProgress] = useState(0);
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+
+    if (hovered) {
+      timeout = setTimeout(() => {
+        setMainProgress(66);
+        setSecondaryProgress(100);
+      }, 200);
+    } else {
+      setMainProgress(12.5);
+      setSecondaryProgress(0);
+    }
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [hovered]);
+
+  const radius = 40;
+  const circumference = 2 * Math.PI * radius;
+  const mainDashoffset = circumference - (mainProgress / 100) * circumference;
+  const secondaryDashoffset =
+    circumference - (secondaryProgress / 100) * circumference;
+
+  return (
+    <div className="ease-[cubic-bezier(0.6, 0.6, 0, 1)] absolute top-0 left-0 z-[7] flex h-[360px] w-[356px] transform items-center justify-center transition-transform duration-500 group-hover/animated-card:-translate-y-[90px] group-hover/animated-card:scale-110">
+      <div className="relative flex h-[120px] w-[120px] items-center justify-center text-[#00000050] dark:text-white">
+        <div className="donut-chart-container relative">
+          <svg width="120" height="120" viewBox="0 0 100 100">
+            <circle
+              cx="50"
+              cy="50"
+              r={radius}
+              stroke="currentColor"
+              strokeWidth="10"
+              fill="transparent"
+              opacity={0.2}
+            />
+            <circle
+              cx="50"
+              cy="50"
+              r={radius}
+              stroke={secondaryColor}
+              strokeWidth="14"
+              fill="transparent"
+              strokeDasharray={circumference}
+              strokeDashoffset={secondaryDashoffset}
+              transform="rotate(-90 50 50)"
+              style={{
+                transition:
+                  "stroke-dashoffset 0.5s cubic-bezier(0.6, 0.6, 0, 1)",
+              }}
+            />
+            <circle
+              cx="50"
+              cy="50"
+              r={radius}
+              stroke={color}
+              strokeWidth="14"
+              fill="transparent"
+              strokeDasharray={circumference}
+              strokeDashoffset={mainDashoffset}
+              transform="rotate(-90 50 50)"
+              style={{
+                transition:
+                  "stroke-dashoffset 0.5s cubic-bezier(0.6, 0.6, 0, 1)",
+              }}
+            />
+          </svg>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="font-gilroy text-xl text-black dark:text-white">
+              {hovered
+                ? secondaryProgress > 66
+                  ? secondaryProgress
+                  : mainProgress
+                : mainProgress}
+              %
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const Layer2: React.FC<{ color: string }> = ({ color }) => {
+  return (
+    <div
+      className="relative h-full w-[356px]"
+      style={{ "--color": color } as React.CSSProperties}
+    >
+      <div className="ease-[cubic-bezier(0.6, 0.6, 0, 1)] absolute inset-0 z-[6] flex w-[356px] translate-y-0 items-start justify-center bg-transparent p-4 transition-transform duration-500 group-hover/animated-card:translate-y-full">
+        <div className="ease-[cubic-bezier(0.6, 0.6, 0, 1)] rounded-md border border-zinc-200 bg-white/25 px-2 py-1.5 opacity-100 backdrop-blur-sm transition-opacity duration-500 group-hover/animated-card:opacity-0 dark:border-zinc-800 dark:bg-black/25">
+          <div className="flex items-center gap-2">
+            <div className="h-2 w-2 shrink-0 rounded-full bg-[var(--color)]" />
+            <p className="text-xs text-black dark:text-white">
+              Random Data Visualization
+            </p>
+          </div>
+          <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+            Displaying some interesting stats.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const Layer3: React.FC<{ color: string }> = ({ color }) => {
+  return (
+    <div className="ease-[cubic-bezier(0.6, 0.6, 0, 1)] absolute inset-0 z-[6] flex translate-y-full items-center justify-center opacity-0 transition-all duration-500 group-hover/animated-card:translate-y-0 group-hover/animated-card:opacity-100">
+      <svg
+        width="356"
+        height="180"
+        viewBox="0 0 356 180"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect width="356" height="180" fill="url(#paint0_linear_29_3)" />
+        <defs>
+          <linearGradient
+            id="paint0_linear_29_3"
+            x1="178"
+            y1="0"
+            x2="178"
+            y2="180"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop offset="0.35" stopColor={color} stopOpacity="0" />
+            <stop offset="1" stopColor={color} stopOpacity="0.3" />
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+  );
+};
+
+const Layer4: React.FC<LayerProps> = ({ color, secondaryColor, hovered }) => {
+  const items = [
+    { id: 1, translateX: "100", translateY: "50", text: "ReactJS" },
+    { id: 2, translateX: "100", translateY: "-50", text: "MongoDB" },
+    { id: 3, translateX: "125", translateY: "0", text: "Prisma" },
+    { id: 4, translateX: "-125", translateY: "0", text: "NextJs" },
+    { id: 5, translateX: "-100", translateY: "50", text: "Auth.js" },
+    { id: 6, translateX: "-100", translateY: "-50", text: "Stripe" },
+  ];
+
+  return (
+    <div className="ease-[cubic-bezier(0.6, 0.6, 0, 1)] absolute inset-0 z-[7] flex items-center justify-center opacity-0 transition-opacity duration-500 group-hover/animated-card:opacity-100">
+      {items.map((item, index) => (
+        <div
+          key={item.id}
+          className="ease-[cubic-bezier(0.6, 0.6, 0, 1)] absolute flex items-center justify-center gap-1 rounded-full border border-zinc-200 bg-white/70 px-1.5 py-0.5 backdrop-blur-sm transition-all duration-500 dark:border-zinc-800 dark:bg-black/70"
+          style={{
+            transform: hovered
+              ? `translate(${item.translateX}px, ${item.translateY}px)`
+              : "translate(0px, 0px)",
+          }}
+        >
+          <div
+            className="h-1.5 w-1.5 rounded-full"
+            style={{ backgroundColor: index < 3 ? color : secondaryColor }}
+          />
+          <span className="ml-1 text-[10px] text-black dark:text-white">
+            {item.text}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// --- Demo ---
+import {
+  AnimatedCard,
+  CardBody,
+  CardDescription,
+  CardTitle,
+  CardVisual,
+} from "@/components/ui/animated-card-diagram"
+import { Visual2 } from "@/components/ui/animated-card-diagram"
+
+export default function AnimatedCard2Demo() {
+  return (
+    <AnimatedCard>
+      <CardVisual>
+        <Visual2 mainColor="#ff6900" secondaryColor="#f54900" />
+      </CardVisual>
+      <CardBody>
+        <CardTitle>Just find the right caption</CardTitle>
+        <CardDescription>
+          This card will tell everything you want
+        </CardDescription>
+      </CardBody>
+    </AnimatedCard>
+  )
+}
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+// --- Component ---
+"use client";
+import type { LucideIcon } from "lucide-react";
+import {
+  ArrowRight,
+  CreditCard,
+  FileText,
+  Hash,
+  Mail,
+  MessageSquare,
+  Plus,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+
+type Tone = "primary" | "foreground" | "violet" | "emerald" | "sky" | "amber";
+
+type AppPreset = "slack" | "gmail" | "stripe" | "notion" | "discord";
+
+interface AppItem {
+  preset?: AppPreset;
+  image?: string;
+  alt?: string;
+}
+
+interface Automation10Props {
+  apps?: AppItem[];
+  name?: string;
+  description?: string;
+  installs?: number;
+  installsLabel?: string;
+  ctaLabel?: string;
+  tone?: Tone;
+  className?: string;
+}
+
+const PRESETS: Record<AppPreset, { icon: LucideIcon; tile: string }> = {
+  slack: { icon: Hash, tile: "bg-violet-500 text-white" },
+  gmail: { icon: Mail, tile: "bg-rose-500 text-white" },
+  stripe: { icon: CreditCard, tile: "bg-indigo-500 text-white" },
+  notion: {
+    icon: FileText,
+    tile: "bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900",
+  },
+  discord: { icon: MessageSquare, tile: "bg-indigo-600 text-white" },
+};
+
+const ctaClasses: Record<Tone, string> = {
+  primary: "bg-primary text-primary-foreground hover:bg-primary/90",
+  foreground: "bg-foreground text-background hover:bg-foreground/90",
+  violet: "bg-violet-500 text-white hover:bg-violet-600",
+  emerald: "bg-emerald-500 text-white hover:bg-emerald-600",
+  sky: "bg-sky-500 text-white hover:bg-sky-600",
+  amber: "bg-amber-500 text-white hover:bg-amber-600",
+};
+
+export const automation10Demo: Automation10Props = {
+  apps: [
+    { image: "https://oud.pics/sm/l/stripe.jpeg", alt: "Stripe" },
+    { image: "https://oud.pics/sm/l/notion.png", alt: "Notion" },
+    { image: "https://oud.pics/sm/l/slack.svg", alt: "Slack" },
+  ],
+  name: "Sync paid invoices to Notion and ping Slack",
+  description:
+    "Triggers on Stripe payment, logs the invoice in Notion, and posts a thread to #revenue.",
+  installs: 4280,
+  installsLabel: "installs",
+  ctaLabel: "Use recipe",
+  tone: "primary",
+};
+
+function AppIcon({ item }: { item: AppItem }) {
+  if (item.image) {
+    return (
+      <span className="relative size-7 shrink-0 overflow-hidden rounded-md bg-muted">
+        <img
+          src={item.image}
+          alt={item.alt ?? ""}
+          className="absolute inset-0 size-full object-cover"
+        />
+      </span>
+    );
+  }
+  if (item.preset) {
+    const cfg = PRESETS[item.preset];
+    const Icon = cfg.icon;
+    return (
+      <span
+        className={cn(
+          "flex size-7 shrink-0 items-center justify-center rounded-md",
+          cfg.tile,
+        )}
+        aria-hidden="true"
+      >
+        <Icon className="size-3.5" />
+      </span>
+    );
+  }
+  return (
+    <span className="size-7 shrink-0 rounded-md bg-muted" aria-hidden="true" />
+  );
+}
+
+export function Automation10({
+  apps = [],
+  name = "Recipe",
+  description,
+  installs,
+  installsLabel = "installs",
+  ctaLabel = "Use recipe",
+  tone = "primary",
+  className,
+}: Automation10Props) {
+  return (
+    <div
+      className={cn(
+        "relative flex size-full items-center justify-center p-4",
+        className,
+      )}
+    >
+      <div className="flex w-full max-w-80 flex-col gap-2 rounded-md border border-border bg-card p-3 shadow-sm">
+        <div className="flex items-center gap-1">
+          {apps.map((a, i) => (
+            <div key={i} className="flex items-center gap-1">
+              <AppIcon item={a} />
+              {i < apps.length - 1 && (
+                <ArrowRight
+                  className="size-3 text-muted-foreground"
+                  aria-hidden="true"
+                />
+              )}
+            </div>
+          ))}
+        </div>
+        <span className="text-sm font-semibold text-card-foreground">
+          {name}
+        </span>
+        {description && (
+          <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+            {description}
+          </p>
+        )}
+        <div className="flex items-center justify-between border-t border-border pt-2">
+          {typeof installs === "number" && (
+            <span className="font-mono text-xs tabular-nums text-muted-foreground">
+              {installs.toLocaleString()} {installsLabel}
+            </span>
+          )}
+          <button
+            type="button"
+            className={cn(
+              "ml-auto inline-flex items-center gap-1 rounded-sm px-2.5 py-1 text-xs font-semibold transition-colors",
+              ctaClasses[tone],
+            )}
+          >
+            <Plus className="size-3" aria-hidden="true" />
+            {ctaLabel}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default Automation10;
+
+
+// --- Demo ---
+import Automation10 from "@/components/ui/automation10";
+
+export default function Automation10Demo() {
+  return (
+    <Automation10
+      apps={[
+        {
+          image:
+            "data:image/jpeg;base64,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",
+          alt: "Stripe",
+        },
+        {
+          image:
+            "data:image/png;base64,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",
+          alt: "Notion",
+        },
+        {
+          image:
+            "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJMYXllcl8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDI3MCAyNzAiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDI3MCAyNzA7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KIDxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+CiAgLnN0MHtmaWxsOiNFMDFFNUE7fQoJLnN0MXtmaWxsOiMzNkM1RjA7fQoJLnN0MntmaWxsOiMyRUI2N0Q7fQoJLnN0M3tmaWxsOiNFQ0IyMkU7fQogPC9zdHlsZT4KIDxnPgogIDxnPgogICA8cGF0aCBjbGFzcz0ic3QwIiBkPSJNOTkuNCwxNTEuMmMwLDcuMS01LjgsMTIuOS0xMi45LDEyLjljLTcuMSwwLTEyLjktNS44LTEyLjktMTIuOWMwLTcuMSw1LjgtMTIuOSwxMi45LTEyLjloMTIuOVYxNTEuMnoiPgogICA8L3BhdGg+CiAgIDxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik0xMDUuOSwxNTEuMmMwLTcuMSw1LjgtMTIuOSwxMi45LTEyLjlzMTIuOSw1LjgsMTIuOSwxMi45djMyLjNjMCw3LjEtNS44LDEyLjktMTIuOSwxMi45CgkJCXMtMTIuOS01LjgtMTIuOS0xMi45VjE1MS4yeiI+CiAgIDwvcGF0aD4KICA8L2c+CiAgPGc+CiAgIDxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0xMTguOCw5OS40Yy03LjEsMC0xMi45LTUuOC0xMi45LTEyLjljMC03LjEsNS44LTEyLjksMTIuOS0xMi45czEyLjksNS44LDEyLjksMTIuOXYxMi45SDExOC44eiI+CiAgIDwvcGF0aD4KICAgPHBhdGggY2xhc3M9InN0MSIgZD0iTTExOC44LDEwNS45YzcuMSwwLDEyLjksNS44LDEyLjksMTIuOXMtNS44LDEyLjktMTIuOSwxMi45SDg2LjVjLTcuMSwwLTEyLjktNS44LTEyLjktMTIuOQoJCQlzNS44LTEyLjksMTIuOS0xMi45SDExOC44eiI+CiAgIDwvcGF0aD4KICA8L2c+CiAgPGc+CiAgIDxwYXRoIGNsYXNzPSJzdDIiIGQ9Ik0xNzAuNiwxMTguOGMwLTcuMSw1LjgtMTIuOSwxMi45LTEyLjljNy4xLDAsMTIuOSw1LjgsMTIuOSwxMi45cy01LjgsMTIuOS0xMi45LDEyLjloLTEyLjlWMTE4Ljh6Ij4KICAgPC9wYXRoPgogICA8cGF0aCBjbGFzcz0ic3QyIiBkPSJNMTY0LjEsMTE4LjhjMCw3LjEtNS44LDEyLjktMTIuOSwxMi45Yy03LjEsMC0xMi45LTUuOC0xMi45LTEyLjlWODYuNWMwLTcuMSw1LjgtMTIuOSwxMi45LTEyLjkKCQkJYzcuMSwwLDEyLjksNS44LDEyLjksMTIuOVYxMTguOHoiPgogICA8L3BhdGg+CiAgPC9nPgogIDxnPgogICA8cGF0aCBjbGFzcz0ic3QzIiBkPSJNMTUxLjIsMTcwLjZjNy4xLDAsMTIuOSw1LjgsMTIuOSwxMi45YzAsNy4xLTUuOCwxMi45LTEyLjksMTIuOWMtNy4xLDAtMTIuOS01LjgtMTIuOS0xMi45di0xMi45SDE1MS4yeiI+CiAgIDwvcGF0aD4KICAgPHBhdGggY2xhc3M9InN0MyIgZD0iTTE1MS4yLDE2NC4xYy03LjEsMC0xMi45LTUuOC0xMi45LTEyLjljMC03LjEsNS44LTEyLjksMTIuOS0xMi45aDMyLjNjNy4xLDAsMTIuOSw1LjgsMTIuOSwxMi45CgkJCWMwLDcuMS01LjgsMTIuOS0xMi45LDEyLjlIMTUxLjJ6Ij4KICAgPC9wYXRoPgogIDwvZz4KIDwvZz4KPC9zdmc+",
+          alt: "Slack",
+        },
+      ]}
+      name="Sync paid invoices to Notion and ping Slack"
+      description="Triggers on Stripe payment, logs the invoice in Notion, and posts a thread to #revenue."
+      installs={4280}
+      installsLabel="installs"
+      ctaLabel="Use recipe"
+      tone="primary"
+    />
+  );
+}
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+// --- Component ---
+import * as React from "react";
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+// --- Utility Function (from @/lib/utils) ---
+
+/**
+ * A utility function to conditionally join class names.
+ * Requires `clsx` and `tailwind-merge` to be installed.
+ * `npm install clsx tailwind-merge`
+ */
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
+// --- Card Components ---
+
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+export function AnimatedCard({ className, ...props }: CardProps) {
+  return (
+    <div
+      role="region"
+      aria-labelledby="card-title"
+      aria-describedby="card-description"
+      className={cn(
+        "group/animated-card relative w-[356px] overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-900 dark:bg-black",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+export function CardBody({ className, ...props }: CardProps) {
+  return (
+    <div
+      role="group"
+      className={cn(
+        "flex flex-col space-y-1.5 border-t border-zinc-200 p-4 dark:border-zinc-900",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {}
+
+export function CardTitle({ className, ...props }: CardTitleProps) {
+  return (
+    <h3
+      className={cn(
+        "text-lg font-semibold leading-none tracking-tight text-black dark:text-white",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+interface CardDescriptionProps
+  extends React.HTMLAttributes<HTMLParagraphElement> {}
+
+export function CardDescription({ className, ...props }: CardDescriptionProps) {
+  return (
+    <p
+      className={cn(
+        "text-sm text-neutral-500 dark:text-neutral-400",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+export function CardVisual({ className, ...props }: CardProps) {
+  return (
+    <div
+      className={cn("h-[180px] w-[356px] overflow-hidden", className)}
+      {...props}
+    />
+  );
+}
+
+// --- Visual Components ---
+
+interface Visual1Props {
+  mainColor?: string;
+  secondaryColor?: string;
+  gridColor?: string;
+}
+
+export function Visual1({
+  mainColor = "#8b5cf6",
+  secondaryColor = "#fbbf24",
+  gridColor = "#80808015",
+}: Visual1Props) {
+  return (
+    <div
+      aria-hidden
+      className="relative h-full w-full overflow-hidden rounded-t-lg"
+    >
+      <Layer1 color={mainColor} secondaryColor={secondaryColor} />
+      <Layer2 color={mainColor} />
+      <Layer3 color={mainColor} secondaryColor={secondaryColor} />
+      <Layer4 />
+      <EllipseGradient color={mainColor} />
+      <GridLayer color={gridColor} />
+    </div>
+  );
+}
+
+interface GridLayerProps {
+  color: string;
+}
+
+const GridLayer = ({ color }: GridLayerProps) => {
+  return (
+    <div
+      style={
+        {
+          "--grid-color": color,
+        } as React.CSSProperties
+      }
+      className="pointer-events-none absolute inset-0 z-[4] h-full w-full bg-transparent bg-[linear-gradient(to_right,var(--grid-color)_1px,transparent_1px),linear-gradient(to_bottom,var(--grid-color)_1px,transparent_1px)] bg-[size:20px_20px] bg-center opacity-70 [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_60%,transparent_100%)]"
+    />
+  );
+};
+
+interface EllipseGradientProps {
+  color: string;
+}
+
+const EllipseGradient = ({ color }: EllipseGradientProps) => {
+  return (
+    <div className="absolute inset-0 z-[5] flex h-full w-full items-center justify-center">
+      <svg
+        width="356"
+        height="196"
+        viewBox="0 0 356 180"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect width="356" height="180" fill="url(#paint)" />
+        <defs>
+          <radialGradient
+            id="paint"
+            cx="0"
+            cy="0"
+            r="1"
+            gradientUnits="userSpaceOnUse"
+            gradientTransform="translate(178 98) rotate(90) scale(98 178)"
+          >
+            <stop stopColor={color} stopOpacity="0.25" />
+            <stop offset="0.34" stopColor={color} stopOpacity="0.15" />
+            <stop offset="1" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+      </svg>
+    </div>
+  );
+};
+
+interface LayerProps {
+  color: string;
+  secondaryColor?: string;
+}
+
+const Layer1 = ({ color, secondaryColor }: LayerProps) => {
+  return (
+    <div className="ease-[cubic-bezier(0.6, 0.6, 0, 1)] absolute top-0 left-0 z-[6] transform transition-transform duration-500 group-hover/animated-card:translate-x-[-50%]">
+      <svg
+        className="w-[712px]"
+        viewBox="0 0 712 180"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M8 178C8 176.343 9.34315 175 11 175H25C26.6569 175 28 176.343 28 178V196H8V178Z"
+          fill={color}
+        />
+        <path
+          d="M32 168C32 166.343 33.3431 165 35 165H49C50.6569 165 52 166.343 52 168V196H32V168Z"
+          fill={secondaryColor}
+        />
+        <path
+          d="M67 173C67 171.343 68.3431 170 70 170H84C85.6569 170 87 171.343 87 173V196H67V173Z"
+          fill={color}
+        />
+        <path
+          d="M91 153C91 151.343 92.3431 150 94 150H108C109.657 150 111 151.343 111 153V196H91V153Z"
+          fill={secondaryColor}
+        />
+        <path
+          d="M126 142C126 140.343 127.343 139 129 139H143C144.657 139 146 140.343 146 142V196H126V142Z"
+          fill={color}
+        />
+        <path
+          d="M150 158C150 156.343 151.343 155 153 155H167C168.657 155 170 156.343 170 158V196H150V158Z"
+          fill={secondaryColor}
+        />
+        <path
+          d="M187 133C187 131.343 188.343 130 190 130H204C205.657 130 207 131.343 207 133V196H187V133Z"
+          fill={color}
+        />
+        <path
+          d="M211 161C211 159.343 212.343 158 214 158H228C229.657 158 231 159.343 231 161V196H211V161Z"
+          fill={secondaryColor}
+        />
+        <path
+          d="M248 150C248 148.343 249.343 147 251 147H265C266.657 147 268 148.343 268 150V196H248V150Z"
+          fill={color}
+        />
+        <path
+          d="M272 130C272 128.343 273.343 127 275 127H289C290.657 127 292 128.343 292 130V196H272V130Z"
+          fill={secondaryColor}
+        />
+        <path
+          d="M307 133C307 131.343 308.343 130 310 130H324C325.657 130 327 131.343 327 133V196H307V133Z"
+          fill={color}
+        />
+        <path
+          d="M331 155C331 153.343 332.343 152 334 152H348C349.657 152 351 153.343 351 155V196H331V155Z"
+          fill={secondaryColor}
+        />
+        <path
+          d="M363 161C363 159.343 364.343 158 366 158H380C381.657 158 383 159.343 383 161V196H363V161Z"
+          fill={color}
+        />
+        <path
+          d="M387 144C387 142.343 388.343 141 390 141H404C405.657 141 407 142.343 407 144V196H387V144Z"
+
+          fill={secondaryColor}
+        />
+        <path
+          d="M423 126C423 124.343 424.343 123 426 123H440C441.657 123 443 124.343 443 126V196H423V126Z"
+          fill={color}
+        />
+        <path
+          d="M447 142C447 140.343 448.343 139 450 139H464C465.657 139 467 140.343 467 142V196H447V142Z"
+          fill={secondaryColor}
+        />
+        <path
+          d="M483 125.461C483 124.102 484.343 123 486 123H500C501.657 123 503 124.102 503 125.461V196H483V125.461Z"
+          fill={color}
+        />
+        <path
+          d="M507 137.507C507 136.122 508.343 135 510 135H524C525.657 135 527 136.122 527 137.507V196H507V137.507Z"
+          fill={secondaryColor}
+        />
+        <path
+          d="M543 108.212C543 106.438 544.343 105 546 105H560C561.657 105 563 106.438 563 108.212V196H543V108.212Z"
+          fill={color}
+        />
+        <path
+          d="M567 116.485C567 115.112 568.343 114 570 114H584C585.657 114 587 115.112 587 116.485V196H567V116.485Z"
+          fill={secondaryColor}
+        />
+        <path
+          d="M603 79.8333C603 78.2685 604.343 77 606 77H620C621.657 77 623 78.2685 623 79.8333V196H603V79.8333Z"
+          fill={color}
+        />
+        <path
+          d="M627 91.8919C627 90.2947 628.343 89 630 89H644C645.657 89 647 90.2947 647 91.8919V196H627V91.8919Z"
+          fill={secondaryColor}
+        />
+        <path
+          d="M661 66.7887C661 65.2485 662.343 64 664 64H678C679.657 64 681 65.2485 681 66.7887V196H661V66.7887Z"
+          fill={color}
+        />
+        <path
+          d="M685 55.7325C685 54.2233 686.343 53 688 53H702C703.657 53 705 54.2233 705 55.7325V196H685V55.7325Z"
+          fill={secondaryColor}
+        />
+      </svg>
+    </div>
+  );
+};
+
+const Layer2 = ({ color }: LayerProps) => {
+  return (
+    <div className="absolute top-0 left-[-1px] h-full w-[356px]">
+      <svg
+        className="h-full w-[356px]"
+        viewBox="0 0 356 180"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g clipPath="url(#clip0_25_384)">
+          <path
+            d="M1 131.5L33.5 125.5L64 102.5L93.5 118.5L124.5 90L154 100.5L183.5 76L207.5 92L244.5 51L274.5 60.5L307.5 46L334.5 28.5L356.5 1"
+            stroke={color}
+          />
+          <path
+            d="M33.5 125.5L1 131.5V197H356.5V1L335 28.5L306.5 46L274.5 60.5L244.5 51L207.5 92L183.5 76L154 100.5L124.5 90L93.5 118.5L64 102.5L33.5 125.5Z"
+            fill={color}
+            fillOpacity="0.3"
+          />
+        </g>
+        <defs>
+          <clipPath id="clip0_25_384">
+            <rect width="356" height="180" fill="white" />
+          </clipPath>
+        </defs>
+      </svg>
+      <div className="ease-[cubic-bezier(0.6, 0.6, 0, 1)] absolute inset-0 z-[3] transform bg-gradient-to-r from-transparent from-0% to-white to-15% transition-transform duration-500 group-hover/animated-card:translate-x-full dark:to-black"></div>
+    </div>
+  );
+};
+
+const Layer3 = ({ color, secondaryColor }: LayerProps) => {
+  return (
+    <div
+      className="absolute top-4 right-4 z-[8] flex items-center gap-1"
+      style={
+        {
+          "--color": color,
+          "--secondary-color": secondaryColor,
+        } as React.CSSProperties & {
+          "--color": string;
+          "--secondary-color": string;
+        }
+      }
+    >
+      <div className="flex shrink-0 items-center rounded-full border border-zinc-200 bg-white/25 px-1.5 py-0.5 backdrop-blur-sm transition-opacity duration-300 ease-in-out group-hover/animated-card:opacity-0 dark:border-zinc-800 dark:bg-black/25">
+        <div className="h-1.5 w-1.5 rounded-full bg-[var(--color)]" />
+        <span className="ml-1 text-[10px] text-black dark:text-white">
+          Tommy
+        </span>
+      </div>
+      <div className="flex shrink-0 items-center rounded-full border border-zinc-200 bg-white/25 px-1.5 py-0.5 backdrop-blur-sm transition-opacity duration-300 ease-in-out group-hover/animated-card:opacity-0 dark:border-zinc-800 dark:bg-black/25">
+        <div className="h-1.5 w-1.5 rounded-full bg-[var(--secondary-color)]" />
+        <span className="ml-1 text-[10px] text-black dark:text-white">
+          Megan
+        </span>
+      </div>
+    </div>
+  );
+};
+
+const Layer4 = () => {
+  return (
+    <div className="group relative h-full w-[356px]">
+      <div className="ease-[cubic-bezier(0.6, 0.6, 0, 1)] absolute inset-0 z-[7] flex max-w-[356px] -translate-y-full items-start justify-start bg-transparent p-4 transition-transform duration-500 group-hover/animated-card:translate-y-0">
+        <div className="ease-[cubic-bezier(0.6, 0.6, 0, 1)] rounded-md border border-zinc-200 bg-white/25 p-1.5 opacity-0 backdrop-blur-sm transition-opacity duration-500 group-hover/animated-card:opacity-100 dark:border-zinc-800 dark:bg-black/25">
+          <p className="mb-1 text-xs font-semibold text-black dark:text-white">
+            Random Data Visualization
+          </p>
+          <p className="text-xs text-neutral-500 dark:text-neutral-400">
+            Displaying some interesting stats.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// --- Demo ---
+import {
+  AnimatedCard,
+  CardBody,
+  CardDescription,
+  CardTitle,
+  CardVisual,
+} from "@/components/ui/animated-card"
+import { Visual1 } from "@/components/ui/animated-card"
+
+export default function AnimatedCard1Demo() {
+  return (
+    <AnimatedCard>
+      <CardVisual>
+        <Visual1 mainColor="#ff6900" secondaryColor="#f54900" />
+      </CardVisual>
+      <CardBody>
+        <CardTitle>Just find the right caption</CardTitle>
+        <CardDescription>
+          This card will tell everything you want
+        </CardDescription>
+      </CardBody>
+    </AnimatedCard>
+  )
+}
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+// --- Component ---
+// components/ui/donut-chart.tsx
+"use client";
+
+import * as React from "react";
+import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
+
+export interface DonutChartSegment {
+  value: number;
+  color: string; // Should be a valid CSS color (e.g., hsl(var(--primary)))
+  label: string;
+  [key: string]: any; // Allow other data
+}
+
+interface DonutChartProps extends React.HTMLAttributes<HTMLDivElement> {
+  data: DonutChartSegment[];
+  totalValue?: number;
+  size?: number;
+  strokeWidth?: number;
+  animationDuration?: number;
+  animationDelayPerSegment?: number;
+  highlightOnHover?: boolean;
+  centerContent?: React.ReactNode;
+  /** Callback function when a segment is hovered */
+  onSegmentHover?: (segment: DonutChartSegment | null) => void;
+}
+
+const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
+  (
+    {
+      data,
+      totalValue: propTotalValue,
+      size = 200,
+      strokeWidth = 20,
+      animationDuration = 1,
+      animationDelayPerSegment = 0.05,
+      highlightOnHover = true,
+      centerContent,
+      onSegmentHover,
+      className,
+      ...props
+    },
+    ref
+  ) => {
+    const [hoveredSegment, setHoveredSegment] =
+      React.useState<DonutChartSegment | null>(null);
+
+    const internalTotalValue = React.useMemo(
+      () =>
+        propTotalValue || data.reduce((sum, segment) => sum + segment.value, 0),
+      [data, propTotalValue]
+    );
+
+    const radius = size / 2 - strokeWidth / 2;
+    const circumference = 2 * Math.PI * radius;
+    let cumulativePercentage = 0;
+
+    // Effect to call the onSegmentHover prop when internal state changes
+    React.useEffect(() => {
+      onSegmentHover?.(hoveredSegment);
+    }, [hoveredSegment, onSegmentHover]);
+
+    const handleMouseLeave = () => {
+      setHoveredSegment(null);
+    };
+
+    return (
+      <div
+        ref={ref}
+        className={cn("relative flex items-center justify-center", className)}
+        style={{ width: size, height: size }}
+        onMouseLeave={handleMouseLeave}
+        {...props}
+      >
+        <svg
+          width={size}
+          height={size}
+          viewBox={`0 0 ${size} ${size}`}
+          className="overflow-visible -rotate-90" // Rotate to start at 12 o'clock
+        >
+          {/* Base background ring */}
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            fill="transparent"
+            stroke="hsl(var(--border) / 0.5)" // Use theme variable for bg
+            strokeWidth={strokeWidth}
+          />
+          
+          {/* Data Segments */}
+          <AnimatePresence>
+            {data.map((segment, index) => {
+              if (segment.value === 0) return null;
+
+              const percentage =
+                internalTotalValue === 0
+                  ? 0
+                  : (segment.value / internalTotalValue) * 100;
+              
+              const strokeDasharray = `${(percentage / 100) * circumference} ${circumference}`;
+              const strokeDashoffset = (cumulativePercentage / 100) * circumference;
+              
+              const isActive = hoveredSegment?.label === segment.label;
+              
+              cumulativePercentage += percentage;
+
+              return (
+                <motion.circle
+                  key={segment.label || index}
+                  cx={size / 2}
+                  cy={size / 2}
+                  r={radius}
+                  fill="transparent"
+                  stroke={segment.color}
+                  strokeWidth={strokeWidth}
+                  strokeDasharray={strokeDasharray}
+                  strokeDashoffset={-strokeDashoffset} // Negative offset to draw correctly
+                  strokeLinecap="round" // Makes rounded edges
+                  initial={{ opacity: 0, strokeDashoffset: circumference }}
+                  animate={{ 
+                    opacity: 1, 
+                    strokeDashoffset: -strokeDashoffset,
+                  }}
+                  transition={{
+                    opacity: { duration: 0.3, delay: index * animationDelayPerSegment },
+                    strokeDashoffset: {
+                      duration: animationDuration,
+                      delay: index * animationDelayPerSegment,
+                      ease: "easeOut",
+                    },
+                  }}
+                  className={cn(
+                    "origin-center transition-transform duration-200",
+                    highlightOnHover && "cursor-pointer"
+                  )}
+                  style={{
+                    filter: isActive
+                      ? `drop-shadow(0px 0px 6px ${segment.color}) brightness(1.1)`
+                      : 'none',
+                    transform: isActive ? 'scale(1.03)' : 'scale(1)',
+                    transition: "filter 0.2s ease-out, transform 0.2s ease-out",
+                  }}
+                  onMouseEnter={() => setHoveredSegment(segment)}
+                />
+              );
+            })}
+          </AnimatePresence>
+        </svg>
+
+        {/* Center Content */}
+        {centerContent && (
+          <div
+            className="absolute flex flex-col items-center justify-center pointer-events-none"
+            style={{
+              width: size - strokeWidth * 2.5, // Ensure content fits inside
+              height: size - strokeWidth * 2.5,
+            }}
+          >
+            {centerContent}
+          </div>
+        )}
+      </div>
+    );
+  }
+);
+
+DonutChart.displayName = "DonutChart";
+
+export { DonutChart };
+
+// --- Demo ---
+// demo.tsx
+"use client";
+
+import React, { useState } from "react";
+import { DonutChart } from "@/components/ui/donut-chart"; // Adjust path as needed
+import { Card } from "@/components/ui/card"; // Assuming shadcn Card component
+import { motion, AnimatePresence } from "framer-motion";
+import { Circle } from "lucide-react"; // For legend icons
+import { cn } from "@/lib/utils"; // <-- FIX: Added the missing import
+
+const financialData = [
+  { value: 184, color: "hsl(214.7 95% 40%)", label: "Financial Objections" },
+  { value: 50, color: "hsl(142.1 76.2% 36.3%)", label: "Product Features" },
+  { value: 30, color: "hsl(47.9 95.8% 53.1%)", label: "Timing Issues" },
+  { value: 20, color: "hsl(0 0% 63.9%)", label: "Competitor Offers" },
+  { value: 10, color: "hsl(262.1 83.3% 57.8%)", label: "Other Reasons" },
+];
+
+const totalFinancialValue = financialData.reduce((sum, d) => sum + d.value, 0);
+
+export default function DonutChartDemo() {
+  const [hoveredSegment, setHoveredSegment] = useState<string | null>(null);
+
+  // Find the currently hovered segment data
+  const activeSegment = financialData.find(
+    (segment) => segment.label === hoveredSegment
+  );
+  
+  // Determine total value (either hovered or overall)
+  const displayValue = activeSegment?.value ?? totalFinancialValue;
+  const displayLabel = activeSegment?.label ?? "Total Objections";
+  const displayPercentage =
+    activeSegment ? (activeSegment.value / totalFinancialValue) * 100 : 100;
+
+  return (
+    <Card className="p-6 md:p-8 w-full max-w-md mx-auto flex flex-col items-center justify-center space-y-6 bg-background text-foreground shadow-lg rounded-xl">
+      <h2 className="text-xl font-semibold text-center tracking-tight text-foreground">
+        Objection Breakdown
+      </h2>
+      <div className="relative flex items-center justify-center">
+        <DonutChart
+          data={financialData}
+          size={250}
+          strokeWidth={30}
+          animationDuration={1.2}
+          animationDelayPerSegment={0.05}
+          highlightOnHover={true}
+          centerContent={
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={displayLabel} // Key changes to trigger animation
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.2, ease: "circOut" }}
+                className="flex flex-col items-center justify-center text-center"
+              >
+                <p className="text-muted-foreground text-sm font-medium truncate max-w-[150px]">
+                  {displayLabel}
+                </p>
+                <p className="text-4xl font-bold text-foreground">
+                  {displayValue}
+                </p>
+                {/* Only show percentage if a segment is hovered */}
+                {activeSegment && (
+                    <p className="text-lg font-medium text-muted-foreground">
+                        [{displayPercentage.toFixed(0)}%]
+                    </p>
+                )}
+              </motion.div>
+            </AnimatePresence>
+          }
+        >
+            {/* This implementation uses a custom 'onSegmentHover' prop 
+              (which we should add to the main component) or relies on 
+              the component's internal hover state.
+              
+              For simplicity, let's modify the DonutChart component
+              to accept an 'onSegmentHover' callback.
+            */}
+        </DonutChart>
+      </div>
+
+      <div className="flex flex-col space-y-2 w-full pt-4 border-t border-border">
+        {financialData.map((segment, index) => (
+          <motion.div
+            key={segment.label}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 1.2 + index * 0.1, duration: 0.4 }}
+            className={cn(
+              "flex items-center justify-between p-2 rounded-md transition-all duration-200 cursor-pointer",
+              hoveredSegment === segment.label && "bg-muted"
+            )}
+            onMouseEnter={() => setHoveredSegment(segment.label)}
+            onMouseLeave={() => setHoveredSegment(null)}
+          >
+            <div className="flex items-center space-x-3">
+              <span
+                className="h-3 w-3 rounded-full"
+                style={{ backgroundColor: segment.color }}
+              ></span>
+              <span className="text-sm font-medium text-foreground">
+                {segment.label}
+              </span>
+            </div>
+            <span className="text-sm font-semibold text-muted-foreground">
+              {segment.value}
+            </span>
+          </motion.div>
+        ))}
+      </div>
+    </Card>
+  );
+}
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+

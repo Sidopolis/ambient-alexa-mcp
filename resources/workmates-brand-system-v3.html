@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workmates — Brand Design System v3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --indigo:#4B39FF;
+    --indigo-700:#3A2BD1;
+    --gold:#FDBE1B;
+    --orange:#F9811F;
+    --ink:#1F1F53;
+    --body-ink:#232336;
+    --slate:#666B85;
+    --mist:#F5F5FC;
+    --line:#E2E2F0;
+    --white:#FFFFFF;
+    --warn:#C4432B;
+    --ok:#1E8E5A;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--white);color:var(--body-ink);font-family:'Inter',sans-serif;line-height:1.5;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 32px 120px;}
+  h1,h2,h3,h4{font-family:'Poppins',sans-serif;margin:0;color:var(--ink);}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+
+  .cover{background:var(--ink);color:var(--white);padding:80px 32px 64px;}
+  .cover .inner{max-width:1080px;margin:0 auto;}
+  .cover .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;}
+  .cover h1{color:var(--white);font-size:44px;font-weight:800;letter-spacing:-0.01em;max-width:680px;}
+  .cover p{color:#C4C2E8;font-size:17px;max-width:560px;margin-top:16px;}
+  .cover .bar{display:flex;margin-top:40px;border-radius:6px;overflow:hidden;height:10px;width:100%;max-width:420px;}
+  .cover .bar span{flex:1;}
+  .cover .logo-note{display:flex;align-items:center;gap:16px;margin-top:36px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:16px 20px;max-width:520px;}
+  .cover .logo-note img{height:44px;width:auto;background:#fff;border-radius:6px;padding:4px 8px;}
+  .cover .logo-note span{font-size:13px;color:#C4C2E8;}
+
+  section{padding:64px 0;border-bottom:1px solid var(--line);}
+  section:last-child{border-bottom:none;}
+  .sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:32px;}
+  .sec-num{font-family:'IBM Plex Mono',monospace;color:var(--indigo);font-size:14px;}
+  .sec-head h2{font-size:26px;font-weight:700;}
+  .sec-intro{color:var(--slate);font-size:15px;max-width:640px;margin:8px 0 32px;}
+
+  .swatch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  .swatch{border:1px solid var(--line);border-radius:8px;overflow:hidden;}
+  .swatch .block{height:96px;}
+  .swatch .meta{padding:12px 14px;background:var(--white);}
+  .swatch .meta .name{font-weight:600;font-size:14px;color:var(--ink);}
+  .swatch .meta .hex{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--slate);margin-top:2px;}
+  .swatch .meta .use{font-size:12.5px;color:var(--slate);margin-top:6px;}
+
+  .type-row{display:flex;align-items:baseline;justify-content:space-between;padding:18px 0;border-bottom:1px solid var(--line);}
+  .type-row:last-child{border-bottom:none;}
+  .type-row .sample{font-family:'Poppins',sans-serif;color:var(--ink);}
+  .type-row .label{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--slate);min-width:170px;}
+  .type-row.body .sample{font-family:'Inter',sans-serif;color:var(--body-ink);}
+
+  .pairing-note{background:var(--mist);border-left:3px solid var(--gold);padding:16px 20px;border-radius:4px;font-size:14px;color:var(--ink);margin-top:24px;}
+
+  .comp-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;}
+  .comp-block{border:1px solid var(--line);border-radius:8px;padding:24px;background:var(--mist);}
+  .comp-block h4{font-size:13px;font-family:'IBM Plex Mono',monospace;color:var(--slate);text-transform:uppercase;letter-spacing:.04em;margin-bottom:16px;font-weight:500;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:600;font-size:14px;padding:11px 22px;border-radius:8px;border:none;cursor:pointer;text-decoration:none;}
+  .btn-primary{background:var(--indigo);color:var(--white);}
+  .btn-gold{background:var(--gold);color:var(--ink);}
+  .btn-secondary{background:transparent;color:var(--ink);border:1.5px solid var(--ink);}
+  .btn-row{display:flex;gap:12px;flex-wrap:wrap;}
+
+  .badge{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:11.5px;padding:4px 10px;border-radius:20px;font-weight:500;}
+  .badge-indigo{background:var(--indigo);color:var(--white);}
+  .badge-gold{background:rgba(253,190,27,0.18);color:#8A6400;}
+  .badge-outline{border:1px solid var(--line);color:var(--slate);}
+
+  .card{background:var(--white);border:1px solid var(--line);border-radius:8px;padding:24px;}
+  .card .cat{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--indigo);text-transform:uppercase;letter-spacing:.04em;}
+  .card h4{font-size:18px;margin-top:8px;font-weight:700;}
+  .card p{font-size:14px;color:var(--slate);margin-top:8px;}
+  .card .dot-row{display:flex;gap:6px;margin-top:14px;}
+  .card .dot-row span{width:8px;height:8px;border-radius:50%;background:var(--gold);}
+  .card .dot-row span:nth-child(2){background:var(--indigo);}
+  .card .dot-row span:nth-child(3){background:var(--gold);opacity:.5;}
+
+  .field label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px;}
+  .field input{width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:8px;font-family:'Inter',sans-serif;font-size:14px;margin-bottom:16px;}
+  .field input:focus{outline:2px solid var(--indigo);outline-offset:1px;border-color:var(--indigo);}
+
+  .space-row{display:flex;align-items:center;gap:16px;margin-bottom:10px;}
+  .space-row .box{background:var(--indigo);height:16px;border-radius:2px;}
+  .space-row .lbl{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--slate);min-width:80px;}
+
+  table{width:100%;border-collapse:collapse;font-size:14px;}
+  th{text-align:left;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--slate);text-transform:uppercase;letter-spacing:.04em;padding:10px 0;border-bottom:1px solid var(--ink);}
+  td{padding:14px 0;border-bottom:1px solid var(--line);vertical-align:top;}
+  td.do{color:var(--ok);font-weight:600;width:22%;}
+  td.dont{color:var(--warn);font-weight:600;width:22%;}
+
+  .misuse-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px;}
+  .misuse{border-radius:8px;padding:20px;}
+  .misuse.bad{background:#FBEAE6;border:1px solid #F0C4B9;}
+  .misuse.good{background:#E9F7F1;border:1px solid #BFE5D3;}
+  .misuse .tag{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;text-transform:uppercase;}
+  .misuse.bad .tag{color:var(--warn);}
+  .misuse.good .tag{color:var(--ok);}
+  .misuse p{font-size:13.5px;margin-top:8px;color:var(--body-ink);}
+
+  @media (max-width:720px){
+    .swatch-grid{grid-template-columns:1fr 1fr;}
+    .comp-grid{grid-template-columns:1fr;}
+    .misuse-grid{grid-template-columns:1fr;}
+    .cover h1{font-size:32px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="inner">
+    <div class="eyebrow">Brand Design System — v3.0</div>
+    <h1>Workmates</h1>
+    <p>Palette and type derived by pixel-sampling the current logo mark: indigo figures, gold accents, deep ink-navy wordmark, ember orange as tertiary accent. Five surfaces: website, PowerPoint, Word/legal documents, Excel, PDF.</p>
+    <div class="bar">
+      <span style="background:#1F1F53;"></span>
+      <span style="background:#4B39FF;"></span>
+      <span style="background:#FDBE1B;"></span>
+    </div>
+    <div class="logo-note">
+      <img src="https://i0.wp.com/cloudworkmates.com/wp-content/uploads/2025/06/workmate-logo-SVG.png" alt="logo" onerror="this.style.display='none'">
+      <span>Source: uploaded logo mark, sampled directly (#4B39FF, #FDBE1B, #1F1F53) — not estimated.</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <section>
+    <div class="sec-head"><span class="sec-num">01</span><h2>Color System</h2></div>
+    <p class="sec-intro">Indigo is the primary brand color — used for the people-icon mark and as the dominant UI color. Gold is a single, deliberate accent, not a co-equal second color. Ink-navy replaces pure black for the wordmark and body text.</p>
+
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="block" style="background:#4B39FF;"></div>
+        <div class="meta"><div class="name">Indigo — Primary</div><div class="hex">#4B39FF</div><div class="use">Icon figures, primary buttons, links, nav</div></div>
+      </div>
+      <div class="swatch">
+        <div class="block" style="background:#FDBE1B;"></div>
+        <div class="meta"><div class="name">Gold — Accent</div><div class="hex">#FDBE1B</div><div class="use">Icon dots, highlights, badges — sparingly</div></div>
+      </div>
+      <div class="swatch">
+        <div class="block" style="background:#F9811F;"></div>
+        <div class="meta"><div class="name">Ember Orange — Tertiary</div><div class="hex">#F9811F</div><div class="use">Third categorical tag, extra chart series — never replaces gold as primary accent</div></div>
+      </div>
+      <div class="swatch">
+        <div class="block" style="background:#1F1F53;"></div>
+        <div class="meta"><div class="name">Ink Navy — Wordmark / Text</div><div class="hex">#1F1F53</div><div class="use">Logo type, headings, dark sections</div></div>
+      </div>
+      <div class="swatch">
+        <div class="block" style="background:#666B85;"></div>
+        <div class="meta"><div class="name">Slate — Muted Text</div><div class="hex">#666B85</div><div class="use">Captions, metadata</div></div>
+      </div>
+      <div class="swatch">
+        <div class="block" style="background:#F5F5FC;border-bottom:1px solid #E2E2F0;"></div>
+        <div class="meta"><div class="name">Mist — Surface</div><div class="hex">#F5F5FC</div><div class="use">Section backgrounds, cards</div></div>
+      </div>
+      <div class="swatch">
+        <div class="block" style="background:#FFFFFF;border-bottom:1px solid #E2E2F0;"></div>
+        <div class="meta"><div class="name">White — Base</div><div class="hex">#FFFFFF</div><div class="use">Primary background</div></div>
+      </div>
+    </div>
+
+    <div class="pairing-note">
+      <strong>Ratio guide:</strong> ~65% white/mist, 25% indigo, 8% gold, ≤2% ember orange. Gold never carries body text — at #FDBE1B its contrast against white fails accessibility for text; it's a fill/accent color only, never a foreground text color. Orange follows the same rule and stays rarer than gold — it's a tertiary signal, not a second CTA color.
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">02</span><h2>Typography</h2></div>
+    <p class="sec-intro"><strong>Poppins</strong> (ExtraBold/Bold) for the wordmark and headings — matches the logo's thick, geometric, rounded-terminal letterforms. <strong>Inter</strong> for body and UI. <strong>IBM Plex Mono</strong> for labels and data.</p>
+
+    <div class="type-row">
+      <div class="sample" style="font-size:40px;font-weight:800;">Modern Foundations</div>
+      <div class="label">H1 / Poppins 800 / 40px</div>
+    </div>
+    <div class="type-row">
+      <div class="sample" style="font-size:28px;font-weight:700;">Cloud Consulting</div>
+      <div class="label">H2 / Poppins 700 / 28px</div>
+    </div>
+    <div class="type-row">
+      <div class="sample" style="font-size:20px;font-weight:600;">Strategic AWS Partnership</div>
+      <div class="label">H3 / Poppins 600 / 20px</div>
+    </div>
+    <div class="type-row body">
+      <div class="sample" style="font-size:16px;">We architect scalable, cloud-ready systems aligned to enterprise goals.</div>
+      <div class="label">Body / Inter 400 / 16px</div>
+    </div>
+    <div class="type-row body">
+      <div class="sample mono" style="font-size:13px;color:#666B85;">AWS PREMIER TIER PARTNER</div>
+      <div class="label">Label / Plex Mono / 13px</div>
+    </div>
+
+    <div class="pairing-note">
+      Google Fonts import: <span class="mono">Poppins:wght@500;600;700;800</span> + <span class="mono">Inter:wght@400;500;600;700</span>. Reserve Poppins 800 (ExtraBold) for the wordmark/logo lockup itself; use 700 as the ceiling for in-page headings so nothing competes with the actual logo weight.
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">03</span><h2>Logo Construction Notes</h2></div>
+    <p class="sec-intro">What the mark is actually built from, so it's reproduced consistently rather than redrawn from memory each time.</p>
+    <table>
+      <tr><th>Element</th><th>Detail</th></tr>
+      <tr><td>Icon</td><td style="padding:14px 0;">Four abstracted "people" — gold circular heads, indigo rounded-rectangle bodies of varying heights, staggered like a small team/crowd. This is the literal visual pun on "Workmates."</td></tr>
+      <tr><td>Wordmark</td><td style="padding:14px 0;">Bold, geometric, tight tracking, rounded corners on strokes. Ink-navy (#1F1F53), never pure black.</td></tr>
+      <tr><td>Clearspace</td><td style="padding:14px 0;">Keep clear space around the mark equal to the height of one "figure" in the icon group — don't crowd it with nav items or copy.</td></tr>
+      <tr><td>Minimum size</td><td style="padding:14px 0;">Icon detail (individual dots) breaks down below ~24px height — use wordmark-only lockup at small sizes (favicons, app icons use icon-only, cropped tight).</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">04</span><h2>Spacing Grid</h2></div>
+    <p class="sec-intro">8px base unit, unchanged from the icon's own internal geometry (the four figures sit on a consistent rhythm).</p>
+    <div class="space-row"><div class="lbl">4px — xs</div><div class="box" style="width:4px;"></div></div>
+    <div class="space-row"><div class="lbl">8px — sm</div><div class="box" style="width:8px;"></div></div>
+    <div class="space-row"><div class="lbl">16px — md</div><div class="box" style="width:16px;"></div></div>
+    <div class="space-row"><div class="lbl">24px — lg</div><div class="box" style="width:24px;"></div></div>
+    <div class="space-row"><div class="lbl">32px — xl</div><div class="box" style="width:32px;"></div></div>
+    <div class="space-row"><div class="lbl">64px — 2xl</div><div class="box" style="width:64px;"></div></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">05</span><h2>Core Components</h2></div>
+    <p class="sec-intro">Radius bumped to 8px (from 6px in the previous draft) to match the icon's rounded-rectangle bodies — the UI should echo the logo's own geometry, not just its colors.</p>
+
+    <div class="comp-grid">
+      <div class="comp-block">
+        <h4>Buttons</h4>
+        <div class="btn-row">
+          <button class="btn btn-primary">Book a Discovery Call</button>
+          <button class="btn btn-gold">Explore Services</button>
+        </div>
+        <div class="btn-row" style="margin-top:14px;">
+          <button class="btn btn-secondary">Contact Us</button>
+        </div>
+      </div>
+
+      <div class="comp-block">
+        <h4>Badges</h4>
+        <div class="btn-row">
+          <span class="badge badge-indigo">AWS PREMIER PARTNER</span>
+          <span class="badge badge-gold">GEN AI</span>
+          <span class="badge badge-outline">ISO 27001</span>
+        </div>
+      </div>
+
+      <div class="comp-block">
+        <h4>Card</h4>
+        <div class="card">
+          <div class="cat">Cloud Consulting</div>
+          <h4>Migration &amp; Modernization</h4>
+          <p>Architect scalable, cloud-ready systems aligned to enterprise goals.</p>
+          <div class="dot-row"><span></span><span></span><span></span></div>
+        </div>
+      </div>
+
+      <div class="comp-block">
+        <h4>Form Field</h4>
+        <div class="field">
+          <label>Work Email</label>
+          <input type="text" placeholder="you@company.com">
+          <label>Organization</label>
+          <input type="text" placeholder="Company name">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">06</span><h2>Usage Guardrails</h2></div>
+    <div class="misuse-grid">
+      <div class="misuse good">
+        <div class="tag">Correct</div>
+        <p>Gold appears once per view as a genuine accent (a badge, a dot, an icon detail). Indigo carries primary actions. Ink-navy for all real text — gold is never used as text color.</p>
+      </div>
+      <div class="misuse bad">
+        <div class="tag">Avoid</div>
+        <p>Gold body text or gold buttons with white text (fails contrast), overcrowding the logo's clearspace, redrawing the icon with equal-height figures (the staggered heights are intentional).</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">07</span><h2>Extended Data &amp; Semantic Palette</h2></div>
+    <p class="sec-intro">Indigo, gold, and slate alone can't distinguish more than 2–3 series in a chart or dashboard. Extend with tints/shades of the same two hues rather than introducing off-brand colors — keeps multi-series charts recognizably "Workmates." Status colors (success/warning/error) are kept intentionally separate from the brand palette so a red warning is never confused with a brand color choice.</p>
+
+    <div class="swatch-grid">
+      <div class="swatch"><div class="block" style="background:#4B39FF;"></div><div class="meta"><div class="name">Indigo</div><div class="hex">#4B39FF</div><div class="use">Series 1</div></div></div>
+      <div class="swatch"><div class="block" style="background:#FDBE1B;"></div><div class="meta"><div class="name">Gold</div><div class="hex">#FDBE1B</div><div class="use">Series 2</div></div></div>
+      <div class="swatch"><div class="block" style="background:#A79CFF;"></div><div class="meta"><div class="name">Indigo Light</div><div class="hex">#A79CFF</div><div class="use">Series 3</div></div></div>
+      <div class="swatch"><div class="block" style="background:#1F1F53;"></div><div class="meta"><div class="name">Ink Navy</div><div class="hex">#1F1F53</div><div class="use">Series 4</div></div></div>
+      <div class="swatch"><div class="block" style="background:#FFDD85;"></div><div class="meta"><div class="name">Gold Light</div><div class="hex">#FFDD85</div><div class="use">Series 5</div></div></div>
+      <div class="swatch"><div class="block" style="background:#666B85;"></div><div class="meta"><div class="name">Slate</div><div class="hex">#666B85</div><div class="use">Series 6 / baseline</div></div></div>
+      <div class="swatch"><div class="block" style="background:#F9811F;"></div><div class="meta"><div class="name">Ember Orange</div><div class="hex">#F9811F</div><div class="use">Series 7 — use only if 6 isn't enough; rarest color in any chart</div></div></div>
+    </div>
+
+    <div class="pairing-note">
+      <strong>Semantic (never brand-substituted):</strong> Success <span class="mono" style="color:#1E8E5A;">#1E8E5A</span> · Warning/Error <span class="mono" style="color:#C4432B;">#C4432B</span> · Info <span class="mono">#4B39FF</span> (indigo doubles as info since it's not alarm-coded). Financial statements, form validation, and status indicators use these regardless of what's fashionable in the brand palette that quarter — semantic color meaning must stay stable.
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">08</span><h2>Cross-Media Application</h2></div>
+    <p class="sec-intro">The web tokens above don't transfer directly to PPT or Word. Two things break by default: fonts (Google Fonts aren't installed on most machines) and color (screen RGB isn't print CMYK). This section is the fix for both, per surface.</p>
+    <table>
+      <tr><th>Surface</th><th>Font handling</th><th>Color handling</th></tr>
+      <tr>
+        <td style="font-weight:600;color:var(--ink);">Website</td>
+        <td>Load Poppins + Inter via Google Fonts <span class="mono">&lt;link&gt;</span> — renders correctly for every visitor, no action needed.</td>
+        <td>Use hex/RGB tokens as-is.</td>
+      </tr>
+      <tr>
+        <td style="font-weight:600;color:var(--ink);">PowerPoint</td>
+        <td>Google Fonts are <strong>not</strong> pre-installed on most Windows/Mac machines. Either embed fonts in the .pptx (File → Options → Save → Embed fonts) or design against the fallback stack below — do not assume Poppins will render on a client's laptop.</td>
+        <td>RGB tokens work directly (screen-only medium) — enter hex values in Slide Master theme colors.</td>
+      </tr>
+      <tr>
+        <td style="font-weight:600;color:var(--ink);">Legal / Word docs</td>
+        <td>Same embedding problem, worse consequence — a legal document with substituted fonts can shift pagination and look unprofessional. Embed fonts (Word: File → Options → Save → Embed fonts) or use the fallback stack.</td>
+        <td>If the document may be <strong>printed</strong>, use CMYK values, not RGB — see §10.</td>
+      </tr>
+    </table>
+    <div class="pairing-note">
+      <strong>Fallback font stack</strong> (use when fonts can't be embedded): Poppins → <span class="mono">Montserrat</span> → <span class="mono">Trebuchet MS</span> → <span class="mono">Calibri</span>. Inter → <span class="mono">Calibri</span> → <span class="mono">Arial</span>. Montserrat is the closest free-and-usually-preinstalled match to Poppins's geometric structure.
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">09</span><h2>PowerPoint System</h2></div>
+    <p class="sec-intro">Slide Master specs for a 16:9 deck. Build these once as an actual .potx template in PowerPoint rather than reformatting each new deck by hand.</p>
+    <table>
+      <tr><th>Element</th><th>Spec</th></tr>
+      <tr><td>Canvas</td><td style="padding:14px 0;">1920 × 1080px (16:9), safe margin 80px on all sides — nothing critical (logo, text) inside that margin.</td></tr>
+      <tr><td>Title slide</td><td style="padding:14px 0;">Ink-navy (#1F1F53) full background, white Poppins 800 headline, gold underline rule (4px) beneath the title, wordmark bottom-left, "WORKMATES" wordmark-only lockup — never the full icon+wordmark at this scale unless it's the actual title.</td></tr>
+      <tr><td>Section divider</td><td style="padding:14px 0;">Indigo (#4B39FF) full background, white Poppins 700 section title, gold slide-number badge top-right.</td></tr>
+      <tr><td>Content slide</td><td style="padding:14px 0;">White background. Header bar: Poppins 600, 28px, ink-navy. Body: Inter 400, 18px minimum (never smaller — back-of-room legibility), ink-navy or slate. One indigo or gold accent element per slide max (a rule, an icon fill, a chart series) — not both competing.</td></tr>
+      <tr><td>Data/charts</td><td style="padding:14px 0;">Primary series: indigo. Secondary series: slate (#666B85). Gold reserved for the one data point you want to call out — a highlighted bar, a "you are here" marker. Never use gold for a full series; it fails contrast against white slide backgrounds when used as thin lines or small text labels.</td></tr>
+      <tr><td>Footer</td><td style="padding:14px 0;">Plex Mono 10px, slate, left-aligned: confidentiality line + slide number. Right-aligned: wordmark, 16px height max.</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">10</span><h2>Word &amp; Legal Document System</h2></div>
+    <p class="sec-intro">Contracts, SOWs, MSAs, compliance letters. This surface trades personality for unambiguous readability and print reliability — brand presence is restrained to letterhead and footer only.</p>
+    <table>
+      <tr><th>Element</th><th>Spec</th></tr>
+      <tr><td>Page setup</td><td style="padding:14px 0;">A4 or Letter per jurisdiction, 1 inch (2.54cm) margins on all sides — standard for legal readability and binding/printing tolerance.</td></tr>
+      <tr><td>Body typeface</td><td style="padding:14px 0;"><strong>Do not use Poppins or Inter for contract body text.</strong> Use a conservative serif or system sans required by legal convention — <span class="mono">Times New Roman</span> 11–12pt (formal/court-facing) or <span class="mono">Calibri</span> 11pt (internal/commercial contracts). Brand typography is confined to the letterhead and headers only.</td></tr>
+      <tr><td>Letterhead</td><td style="padding:14px 0;">Wordmark-only lockup, max 28px height, top-left. A single 2px indigo rule beneath the header block. No gold, no icon at this size — the four-figure icon degrades below ~24px.</td></tr>
+      <tr><td>Headings within doc</td><td style="padding:14px 0;">Section headings (e.g. "1. Definitions") in the body typeface, bold, ink-navy — not Poppins. Consistency with the legal body face matters more than brand voice here.</td></tr>
+      <tr><td>Footer</td><td style="padding:14px 0;">Plex Mono or Calibri 9px, slate: company registered name, page X of Y, confidentiality notice.</td></tr>
+      <tr><td>Watermarks</td><td style="padding:14px 0;">"DRAFT" or "CONFIDENTIAL" — ink-navy at 8–10% opacity, diagonal, never gold or indigo at full strength (interferes with legibility and photocopying).</td></tr>
+      <tr><td>Signature block</td><td style="padding:14px 0;">Plain body typeface, no color, no styling. This is the one place brand identity should be fully absent — signature blocks are legal artifacts, not design surfaces.</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">11</span><h2>Excel / Spreadsheet System</h2></div>
+    <p class="sec-intro">Excel treats custom fonts poorly across machines and templates are frequently copy-pasted between files, breaking formatting. Optimize for a system font and let color carry the brand identity instead.</p>
+    <table>
+      <tr><th>Element</th><th>Spec</th></tr>
+      <tr><td>Font</td><td style="padding:14px 0;">Calibri or Aptos (Excel's current defaults) at 10–11pt for data, 11pt bold for headers. Don't fight Excel's native font — it breaks on copy/paste between workbooks and across OS.</td></tr>
+      <tr><td>Header row</td><td style="padding:14px 0;">Fill: Ink Navy (#1F1F53) or Indigo (#4B39FF). Text: white, bold. Freeze this row on any sheet over ~20 rows.</td></tr>
+      <tr><td>Row banding</td><td style="padding:14px 0;">Alternate white / Mist (#F5F5FC) — not indigo or gold, which is too heavy repeated across dozens of rows.</td></tr>
+      <tr><td>Chart series</td><td style="padding:14px 0;">Use the six-color extended palette from §07, in that order, as the default chart color cycle.</td></tr>
+      <tr><td>Conditional formatting</td><td style="padding:14px 0;">Use standard semantic red/green from §07 for positive/negative, over/under-budget, status flags — not brand indigo/gold. Finance readers expect standard traffic-light logic; don't make them relearn it for brand consistency.</td></tr>
+      <tr><td>KPI/summary cells</td><td style="padding:14px 0;">Gold fill, ink-navy bold text, is acceptable for a small number of "headline number" cells (e.g. total ARR) — this is one of the few places gold-as-background-with-dark-text works well outside digital UI.</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">12</span><h2>PDF Output</h2></div>
+    <p class="sec-intro">PDF isn't its own design system — it inherits rules from whatever generated it. The only brand decision is which source rules apply.</p>
+    <table>
+      <tr><th>PDF source</th><th>Rule</th></tr>
+      <tr><td style="font-weight:600;color:var(--ink);">Exported from web / design tool</td><td style="padding:14px 0;">Marketing collateral, one-pagers, proposals designed as standalone documents. Full brand system applies — Poppins/Inter, indigo/gold, embed fonts on export so they don't fall back on the recipient's machine.</td></tr>
+      <tr><td style="font-weight:600;color:var(--ink);">Exported from Word</td><td style="padding:14px 0;">Contracts, SOWs, formal letters. Inherits §10 rules exactly (Times New Roman/Calibri body, restrained brand presence) — the PDF export step changes nothing about the formatting decisions already made in Word.</td></tr>
+      <tr><td style="font-weight:600;color:var(--ink);">Exported from Excel</td><td style="padding:14px 0;">Reports, financial summaries. Inherits §11 rules. Set print area and scaling before export — Excel's default PDF export frequently cuts off columns.</td></tr>
+      <tr><td style="font-weight:600;color:var(--ink);">Print-intended PDF</td><td style="padding:14px 0;">If it's going to a physical printer, use CMYK values from §14, not the RGB tokens used everywhere else.</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">13</span><h2>Print / CMYK Reference</h2></div>
+    <p class="sec-intro">For anything physically printed (letterhead stock, printed contracts, banners) — RGB hex values render inconsistently across printers. Use these as a starting CMYK conversion; get an actual proof or Pantone match before high-volume print runs.</p>
+    <table>
+      <tr><th>Color</th><th>RGB / Hex (screen)</th><th>CMYK (approx, print)</th></tr>
+      <tr><td style="font-weight:600;color:var(--ink);">Indigo</td><td class="mono">#4B39FF</td><td class="mono">C71 M78 Y0 K0</td></tr>
+      <tr><td style="font-weight:600;color:var(--ink);">Gold</td><td class="mono">#FDBE1B</td><td class="mono">C0 M25 Y89 K0</td></tr>
+      <tr><td style="font-weight:600;color:var(--ink);">Ember Orange</td><td class="mono">#F9811F</td><td class="mono">C0 M48 Y88 K2</td></tr>
+      <tr><td style="font-weight:600;color:var(--ink);">Ink Navy</td><td class="mono">#1F1F53</td><td class="mono">C62 M62 Y0 K68</td></tr>
+    </table>
+    <div class="pairing-note">
+      These are mathematical sRGB→CMYK conversions, not a calibrated print proof. If letterhead or signage is being commercially printed, request a physical proof from the printer before approving a full run — the gold in particular can shift warmer or duller depending on stock and press.
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>

@@ -1,7 +1,6 @@
 /**
- * Aura+ Application Controller v4.0 (Slate Glass Voice Architecture)
- * Compliant with MCP Spec 2025-11-25+ & AWS Bedrock Runtime
- * Components from 21st.dev (Agent Plan, AI Tool Call, Trace Waterfall)
+ * Aura+ Client Controller v4.1
+ * MCP Spec 2025-11-25+ | AWS Bedrock Runtime
  */
 
 // DOM Elements
@@ -289,7 +288,7 @@ async function handleUserPrompt(promptText) {
   isProcessing = true;
   playAlexaWakeChime();
   addConversationMessage("user", promptText);
-  setVoiceState("thinking", "Alexa+ & AWS Bedrock Orchestrating...");
+  setVoiceState("thinking", "Processing with Bedrock...");
   promptInput.value = "";
 
   if (planStatusTag) planStatusTag.textContent = "Orchestrating...";
@@ -329,7 +328,7 @@ async function handleUserPrompt(promptText) {
         renderDeviceMatrix(result.currentState.smartDevices);
       }
 
-      if (planStatusTag) planStatusTag.textContent = "Strategy Executed";
+      if (planStatusTag) planStatusTag.textContent = "Complete";
       showToast(data.toolCalled ? `Tool executed: ${data.toolCalled}` : "Response generated", "success");
     } else {
       addConversationMessage("agent", `I encountered an issue: ${result.error}`);
@@ -400,7 +399,7 @@ function renderCard(card) {
         <h4>✨ ${escapeHtml(card.title)}</h4>
         <span class="card-badge badge-device">MCP Result</span>
       </div>
-      <p style="font-size: 0.78rem; color: var(--text-muted);">${JSON.stringify(card.details)}</p>
+      <p style="font-size: 0.78rem; color: var(--text-muted);">${escapeHtml(JSON.stringify(card.details, null, 2))}</p>
     `;
   }
 
