@@ -39,6 +39,35 @@
   --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Skip Navigation Link (keyboard a11y) */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  z-index: 9999;
+  padding: 0.75rem 1.5rem;
+  background: var(--accent-cyan);
+  color: var(--background);
+  font-weight: 700;
+  font-size: 0.9rem;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: top 0.2s var(--ease-std);
+}
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* Heading resets — preserve visual styling when using semantic h1/h2/h3 */
+h1.brand-title,
+h2, h3 {
+  margin: 0;
+  padding: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+}
+
 *, *::before, *::after {
   margin: 0;
   padding: 0;
@@ -48,6 +77,8 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -104,6 +135,7 @@ body {
   border-bottom: 1px solid var(--border-hairline);
   gap: 16px;
   width: 100%;
+  flex-wrap: wrap;
 }
 
 .brand-group {
@@ -156,8 +188,13 @@ body {
   border-radius: var(--radius-md);
   padding: 3px;
   gap: 2px;
-  flex-shrink: 0;
+  flex-shrink: 1;
+  min-width: 0;
+  overflow-x: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
+.nav-tabs::-webkit-scrollbar { display: none; }
 
 .nav-tab-btn {
   background: transparent;
@@ -235,6 +272,154 @@ body {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--border-hairline);
   color: var(--text-secondary);
+  transition: all 0.25s ease;
+}
+
+.bedrock-pill.fallback-active {
+  background: rgba(255, 170, 0, 0.15);
+  border-color: rgba(255, 170, 0, 0.45);
+  color: #ffbe3b;
+  box-shadow: 0 0 10px rgba(255, 170, 0, 0.2);
+}
+
+/* Model Selector Dropdown */
+.model-select-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.model-select-input {
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--surface);
+  border: 1px solid var(--border-hairline);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 5px 26px 5px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  outline: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23888888' d='M0 0l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  transition: all 0.2s ease;
+  max-width: 260px;
+}
+
+.model-select-input:hover,
+.model-select-input:focus {
+  border-color: var(--accent-cyan);
+  background-color: rgba(0, 210, 255, 0.05);
+}
+
+.model-select-input option {
+  background: #11141c;
+  color: #ffffff;
+  padding: 6px;
+}
+
+/* Quota Limit Simulation Pill Toggle */
+.quota-test-pill {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-hairline);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.quota-test-pill:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.quota-test-pill.active {
+  background: rgba(255, 87, 87, 0.15);
+  border-color: rgba(255, 87, 87, 0.4);
+  color: #ff7676;
+}
+
+.quota-pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #666666;
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+}
+
+.quota-test-pill.active .quota-pill-dot {
+  background: #ff5757;
+  box-shadow: 0 0 6px #ff5757;
+}
+
+/* Quota Fallback Alert Banner */
+.quota-fallback-banner {
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, rgba(255, 170, 0, 0.12), rgba(255, 94, 0, 0.08));
+  border: 1px solid rgba(255, 170, 0, 0.35);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  animation: slideDownFade 0.3s ease;
+}
+
+@keyframes slideDownFade {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.qfb-inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.qfb-icon {
+  font-size: 1.1rem;
+  color: #ffaa00;
+  flex-shrink: 0;
+}
+
+.qfb-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.qfb-title {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #ffbe3b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.qfb-desc {
+  font-size: 0.76rem;
+  color: var(--text-secondary);
+  line-height: 1.35;
+  margin-top: 2px;
+}
+
+.qfb-desc strong {
+  color: #ffffff;
+}
+
+.qfb-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 4px;
+  line-height: 1;
+}
+
+.qfb-close-btn:hover {
+  color: #ffffff;
 }
 
 /* ========================================================
@@ -1077,6 +1262,52 @@ body {
   flex-shrink: 0;
 }
 
+.span-status.fail {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: #ff5757;
+  width: 110px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.span-type-badge.quota-fail {
+  background: rgba(255, 87, 87, 0.2);
+  color: #ff7676;
+  border: 1px solid rgba(255, 87, 87, 0.4);
+}
+
+.quota-fail-bar {
+  background: rgba(255, 87, 87, 0.25);
+  border: 1px solid rgba(255, 87, 87, 0.6);
+  color: #ffa1a1;
+}
+
+.trace-quota-fail-row {
+  opacity: 0.9;
+  animation: fadeIn 0.3s ease;
+}
+
+.fallback-trace-tag {
+  background: rgba(255, 170, 0, 0.15) !important;
+  color: #ffbe3b !important;
+  border: 1px solid rgba(255, 170, 0, 0.4) !important;
+}
+
+.chat-fallback-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 170, 0, 0.12);
+  border: 1px solid rgba(255, 170, 0, 0.3);
+  color: #ffbe3b;
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  padding: 3px 8px;
+  border-radius: var(--radius-xs);
+  margin-top: 6px;
+}
+
 /* ========================================================
    VIEW 3: POWER GRID & TELEMETRY
    ======================================================== */
@@ -1521,6 +1752,14 @@ body {
 .app-footer .link { color: var(--text-muted); text-decoration: none; }
 .app-footer .link:hover { color: var(--accent-cyan); }
 
+.app-footer .footer-left,
+.app-footer .footer-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
 /* Toasts */
 .toast-container {
   position: fixed;
@@ -1619,5 +1858,21 @@ body {
   .app-footer {
     flex-direction: column;
     align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-badges {
+    display: none;
+  }
+  .brand-badge {
+    display: none;
+  }
+  .device-matrix-grid {
+    grid-template-columns: 1fr;
+  }
+  .telemetry-stat-row {
+    flex-direction: column;
+    gap: 10px;
   }
 }

@@ -10,7 +10,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import { toolDefinitions, handleToolExecution, memoryStore } from "./mcp/tools.js";
-import { runAgentReasoning } from "./bedrock/client.js";
+import { runAgentReasoning, getAvailableModels, BEDROCK_FALLBACK_CHAIN, defaultModelId } from "./bedrock/client.js";
 
 dotenv.config();
 
@@ -199,20 +199,37 @@ app.post("/messages", async (req, res) => {
 /**
  * POST /api/agent/chat
  * High-level speech / text prompt processing using AWS Bedrock & MCP Tools
+ * Supports multi-model quota fallback (Claude ➔ Nova ➔ Gemini ➔ Simulator)
  */
 app.post("/api/agent/chat", async (req, res) => {
-  const { prompt } = req.body;
+  const { prompt, preferredModel, simulateQuota } = req.body;
   if (!prompt) {
     return res.status(400).json({ error: "Missing 'prompt' parameter in request body" });
   }
 
   try {
-    broadcastMcpEvent("agent_processing_start", { prompt, timestamp: new Date().toISOString() });
-    const agentResult = await runAgentReasoning(prompt);
+    broadcastMcpEvent("agent_processing_start", {
+      prompt,
+      preferredModel: preferredModel || "auto",
+      simulateQuota: Boolean(simulateQuota),
+      timestamp: new Date().toISOString()
+    });
+
+    const agentResult = await runAgentReasoning(prompt, [], { preferredModel, simulateQuota });
+
+    if (agentResult.fallbackOccurred) {
+      broadcastMcpEvent("model_fallback", {
+        primaryModel: agentResult.primaryModel,
+        activeModel: agentResult.model,
+        fallbackChain: agentResult.fallbackChain,
+        quotaStatus: agentResult.quotaStatus
+      });
+    }
 
     broadcastMcpEvent("agent_processing_complete", {
       prompt,
       model: agentResult.model,
+      fallbackOccurred: agentResult.fallbackOccurred,
       toolCalled: agentResult.toolCalled,
       latencyMs: agentResult.latencyMs
     });
@@ -225,6 +242,17 @@ app.post("/api/agent/chat", async (req, res) => {
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
+});
+
+/**
+ * GET /api/models - Returns list of available models and fallback configuration
+ */
+app.get("/api/models", (req, res) => {
+  res.json({
+    models: getAvailableModels(),
+    defaultModel: defaultModelId,
+    fallbackChain: BEDROCK_FALLBACK_CHAIN
+  });
 });
 
 /**

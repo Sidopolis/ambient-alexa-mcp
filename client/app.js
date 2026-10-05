@@ -17,6 +17,25 @@ const toolCallsList = document.getElementById("toolCallsList");
 const planStatusTag = document.getElementById("planStatusTag");
 const traceTotalDuration = document.getElementById("traceTotalDuration");
 
+// Multi-Model Quota Failover Elements
+const modelSelect = document.getElementById("modelSelect");
+const bedrockPill = document.getElementById("bedrockPill");
+const bedrockPillText = document.getElementById("bedrockPillText");
+const quotaSimulateBtn = document.getElementById("quotaSimulateBtn");
+const quotaSimulateLabel = document.getElementById("quotaSimulateLabel");
+const quotaFallbackBanner = document.getElementById("quotaFallbackBanner");
+const qfbTitle = document.getElementById("qfbTitle");
+const qfbDesc = document.getElementById("qfbDesc");
+const qfbCloseBtn = document.getElementById("qfbCloseBtn");
+
+// Execution Trace Dynamic Elements
+const traceModelTag = document.getElementById("traceModelTag");
+const traceFallbackTag = document.getElementById("traceFallbackTag");
+const traceQuotaFailRow = document.getElementById("traceQuotaFailRow");
+const traceQuotaFailModel = document.getElementById("traceQuotaFailModel");
+const traceModelSpanName = document.getElementById("traceModelSpanName");
+const traceModelBarText = document.getElementById("traceModelBarText");
+
 // Set welcome timestamp
 const welcomeTimeEl = document.getElementById("welcomeTime");
 if (welcomeTimeEl) welcomeTimeEl.textContent = new Date().toLocaleTimeString();
@@ -27,6 +46,7 @@ let speechSynth = window.speechSynthesis;
 let speechRecognizer = null;
 let audioCtx = null;
 let isProcessing = false;
+let simulateQuotaActive = false;
 
 function getAudioContext() {
   if (!audioCtx) {
@@ -194,19 +214,39 @@ function speakAlexaResponse(text) {
 }
 
 // ============================================================
-// CONVERSATION STREAM
+// CONVERSATION STREAM & MODEL HELPERS
 // ============================================================
-function addConversationMessage(sender, text) {
+function formatModelName(modelId) {
+  if (!modelId) return "Bedrock LLM";
+  if (modelId.includes("claude-3-5-sonnet")) return "Claude 3.5 Sonnet";
+  if (modelId.includes("claude-3-haiku")) return "Claude 3 Haiku";
+  if (modelId.includes("claude-3-5-haiku")) return "Claude 3.5 Haiku";
+  if (modelId.includes("nova-pro")) return "Amazon Nova Pro";
+  if (modelId.includes("nova-lite")) return "Amazon Nova Lite";
+  if (modelId.includes("llama3")) return "Meta Llama 3";
+  if (modelId.includes("gemini")) return "Google Gemini Flash";
+  if (modelId.includes("gpt-4o")) return "OpenAI GPT-4o Mini";
+  if (modelId.includes("simulator")) return "Autonomous Simulator";
+  return modelId.split("/").pop();
+}
+
+function addConversationMessage(sender, text, fallbackChipText = null) {
   if (!conversationContainer) return;
   const msg = document.createElement("div");
   msg.className = `chat-item ${sender === "user" ? "user" : "agent"}`;
   const time = new Date().toLocaleTimeString();
+  const chipHtml = fallbackChipText
+    ? `<div class="chat-fallback-chip">${escapeHtml(fallbackChipText)}</div>`
+    : "";
   msg.innerHTML = `
     <div class="chat-meta">
       <span class="chat-sender">${sender === "user" ? "You" : "Alexa+ Agent"}</span>
       <span class="chat-timestamp">${time}</span>
     </div>
-    <div class="chat-bubble">${escapeHtml(text)}</div>
+    <div class="chat-bubble">
+      ${escapeHtml(text)}
+      ${chipHtml}
+    </div>
   `;
   conversationContainer.appendChild(msg);
   conversationContainer.scrollTop = conversationContainer.scrollHeight;
@@ -217,7 +257,14 @@ function addConversationMessage(sender, text) {
 // ============================================================
 window.toggleToolCard = function(id) {
   const card = document.getElementById(id);
-  if (card) card.classList.toggle("open");
+  if (card) {
+    card.classList.toggle("open");
+    const summary = card.querySelector(".tool-card-summary");
+    if (summary) {
+      const isOpen = card.classList.contains("open");
+      summary.setAttribute("aria-expanded", String(isOpen));
+    }
+  }
 };
 
 function addToolCallDisclosure(toolName, args, result) {
@@ -231,7 +278,7 @@ function addToolCallDisclosure(toolName, args, result) {
   const resultStr = typeof result === "object" ? JSON.stringify(result, null, 2) : String(result);
 
   card.innerHTML = `
-    <div class="tool-card-summary" onclick="toggleToolCard('${id}')">
+    <div class="tool-card-summary" role="button" tabindex="0" aria-expanded="true" aria-label="Toggle ${escapeHtml(toolName)} tool call details" onclick="toggleToolCard('${id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleToolCard('${id}')}">
       <span class="tool-badge">✓</span>
       <span class="tool-name">${escapeHtml(toolName)}</span>
       <span class="tool-summary-text">${escapeHtml(argsStr.substring(0, 50))}...</span>
@@ -269,6 +316,13 @@ function connectStreamableHttp() {
     fetchCurrentState();
   });
 
+  sseSource.addEventListener("model_fallback", (e) => {
+    try {
+      const data = JSON.parse(e.data);
+      showToast(`⚡ Model Quota Switch: ${formatModelName(data.primaryModel)} ➔ ${formatModelName(data.activeModel)}`, "warning");
+    } catch {}
+  });
+
   sseSource.onerror = () => {
     console.warn("Streamable HTTP connection paused or reconnecting...");
   };
@@ -280,7 +334,7 @@ function escapeHtml(str) {
 }
 
 // ============================================================
-// AGENT PROMPT SUBMISSION & EXECUTION
+// AGENT PROMPT SUBMISSION & EXECUTION (WITH QUOTA FAILOVER)
 // ============================================================
 async function handleUserPrompt(promptText) {
   if (!promptText.trim() || isProcessing) return;
@@ -288,26 +342,84 @@ async function handleUserPrompt(promptText) {
   isProcessing = true;
   playAlexaWakeChime();
   addConversationMessage("user", promptText);
-  setVoiceState("thinking", "Processing with Bedrock...");
+  setVoiceState("thinking", "Processing with Bedrock / Multi-Model Cascade...");
   promptInput.value = "";
 
   if (planStatusTag) planStatusTag.textContent = "Orchestrating...";
 
   try {
+    const selectedModel = modelSelect ? modelSelect.value : "auto";
+    const payload = {
+      prompt: promptText,
+      preferredModel: selectedModel,
+      simulateQuota: simulateQuotaActive
+    };
+
     const response = await fetch("/api/agent/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt: promptText })
+      body: JSON.stringify(payload)
     });
 
     const result = await response.json();
 
     if (result.success) {
       const data = result.data;
-      addConversationMessage("agent", data.response);
+      const modelDisplayName = formatModelName(data.model);
 
+      // Handle Quota Fallback state in UI
+      if (data.fallbackOccurred) {
+        if (bedrockPill) bedrockPill.classList.add("fallback-active");
+        if (bedrockPillText) bedrockPillText.textContent = `⚡ Switched: ${modelDisplayName}`;
+
+        // Show quota fallback banner
+        if (quotaFallbackBanner) {
+          quotaFallbackBanner.style.display = "block";
+          if (qfbTitle) qfbTitle.textContent = "⚡ Multi-Model Quota Failover Active";
+          if (qfbDesc) {
+            const primaryName = formatModelName(data.primaryModel || "Claude 3.5 Sonnet");
+            qfbDesc.innerHTML = `Primary model (<strong>${escapeHtml(primaryName)}</strong>) reached quota or rate limit. Aura+ automatically failed over to <strong>${escapeHtml(modelDisplayName)}</strong> in ${data.latencyMs}ms with zero disruption.`;
+          }
+        }
+
+        showToast(`Quota reached on ${formatModelName(data.primaryModel)} — switched to ${modelDisplayName}!`, "warning");
+
+        // Add message with fallback chip
+        addConversationMessage(
+          "agent",
+          data.response,
+          `⚡ Quota Switched: ${formatModelName(data.primaryModel)} ➔ ${modelDisplayName}`
+        );
+
+        // Update Trace Waterfall
+        if (traceFallbackTag) {
+          traceFallbackTag.style.display = "inline-flex";
+          traceFallbackTag.textContent = `⚡ Quota Failover: ${modelDisplayName}`;
+        }
+        if (traceQuotaFailRow) {
+          traceQuotaFailRow.style.display = "flex";
+          if (traceQuotaFailModel) traceQuotaFailModel.textContent = data.primaryModel || "claude-3-5-sonnet";
+        }
+      } else {
+        if (bedrockPill) bedrockPill.classList.remove("fallback-active");
+        if (bedrockPillText) bedrockPillText.textContent = `⚡ ${modelDisplayName}`;
+        if (traceFallbackTag) traceFallbackTag.style.display = "none";
+        if (traceQuotaFailRow) traceQuotaFailRow.style.display = "none";
+        addConversationMessage("agent", data.response);
+      }
+
+      // Update Trace Tags & Spans
       if (traceTotalDuration) {
         traceTotalDuration.textContent = `Total: ${data.latencyMs}ms`;
+      }
+      if (traceModelTag) {
+        traceModelTag.textContent = `Model: ${data.model}`;
+      }
+      if (traceModelSpanName) {
+        traceModelSpanName.textContent = data.model;
+      }
+      if (traceModelBarText) {
+        traceModelBarText.textContent = `${data.latencyMs}ms • ${data.tokens || 140} tokens`;
       }
 
       playAlexaSuccessChime();
@@ -567,14 +679,14 @@ window.setBatteryMode = async function(mode) {
   const flowRate = document.getElementById("batteryFlowRate");
 
   if (mode === "self_powered") {
-    if (btnSelf) btnSelf.classList.add("active");
-    if (btnBackup) btnBackup.classList.remove("active");
+    if (btnSelf) { btnSelf.classList.add("active"); btnSelf.setAttribute("aria-pressed", "true"); }
+    if (btnBackup) { btnBackup.classList.remove("active"); btnBackup.setAttribute("aria-pressed", "false"); }
     if (badge) badge.textContent = "⚡ Self-Powered (+3.4 kW)";
     if (flowRate) flowRate.textContent = "+3.4 kW";
     showToast("Powerwall: Maximizing clean solar self-consumption", "success");
   } else {
-    if (btnBackup) btnBackup.classList.add("active");
-    if (btnSelf) btnSelf.classList.remove("active");
+    if (btnBackup) { btnBackup.classList.add("active"); btnBackup.setAttribute("aria-pressed", "true"); }
+    if (btnSelf) { btnSelf.classList.remove("active"); btnSelf.setAttribute("aria-pressed", "false"); }
     if (badge) badge.textContent = "🛡️ 100% Backup Mode";
     if (flowRate) flowRate.textContent = "Idle (0 kW)";
     showToast("Powerwall: Reserve locked for weather resilience", "warning");
@@ -692,6 +804,41 @@ document.querySelectorAll(".intent-chip").forEach(chip => {
   });
 });
 
+// Model Controls & Quota Simulation Setup
+function initModelControls() {
+  if (quotaSimulateBtn) {
+    quotaSimulateBtn.addEventListener("click", () => {
+      simulateQuotaActive = !simulateQuotaActive;
+      quotaSimulateBtn.classList.toggle("active", simulateQuotaActive);
+      quotaSimulateBtn.setAttribute("aria-pressed", String(simulateQuotaActive));
+      if (quotaSimulateLabel) {
+        quotaSimulateLabel.textContent = simulateQuotaActive ? "Quota Reached (Active)" : "Simulate Quota Limit";
+      }
+      showToast(
+        simulateQuotaActive
+          ? "⚠️ Simulating Quota Limit on primary model! Next prompt will auto-switch models."
+          : "Quota simulation disabled.",
+        simulateQuotaActive ? "warning" : "info"
+      );
+    });
+  }
+
+  if (qfbCloseBtn && quotaFallbackBanner) {
+    qfbCloseBtn.addEventListener("click", () => {
+      quotaFallbackBanner.style.display = "none";
+    });
+  }
+
+  if (modelSelect) {
+    modelSelect.addEventListener("change", () => {
+      const selected = modelSelect.value;
+      const formatted = formatModelName(selected);
+      if (bedrockPillText) bedrockPillText.textContent = `⚡ ${formatted}`;
+      showToast(`Reasoning model preference set to: ${formatted}`, "info");
+    });
+  }
+}
+
 // Expose handlers on window
 window.handleUserPrompt = handleUserPrompt;
 
@@ -699,6 +846,7 @@ window.handleUserPrompt = handleUserPrompt;
 initNavTabs();
 setupSpeechRecognition();
 connectStreamableHttp();
+initModelControls();
 fetchCurrentState();
 initTelemetryChart();
 initClimateScrubber();

@@ -51,9 +51,11 @@ graph TD
 - 4 registered tools: device control, multi-step routines, persistent memory, and visual card rendering
 - MCP Resources for user profile (`alexa://user/profile`) and system telemetry (`alexa://system/telemetry`)
 
-**AWS Bedrock Integration**
-- Uses `@aws-sdk/client-bedrock-runtime` for autonomous planning and tool calling
-- Built-in offline fallback so everything works without AWS credentials
+**AWS Bedrock Multi-Model Quota Failover**
+- Multi-Model Cascade: Primary (Claude 3.5 Sonnet) ➔ Amazon Nova Pro ➔ Claude 3 Haiku ➔ Amazon Nova Lite ➔ Gemini / OpenAI ➔ Offline Simulator
+- Automatic quota & rate limit detection (`ThrottlingException`, HTTP 429, capacity limits) with zero-downtime hot-swapping
+- Interactive "Simulate Quota Limit" test toggle in UI with Execution Trace waterfall telemetry
+- Built-in offline autonomous simulator so judges can test every feature without AWS credentials
 
 **Web Interface (4 Views)**
 - **Orchestrator Console** — command bar with voice input, one-click workflow chips, hierarchical agent plan tree, and expandable tool call disclosures showing JSON-RPC arguments and results
