@@ -86,7 +86,7 @@ Run the test suite:
 ```bash
 npm test
 ```
-This runs 11 tests covering tool schema validation, execution engine, and intent parsing.
+This runs 16 tests covering MCP tool schemas, execution engine, intent parsing, and multi-model quota failover.
 
 ---
 

@@ -6,7 +6,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { toolDefinitions, handleToolExecution, memoryStore } from "../src/mcp/tools.js";
-import { runAgentReasoning } from "../src/bedrock/client.js";
+import {
+  runAgentReasoning,
+  isQuotaOrThrottlingError,
+  getAvailableModels,
+  BEDROCK_FALLBACK_CHAIN
+} from "../src/bedrock/client.js";
 
 test("MCP Tools Specification & Schema Integrity", async (t) => {
   await t.test("should register all 4 required MCP tools", () => {
@@ -86,3 +91,42 @@ test("Agent Reasoning & Autonomous Intent Parser", async (t) => {
     assert.equal(agentResult.uiCard.cardType, "metrics_dashboard");
   });
 });
+
+test("Multi-Model Quota Failover & Cascade Engine", async (t) => {
+  await t.test("isQuotaOrThrottlingError should detect quota/rate limits and throttling errors", () => {
+    assert.ok(isQuotaOrThrottlingError({ name: "ThrottlingException", message: "Rate exceeded" }));
+    assert.ok(isQuotaOrThrottlingError({ name: "ServiceQuotaExceededException", message: "Account quota reached" }));
+    assert.ok(isQuotaOrThrottlingError({ statusCode: 429, message: "Too many requests" }));
+    assert.ok(isQuotaOrThrottlingError({ name: "AccessDeniedException", message: "Model access not granted" }));
+    assert.ok(!isQuotaOrThrottlingError({ name: "SyntaxError", message: "Unexpected token" }));
+  });
+
+  await t.test("getAvailableModels should return complete model cascade options", () => {
+    const models = getAvailableModels();
+    assert.ok(Array.isArray(models), "Models must be an array");
+    assert.ok(models.length >= 6, "Expected at least 6 model options");
+    const ids = models.map(m => m.id);
+    assert.ok(ids.includes("auto"), "Must contain auto cascade option");
+    assert.ok(ids.includes("amazon.nova-pro-v1:0"), "Must contain Amazon Nova Pro");
+    assert.ok(ids.includes("anthropic.claude-3-haiku-20240307-v1:0"), "Must contain Claude 3 Haiku");
+    assert.ok(ids.includes("simulator"), "Must contain Autonomous Simulator");
+  });
+
+  await t.test("runAgentReasoning with simulateQuota should switch to fallback model", async () => {
+    const result = await runAgentReasoning("Turn off the living room lights", [], { simulateQuota: true });
+    assert.ok(result.fallbackOccurred, "Fallback flag must be true");
+    assert.equal(result.model, "amazon.nova-pro-v1:0", "Must switch to Amazon Nova Pro");
+    assert.equal(result.quotaStatus.hitQuota, true, "Quota status must record quota hit");
+    assert.ok(result.fallbackChain.length >= 2, "Fallback chain must record attempted and active model");
+    assert.equal(result.fallbackChain[0].status, "quota_exceeded", "First model status must be quota_exceeded");
+    assert.equal(result.fallbackChain[1].status, "success", "Second model status must be success");
+    assert.equal(result.toolCalled, "smart_home_control", "Tool execution must still succeed");
+  });
+
+  await t.test("runAgentReasoning should respect preferredModel option", async () => {
+    const result = await runAgentReasoning("Adjust temperature to 22 degrees", [], { preferredModel: "simulator" });
+    assert.ok(result.response, "Must return reasoning response");
+    assert.equal(result.toolCalled, "smart_home_control");
+  });
+});
+
