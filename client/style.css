@@ -114,10 +114,10 @@ body {
 }
 
 .app-layout {
-  max-width: 1360px;
+  max-width: 1440px;
   width: 100%;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 32px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -131,9 +131,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 0;
+  padding: 22px 0;
   border-bottom: 1px solid var(--border-hairline);
-  gap: 16px;
+  gap: 20px;
   width: 100%;
   flex-wrap: wrap;
 }
@@ -517,58 +517,90 @@ body {
 }
 
 /* ========================================================
-   VIEW 1: ORCHESTRATOR CONSOLE
+   VIEW 1: ORCHESTRATOR CONSOLE (Spacious Architecture)
    ======================================================== */
-.console-grid {
-  display: grid;
-  grid-template-columns: minmax(360px, 460px) minmax(0, 1fr);
-  gap: 20px;
-  align-items: start;
+
+/* Top Command Hub (Hero Deck) */
+.console-hero-deck {
+  background: linear-gradient(180deg, rgba(22, 25, 36, 0.85) 0%, rgba(14, 16, 23, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 18px;
+  padding: 24px 28px;
+  box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.45);
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   width: 100%;
+}
+
+.hero-deck-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.deck-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 /* Sleek Command Input Bar */
 .command-bar {
   display: flex;
   align-items: center;
-  background: var(--surface-panel);
-  border: 1px solid var(--border-hairline);
-  border-radius: var(--radius-md);
-  padding: 5px 6px 5px 12px;
-  gap: 8px;
+  background: rgba(10, 11, 16, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 8px 10px 8px 18px;
+  gap: 12px;
   width: 100%;
   min-width: 0;
   box-sizing: border-box;
-  transition: border-color 0.15s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .command-bar:focus-within {
-  border-color: var(--border-active);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 0 3px rgba(0, 210, 255, 0.16), 0 8px 28px rgba(0, 0, 0, 0.4);
 }
 
 .mic-btn {
-  background: transparent;
-  border: none;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   color: var(--text-muted);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: var(--radius-xs);
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
   flex-shrink: 0;
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
 }
 
 .mic-btn:hover {
   color: var(--accent-cyan);
-  background: rgba(0, 210, 255, 0.1);
+  background: rgba(0, 210, 255, 0.12);
+  border-color: rgba(0, 210, 255, 0.3);
 }
 
 .mic-btn.active {
   color: var(--accent-red);
-  background: rgba(239, 68, 68, 0.15);
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
+  animation: pulseMic 1.2s infinite;
+}
+
+@keyframes pulseMic {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  70% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
 }
 
 .command-bar input {
@@ -578,8 +610,10 @@ body {
   border: none;
   color: var(--text-primary);
   font-family: var(--font-display);
-  font-size: 0.88rem;
+  font-size: 0.95rem;
+  font-weight: 500;
   outline: none;
+  line-height: 1.5;
 }
 
 .command-bar input::placeholder {
@@ -592,17 +626,20 @@ body {
   border: none;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 0.8rem;
-  padding: 8px 16px;
-  border-radius: var(--radius-sm);
+  font-size: 0.84rem;
+  padding: 10px 20px;
+  border-radius: 10px;
   cursor: pointer;
   white-space: nowrap;
   flex-shrink: 0;
-  transition: background-color 0.15s ease;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .submit-action-btn:hover {
-  background: #e4e4e7;
+  background: #f4f4f5;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 /* Waveform Strip */
@@ -610,7 +647,6 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 4px 0;
   min-width: 0;
 }
 
@@ -618,7 +654,7 @@ body {
   display: flex;
   align-items: center;
   gap: 3px;
-  height: 14px;
+  height: 16px;
   flex-shrink: 0;
 }
 
@@ -641,11 +677,11 @@ body {
 
 @keyframes waveBar {
   from { height: 4px; }
-  to { height: 14px; }
+  to { height: 16px; }
 }
 
 .voice-state-text {
-  font-size: 0.76rem;
+  font-size: 0.78rem;
   color: var(--text-muted);
   white-space: nowrap;
   overflow: hidden;
@@ -653,48 +689,69 @@ body {
   min-width: 0;
 }
 
-/* Intent Chips */
+/* Intent Shortcuts */
 .preset-intents {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   width: 100%;
+}
+
+.preset-intents-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .intent-chips-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
   width: 100%;
 }
 
+@media (max-width: 1100px) {
+  .intent-chips-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .intent-chips-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .intent-chip {
-  background: var(--surface-panel);
-  border: 1px solid var(--border-hairline);
-  border-radius: var(--radius-sm);
-  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 13px 15px;
   text-align: left;
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
   min-width: 0;
   box-sizing: border-box;
-  transition: all 0.15s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .intent-chip:hover {
-  background: var(--surface-hover);
-  border-color: var(--border-subtle);
+  background: rgba(0, 210, 255, 0.06);
+  border-color: rgba(0, 210, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px -4px rgba(0, 210, 255, 0.12);
 }
 
 .intent-chip.active {
   border-color: var(--accent-cyan);
-  background: rgba(0, 210, 255, 0.05);
+  background: rgba(0, 210, 255, 0.08);
+  box-shadow: 0 0 16px rgba(0, 210, 255, 0.15);
 }
 
 .chip-title {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: var(--text-primary);
   word-break: break-word;
@@ -702,166 +759,84 @@ body {
 }
 
 .chip-sub {
-  font-size: 0.68rem;
-  color: var(--text-dim);
-  line-height: 1.35;
-  word-break: break-word;
-}
-
-/* ========================================================
-   AGENT PLAN TREE (21st component id: 2127)
-   ======================================================== */
-.agent-plan-box {
-  border-top: 1px solid var(--border-hairline);
-  padding-top: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-  min-width: 0;
-}
-
-.plan-status-tag {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  color: var(--accent-cyan);
-  background: rgba(0, 210, 255, 0.08);
-  padding: 2px 7px;
-  border-radius: var(--radius-xs);
-  white-space: nowrap;
-}
-
-.plan-tree-container {
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  padding-left: 12px;
-  border-left: 2px dashed rgba(255, 255, 255, 0.14);
-  gap: 14px;
-  min-width: 0;
-}
-
-.plan-task-node {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  position: relative;
-  min-width: 0;
-}
-
-.task-node-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
-}
-
-.task-icon {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.65rem;
-  font-weight: 800;
-  flex-shrink: 0;
-}
-
-.task-icon.complete {
-  background: rgba(0, 205, 143, 0.15);
-  color: var(--accent-emerald);
-}
-
-.task-icon.active {
-  background: rgba(0, 210, 255, 0.15);
-  color: var(--accent-cyan);
-}
-
-.task-icon.pending {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-dim);
-}
-
-.task-title {
-  font-size: 0.84rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  flex: 1;
-  min-width: 0;
-  word-break: break-word;
-}
-
-.task-badge {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  color: var(--text-dim);
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-.task-badge.active {
-  color: var(--accent-cyan);
-}
-
-.task-node-body {
-  padding-left: 26px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  min-width: 0;
-}
-
-.task-node-body p {
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   color: var(--text-muted);
-  word-break: break-word;
   line-height: 1.4;
-}
-
-.mcp-tool-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-
-.tool-pill {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  background: var(--surface-panel);
-  border: 1px solid var(--border-hairline);
-  color: var(--text-dim);
-  padding: 2px 6px;
-  border-radius: var(--radius-xs);
-  white-space: nowrap;
+  word-break: break-word;
 }
 
 /* ========================================================
-   RIGHT COLUMN: CONVERSATION & AI TOOL CALLS (id: 23789)
+   MAIN WORKSPACE GRID (Left 62% Stream / Right 38% Telemetry)
+   ======================================================== */
+.console-workspace-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(380px, 0.95fr);
+  gap: 24px;
+  align-items: start;
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .console-workspace-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stream-pane,
+.telemetry-pane {
+  background: linear-gradient(180deg, rgba(20, 22, 32, 0.8) 0%, rgba(13, 14, 20, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 24px 26px;
+  box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.4);
+}
+
+/* ========================================================
+   LEFT PANE: CONVERSATION STREAM & DYNAMIC CARDS
    ======================================================== */
 .conversation-stream {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  max-height: 220px;
+  gap: 14px;
+  min-height: 380px;
+  max-height: 520px;
   overflow-y: auto;
   overflow-x: hidden;
-  padding-right: 4px;
-  border-bottom: 1px solid var(--border-hairline);
-  padding-bottom: 14px;
+  padding-right: 6px;
+  margin-top: 14px;
   width: 100%;
   min-width: 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
+.conversation-stream::-webkit-scrollbar {
+  width: 5px;
+}
+.conversation-stream::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+.conversation-stream::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .chat-item {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
   min-width: 0;
+  animation: fadeInMsg 0.25s ease-out;
+}
+
+@keyframes fadeInMsg {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .chat-item.agent {
   align-self: flex-start;
-  max-width: 95%;
+  max-width: 92%;
 }
 
 .chat-item.user {
@@ -878,7 +853,7 @@ body {
 
 .chat-sender {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   font-weight: 700;
   color: var(--accent-cyan);
 }
@@ -889,25 +864,178 @@ body {
 
 .chat-timestamp {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.68rem;
   color: var(--text-dim);
 }
 
 .chat-bubble {
-  background: var(--surface-panel);
-  border: 1px solid var(--border-hairline);
-  padding: 10px 14px;
-  border-radius: var(--radius-md);
-  font-size: 0.85rem;
-  line-height: 1.5;
+  background: rgba(26, 30, 44, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 13px 18px;
+  border-radius: 14px;
+  font-size: 0.92rem;
+  line-height: 1.6;
   color: var(--text-primary);
   word-break: break-word;
   overflow-wrap: break-word;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .chat-item.user .chat-bubble {
-  background: rgba(0, 210, 255, 0.08);
-  border-color: rgba(0, 210, 255, 0.2);
+  background: linear-gradient(135deg, rgba(0, 210, 255, 0.18) 0%, rgba(0, 130, 255, 0.1) 100%);
+  border-color: rgba(0, 210, 255, 0.35);
+  border-bottom-right-radius: 4px;
+}
+
+.chat-item.agent .chat-bubble {
+  border-bottom-left-radius: 4px;
+}
+
+/* MCP Cards Surface */
+.mcp-cards-section {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border-hairline);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ========================================================
+   RIGHT PANE: AGENT PLAN & ACTIVE TOOL DISCLOSURES
+   ======================================================== */
+.agent-plan-box {
+  margin-bottom: 24px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--border-hairline);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+
+.plan-status-tag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--accent-cyan);
+  background: rgba(0, 210, 255, 0.1);
+  border: 1px solid rgba(0, 210, 255, 0.25);
+  padding: 3px 9px;
+  border-radius: var(--radius-xs);
+  white-space: nowrap;
+}
+
+.plan-tree-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-left: 16px;
+  border-left: 2px dashed rgba(0, 210, 255, 0.25);
+  gap: 16px;
+  min-width: 0;
+  margin-top: 4px;
+}
+
+.plan-task-node {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  position: relative;
+  min-width: 0;
+}
+
+.task-node-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.task-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.task-icon.complete {
+  background: rgba(0, 205, 143, 0.18);
+  color: var(--accent-emerald);
+  box-shadow: 0 0 8px rgba(0, 205, 143, 0.2);
+}
+
+.task-icon.active {
+  background: rgba(0, 210, 255, 0.18);
+  color: var(--accent-cyan);
+  box-shadow: 0 0 8px rgba(0, 210, 255, 0.3);
+}
+
+.task-icon.pending {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-dim);
+}
+
+.task-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
+}
+
+.task-badge {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.task-badge.active {
+  color: var(--accent-cyan);
+  background: rgba(0, 210, 255, 0.1);
+  border: 1px solid rgba(0, 210, 255, 0.25);
+}
+
+.task-node-body {
+  padding-left: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.task-node-body p {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  word-break: break-word;
+  line-height: 1.45;
+}
+
+.mcp-tool-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.tool-pill {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-hairline);
+  color: var(--text-dim);
+  padding: 2px 7px;
+  border-radius: var(--radius-xs);
+  white-space: nowrap;
 }
 
 /* AI Tool Call Disclosures (id: 23789) */
@@ -1807,9 +1935,9 @@ body {
     width: 100%;
     justify-content: flex-start;
   }
-  .console-grid {
+  .console-workspace-grid {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: 20px;
   }
   .energy-dual-grid {
     grid-template-columns: 1fr;

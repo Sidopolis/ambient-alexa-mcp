@@ -93,65 +93,123 @@
       <!-- ======================================================== -->
       <!-- VIEW 1: ORCHESTRATOR CONSOLE (Input, Plan & Tool Calls)  -->
       <!-- ======================================================== -->
+      <!-- ======================================================== -->
+      <!-- VIEW 1: ORCHESTRATOR CONSOLE (Spacious Hero Deck & Panes) -->
+      <!-- ======================================================== -->
       <section class="app-view active" id="view-console" role="tabpanel" aria-labelledby="tab-console">
-        <div class="console-grid">
-
-          <!-- Left Column: Input Control & Agent Plan -->
-          <div class="panel-box">
-            <div class="panel-header">
+        <!-- Top Command Hub: Prominent Voice/Command Center & Workflow Chips -->
+        <div class="panel-box console-hero-deck">
+          <div class="hero-deck-top">
+            <div class="deck-title-wrap">
               <span class="mono-eyebrow">AGENT INTERACTION BAR</span>
-              <span class="badge-mini">Natural Language & Voice</span>
+              <span class="badge-mini status-cyan">Natural Language & Voice</span>
             </div>
-
-            <!-- Sleek Voice/Command Bar (No Orbs, No Gimmicks) -->
-            <form class="command-bar" id="promptForm" role="search" aria-label="Agent command input">
-              <button class="mic-btn" id="micBtn" type="button" aria-label="Voice Input Toggle" title="Voice Input (Alexa+)">
-                <svg class="mic-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                  <line x1="12" y1="19" x2="12" y2="23"/>
-                  <line x1="8" y1="23" x2="16" y2="23"/>
-                </svg>
-              </button>
-              <input type="text" id="promptInput" aria-label="Agent command" placeholder="Command Alexa+ to orchestrate routines, adjust climate, or route solar..." autocomplete="off">
-              <button type="submit" class="submit-action-btn" id="sendBtn">Execute</button>
-            </form>
-
-            <!-- Waveform & State Status -->
             <div class="voice-status-strip">
               <div class="voice-wave-bars" id="voiceWaveBars" aria-hidden="true">
                 <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
               </div>
               <span class="voice-state-text" id="alexaStateLabel">Ready • Enter command or click mic</span>
             </div>
+          </div>
 
-            <!-- Intent Shortcuts -->
-            <div class="preset-intents">
+          <!-- Sleek Voice/Command Bar -->
+          <form class="command-bar" id="promptForm" role="search" aria-label="Agent command input">
+            <button class="mic-btn" id="micBtn" type="button" aria-label="Voice Input Toggle" title="Voice Input (Alexa+)">
+              <svg class="mic-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
+              </svg>
+            </button>
+            <input type="text" id="promptInput" aria-label="Agent command" placeholder="Command Alexa+ to orchestrate routines, adjust climate, route solar, or query tools..." autocomplete="off">
+            <button type="submit" class="submit-action-btn" id="sendBtn">Execute</button>
+          </form>
+
+          <!-- Intent Shortcuts -->
+          <div class="preset-intents">
+            <div class="preset-intents-label">
               <span class="mono-eyebrow">ONE-CLICK AUTONOMOUS WORKFLOWS</span>
-              <div class="intent-chips-grid">
-                <button class="intent-chip" type="button" data-prompt="Activate Deep Focus routine and set lights">
-                  <span class="chip-title">🎯 Deep Focus Routine</span>
-                  <span class="chip-sub">Dims lights, pauses noise, optimizes HVAC</span>
-                </button>
-                <button class="intent-chip" type="button" data-prompt="Adjust climate thermostat to 22 degrees">
-                  <span class="chip-title">❄️ Eco Climate Setpoint (22°C)</span>
-                  <span class="chip-sub">Pre-cools before peak grid pricing</span>
-                </button>
-                <button class="intent-chip" type="button" data-prompt="Turn on living room lights with cyan glow">
-                  <span class="chip-title">💡 Living Room Ambient</span>
-                  <span class="chip-sub">Adaptive lighting via smart_home_control</span>
-                </button>
-                <button class="intent-chip" type="button" data-prompt="Check Hackathon checklist and MCP status">
-                  <span class="chip-title">📋 Protocol Verification</span>
-                  <span class="chip-sub">MCP Spec 2025-11-25 + Bedrock validation</span>
-                </button>
+            </div>
+            <div class="intent-chips-grid">
+              <button class="intent-chip" type="button" data-prompt="Activate Deep Focus routine and set lights">
+                <span class="chip-title">🎯 Deep Focus Routine</span>
+                <span class="chip-sub">Dims lights, pauses noise, optimizes HVAC</span>
+              </button>
+              <button class="intent-chip" type="button" data-prompt="Adjust climate thermostat to 22 degrees">
+                <span class="chip-title">❄️ Eco Climate Setpoint (22°C)</span>
+                <span class="chip-sub">Pre-cools before peak grid pricing</span>
+              </button>
+              <button class="intent-chip" type="button" data-prompt="Turn on living room lights with cyan glow">
+                <span class="chip-title">💡 Living Room Ambient</span>
+                <span class="chip-sub">Adaptive lighting via smart_home_control</span>
+              </button>
+              <button class="intent-chip" type="button" data-prompt="Check Hackathon checklist and MCP status">
+                <span class="chip-title">📋 Protocol Verification</span>
+                <span class="chip-sub">MCP Spec 2025-11-25 + Bedrock validation</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Workspace: Two Balanced Panes with Breathing Room -->
+        <div class="console-workspace-grid">
+          <!-- Left Column: Live Interaction Feed & Interactive Surface -->
+          <div class="panel-box stream-pane">
+            <div class="panel-header">
+              <div>
+                <span class="mono-eyebrow">EXECUTION FEED & INTERACTIVE SURFACE</span>
+                <h3>Conversational Stream</h3>
+              </div>
+              <span class="badge-mini status-green">Streamable HTTP Active</span>
+            </div>
+
+            <!-- Active Model & Quota Switch Notice Banner -->
+            <div class="quota-fallback-banner" id="quotaFallbackBanner" style="display: none;" role="status">
+              <div class="qfb-inner">
+                <span class="qfb-icon">⚡</span>
+                <div class="qfb-info">
+                  <div class="qfb-title" id="qfbTitle">Automatic Model Failover Active</div>
+                  <div class="qfb-desc" id="qfbDesc">Primary model reached quota/rate limit. Autonomous failover seamlessly switched to Amazon Nova Pro.</div>
+                </div>
+                <button type="button" class="qfb-close-btn" id="qfbCloseBtn" aria-label="Dismiss alert">✕</button>
               </div>
             </div>
 
+            <!-- Conversation Stream -->
+            <div class="conversation-stream" id="conversationContainer" role="log" aria-live="polite">
+              <div class="chat-item agent">
+                <div class="chat-meta">
+                  <span class="chat-sender">Alexa+ Agent</span>
+                  <span class="chat-timestamp" id="welcomeTime"></span>
+                </div>
+                <div class="chat-bubble">
+                  Welcome to Aura+. Connected to your self-hosted MCP Server and AWS Bedrock runtime. All actions trigger verified JSON-RPC tool calls below.
+                </div>
+              </div>
+            </div>
+
+            <!-- Interactive Visual Surface (MCP Cards) -->
+            <div class="mcp-cards-section">
+              <div class="panel-header-mini">
+                <span class="mono-eyebrow">MCP APPS RENDER SURFACE</span>
+                <span class="badge-mini">Interactive Components</span>
+              </div>
+              <div class="cards-canvas" id="cardsCanvas">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Hierarchical Agent Plan & Tool Invocations -->
+          <div class="panel-box telemetry-pane">
             <!-- Agent Plan Tree (21st.dev component id: 2127) -->
             <div class="agent-plan-box">
               <div class="panel-header-mini">
-                <span class="mono-eyebrow">HIERARCHICAL AGENT PLAN</span>
+                <div>
+                  <span class="mono-eyebrow">AUTONOMOUS REASONING</span>
+                  <h3>Hierarchical Agent Plan</h3>
+                </div>
                 <span class="plan-status-tag" id="planStatusTag">Active Strategy</span>
               </div>
 
@@ -200,44 +258,14 @@
                 </div>
               </div>
             </div>
-          </div>
-
-          <!-- Right Column: Conversation Stream & AI Tool Call Disclosures -->
-          <div class="panel-box">
-            <div class="panel-header">
-              <span class="mono-eyebrow">EXECUTION FEED & TOOL DISCLOSURES</span>
-              <span class="badge-mini">MCP 2025-11-25 Spec</span>
-            </div>
-
-            <!-- Active Model & Quota Switch Notice Banner -->
-            <div class="quota-fallback-banner" id="quotaFallbackBanner" style="display: none;" role="status">
-              <div class="qfb-inner">
-                <span class="qfb-icon">⚡</span>
-                <div class="qfb-info">
-                  <div class="qfb-title" id="qfbTitle">Automatic Model Failover Active</div>
-                  <div class="qfb-desc" id="qfbDesc">Primary model reached quota/rate limit. Autonomous failover seamlessly switched to Amazon Nova Pro.</div>
-                </div>
-                <button type="button" class="qfb-close-btn" id="qfbCloseBtn" aria-label="Dismiss alert">✕</button>
-              </div>
-            </div>
-
-            <!-- Conversation Stream -->
-            <div class="conversation-stream" id="conversationContainer" role="log" aria-live="polite">
-              <div class="chat-item agent">
-                <div class="chat-meta">
-                  <span class="chat-sender">Alexa+ Agent</span>
-                  <span class="chat-timestamp" id="welcomeTime"></span>
-                </div>
-                <div class="chat-bubble">
-                  Welcome to Aura+. Connected to your self-hosted MCP Server and AWS Bedrock runtime. All actions trigger verified JSON-RPC tool calls below.
-                </div>
-              </div>
-            </div>
 
             <!-- AI Tool Call Disclosures (21st.dev component id: 23789) -->
             <div class="tool-calls-section">
               <div class="panel-header-mini">
-                <span class="mono-eyebrow">ACTIVE TOOL INVOCATIONS</span>
+                <div>
+                  <span class="mono-eyebrow">ACTIVE TOOL INVOCATIONS</span>
+                  <h3>JSON-RPC 2.0 Invocations</h3>
+                </div>
                 <span class="badge-mini">Expandable Details</span>
               </div>
 
@@ -293,18 +321,7 @@
                 </div>
               </div>
             </div>
-
-            <!-- Interactive Visual Surface (MCP Cards) -->
-            <div class="mcp-cards-section">
-              <div class="panel-header-mini">
-                <span class="mono-eyebrow">MCP APPS RENDER SURFACE</span>
-              </div>
-              <div class="cards-canvas" id="cardsCanvas">
-                <!-- Dynamically populated -->
-              </div>
-            </div>
           </div>
-
         </div>
       </section>
 
