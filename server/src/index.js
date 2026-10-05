@@ -303,6 +303,6 @@ app.listen(PORT, () => {
   console.log(`🌐 Web Experience URL:       http://localhost:${PORT}`);
   console.log(`📡 Streamable HTTP (SSE):    http://localhost:${PORT}/sse`);
   console.log(`💬 MCP JSON-RPC Messages:    http://localhost:${PORT}/messages`);
-  console.log(`⚡ AWS Bedrock Integration:   Configured (Spec 2025-11-25+)`);
+  console.log(`[Bedrock] Integration:       Configured (Spec 2025-11-25+)`);
   console.log(`========================================================\n`);
 });

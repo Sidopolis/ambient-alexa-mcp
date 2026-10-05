@@ -82,7 +82,7 @@ export function getAvailableModels() {
   return [
     {
       id: "auto",
-      name: "⚡ Auto Multi-Model (Claude ➔ Nova ➔ Gemini ➔ Simulator)",
+      name: "Auto Multi-Model (Claude → Nova → Gemini → Simulator)",
       provider: "Smart Fallback Cascade",
       isDefault: true,
       description: "Automatically fails over to next model if quota or rate limits are reached."

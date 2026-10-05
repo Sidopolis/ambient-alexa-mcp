@@ -1,0 +1,26 @@
+# Aura+ | Autonomous Alexa+ Agent Platform
+> Self-hosted Model Context Protocol (MCP) server & autonomous Alexa+ orchestrator powered by AWS Bedrock for the Amazon Developer Hackathon.
+
+## System Overview
+- **Name**: Aura+
+- **Track**: Amazon Developer Hackathon — Alexa+ Primary Track, AWS Builder & Open Source Mini-Challenges
+- **Protocol**: MCP Specification (2025-11-25+ Streamable HTTP Transport `/sse` and `/messages`)
+- **Reasoning Runtime**: AWS Bedrock Multi-Model Cascade (Anthropic Claude 3.5 Sonnet, Amazon Nova Pro, Google Gemini 2.0 Flash, Offline Autonomous Simulator)
+- **Architecture**: Self-hosted Node.js Express server + Vanilla JS / CSS frontend + Amazon Bedrock SDK
+
+## Key Endpoints
+- `GET /sse`: Streamable HTTP server-sent event stream for real-time tool telemetry and session broadcast
+- `POST /messages`: JSON-RPC 2.0 endpoint for MCP client messages and tool calls
+- `POST /api/agent/prompt`: Autonomous Alexa+ reasoning endpoint with multi-model failover cascade
+- `POST /api/device/toggle`: Digital twin hardware state control
+- `GET /api/health`: Health status and active MCP tools count
+
+## Verified MCP Tools
+1. `smart_home_control`: Adjusts temperature, lighting brightness, RGB hex colors, and smart locks
+2. `manage_context_memory`: Persistent cross-session user memory and routine preferences
+3. `telemetry_query`: Real-time solar generation, home load, and battery state of charge
+4. `system_diagnostics`: Validates active Bedrock quotas, latency SLAs, and fallback readiness
+
+## Repository & Open Source
+- **Repository**: https://github.com/Sidopolis/ambient-alexa-mcp
+- **License**: MIT

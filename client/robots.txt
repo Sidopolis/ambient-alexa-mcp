@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://aura.sidopolis.dev/sitemap.xml
+# LLMs and AI Crawlers documentation index (2025-2026 Standard)
+llms-txt: https://aura.sidopolis.dev/llms.txt

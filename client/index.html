@@ -6,23 +6,62 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
   <title>Aura+ | Autonomous Alexa+ Agent Platform</title>
   <meta name="description" content="Aura+ is a self-hosted Model Context Protocol (MCP) server & autonomous Alexa+ agent powered by AWS Bedrock for the Amazon Developer Hackathon.">
+  <meta name="author" content="D Sidhant Patro">
+  <meta name="keywords" content="Amazon Developer Hackathon, Alexa+, AWS Bedrock, MCP, Model Context Protocol, Streamable HTTP, Claude 3.5 Sonnet, Amazon Nova Pro, Smart Home, Digital Twin">
+  <link rel="canonical" href="https://aura.sidopolis.dev/">
   <meta name="theme-color" content="#09090b">
   <meta name="color-scheme" content="dark">
   <meta name="robots" content="index, follow">
 
-  <!-- Open Graph -->
+  <!-- Web App Manifest -->
+  <link rel="manifest" href="site.webmanifest">
+
+  <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Aura+ | Autonomous Alexa+ Agent">
+  <meta property="og:site_name" content="Aura+ Platform">
+  <meta property="og:title" content="Aura+ | Autonomous Alexa+ Agent Platform">
   <meta property="og:description" content="Self-hosted Streamable HTTP MCP server for Alexa+ with AWS Bedrock integration.">
+  <meta property="og:url" content="https://aura.sidopolis.dev/">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Aura+ | Autonomous Alexa+ Agent Platform">
+  <meta name="twitter:description" content="Self-hosted Streamable HTTP MCP server for Alexa+ with AWS Bedrock integration.">
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%2309090b' stroke='%2300d2ff' stroke-width='2'/%3E%3Cpath d='M11 16h10M16 11v10' stroke='%2300d2ff' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%2309090b'/%3E%3Ccircle cx='90' cy='90' r='60' fill='none' stroke='%2300d2ff' stroke-width='6'/%3E%3Cpath d='M65 90h50M90 65v50' stroke='%2300d2ff' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Aura+">
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Aura+ | Autonomous Alexa+ Agent Platform",
+    "alternateName": "Aura+",
+    "url": "https://aura.sidopolis.dev",
+    "description": "Self-hosted Model Context Protocol (MCP) server & autonomous Alexa+ agent powered by AWS Bedrock for the Amazon Developer Hackathon.",
+    "applicationCategory": "SmartHomeApplication, DeveloperApplication",
+    "operatingSystem": "Web, Alexa Voice Service, Streamable HTTP MCP Spec 2025-11-25+",
+    "author": {
+      "@type": "Person",
+      "name": "D Sidhant Patro",
+      "url": "https://github.com/Sidopolis"
+    },
+    "license": "https://opensource.org/licenses/MIT",
+    "softwareRequirements": "Node.js 18+, AWS Bedrock SDK, Model Context Protocol"
+  }
+  </script>
 
   <!-- Fonts & Stylesheet -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=4.1">
+  <link rel="stylesheet" href="style.css?v=4.2">
 </head>
 <body class="dotgrid-bg">
   <!-- Skip Navigation Link -->
@@ -39,19 +78,19 @@
           <h1 class="brand-title">Aura<span>+</span></h1>
           <span class="brand-divider">/</span>
           <span class="brand-sub">Autonomous Orchestrator</span>
-        </div>
-
-        <!-- Protocol Status Badges & Model Cascade Controls -->
-        <div class="header-badges">
-          <div class="status-pill live-pill" id="mcpStatusBadge" title="MCP Specification 2025-11-25+ Streamable HTTP Transport">
+          <div class="status-pill live-pill" id="mcpStatusBadge" data-tooltip="Streamable HTTP Transport (MCP Spec 2025-11-25+): SSE stream (/sse) with JSON-RPC 2.0 messages">
             <span class="status-indicator" aria-hidden="true"></span>
             <span>MCP Streamable HTTP</span>
           </div>
+        </div>
 
-          <div class="model-select-wrapper" title="Active Reasoning Model & Multi-Model Quota Failover">
+        <!-- Cohesive Model Cascade & Quota Control Deck -->
+        <div class="header-controls-cluster">
+          <div class="model-select-wrapper" data-tooltip="Switch reasoning engine or test multi-model quota failover">
+            <svg class="select-prefix-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>
             <label for="modelSelect" class="sr-only">Model Selection</label>
             <select id="modelSelect" class="model-select-input" aria-label="Model Cascade Selection">
-              <option value="auto">⚡ Auto Fallback (Claude ➔ Nova ➔ Gemini ➔ Simulator)</option>
+              <option value="auto">Auto Cascade (Claude &rarr; Nova &rarr; Gemini &rarr; Simulator)</option>
               <option value="anthropic.claude-3-5-sonnet-20240620-v1:0">Claude 3.5 Sonnet (Bedrock)</option>
               <option value="amazon.nova-pro-v1:0">Amazon Nova Pro (Bedrock)</option>
               <option value="anthropic.claude-3-haiku-20240307-v1:0">Claude 3 Haiku (Bedrock)</option>
@@ -61,13 +100,19 @@
             </select>
           </div>
 
-          <div class="status-pill bedrock-pill" id="bedrockPill" title="Active Model Engine">
-            <span id="bedrockPillText">⚡ Claude 3.5 Sonnet</span>
+          <div class="status-pill bedrock-pill" id="bedrockPill" data-tooltip="Active reasoning engine. Falls back automatically if rate or quota limits occur.">
+            <svg class="pill-svg-icon" id="bedrockPillIcon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>
+            <span id="bedrockPillText">Claude 3.5 Sonnet</span>
           </div>
 
-          <button type="button" class="status-pill quota-test-pill" id="quotaSimulateBtn" title="Toggle Quota Limit Simulation to test automatic multi-model failover" aria-pressed="false">
+          <button type="button" class="status-pill quota-test-pill" id="quotaSimulateBtn" data-tooltip="Simulate HTTP 429 ThrottlingException to test zero-downtime hot-swap failover" aria-pressed="false">
             <span class="quota-pill-dot" aria-hidden="true"></span>
             <span id="quotaSimulateLabel">Simulate Quota Limit</span>
+          </button>
+
+          <button type="button" class="status-pill tour-pill" id="tourBtn" data-tooltip="Interactive architecture guide and instant one-click routine demo" aria-haspopup="dialog">
+            <svg class="pill-svg-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span>How It Works</span>
           </button>
         </div>
       </div>
@@ -75,17 +120,21 @@
       <!-- Navigation Views (M3 Primary Tab Bar) -->
       <nav class="nav-tabs-bar" role="tablist" aria-label="Product Views">
         <div class="nav-tabs">
-          <button class="nav-tab-btn active" role="tab" aria-selected="true" aria-controls="view-console" id="tab-console" data-view="view-console">
-            <span class="tab-dot" aria-hidden="true"></span> Orchestrator Console
+          <button class="nav-tab-btn active" role="tab" aria-selected="true" aria-controls="view-console" id="tab-console" data-view="view-console" data-tooltip="Agent Command Center & Conversational Stream">
+            <svg class="nav-tab-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+            <span>Orchestrator Console</span>
           </button>
-          <button class="nav-tab-btn" role="tab" aria-selected="false" aria-controls="view-trace" id="tab-trace" data-view="view-trace">
-            <span class="tab-dot" aria-hidden="true"></span> Execution Trace
+          <button class="nav-tab-btn" role="tab" aria-selected="false" aria-controls="view-trace" id="tab-trace" data-view="view-trace" data-tooltip="Millisecond Latency Waterfall & Telemetry Spans">
+            <svg class="nav-tab-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            <span>Execution Trace</span>
           </button>
-          <button class="nav-tab-btn" role="tab" aria-selected="false" aria-controls="view-energy" id="tab-energy" data-view="view-energy">
-            <span class="tab-dot" aria-hidden="true"></span> Power Grid & Telemetry
+          <button class="nav-tab-btn" role="tab" aria-selected="false" aria-controls="view-energy" id="tab-energy" data-view="view-energy" data-tooltip="Solar Flow Area Chart & Tesla Powerwall 3 Storage">
+            <svg class="nav-tab-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <span>Power Grid & Telemetry</span>
           </button>
-          <button class="nav-tab-btn" role="tab" aria-selected="false" aria-controls="view-devices" id="tab-devices" data-view="view-devices">
-            <span class="tab-dot" aria-hidden="true"></span> Device Topology
+          <button class="nav-tab-btn" role="tab" aria-selected="false" aria-controls="view-devices" id="tab-devices" data-view="view-devices" data-tooltip="Smart Home Digital Twin Matrix & Live Controls">
+            <svg class="nav-tab-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+            <span>Device Topology</span>
           </button>
         </div>
       </nav>
@@ -94,9 +143,6 @@
     <!-- Main Workspace -->
     <main class="main-content" role="main">
 
-      <!-- ======================================================== -->
-      <!-- VIEW 1: ORCHESTRATOR CONSOLE (Input, Plan & Tool Calls)  -->
-      <!-- ======================================================== -->
       <!-- ======================================================== -->
       <!-- VIEW 1: ORCHESTRATOR CONSOLE (Spacious Hero Deck & Panes) -->
       <!-- ======================================================== -->
@@ -136,20 +182,32 @@
               <span class="mono-eyebrow">ONE-CLICK AUTONOMOUS WORKFLOWS</span>
             </div>
             <div class="intent-chips-grid">
-              <button class="intent-chip" type="button" data-prompt="Activate Deep Focus routine and set lights">
-                <span class="chip-title">🎯 Deep Focus Routine</span>
+              <button class="intent-chip" type="button" data-prompt="Activate Deep Focus routine and set lights" data-tooltip="Invokes multi-device routine: Dims lighting, silences media playback, and optimizes HVAC setpoint">
+                <span class="chip-title">
+                  <svg class="chip-svg-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                  Deep Focus Routine
+                </span>
                 <span class="chip-sub">Dims lights, pauses noise, optimizes HVAC</span>
               </button>
-              <button class="intent-chip" type="button" data-prompt="Adjust climate thermostat to 22 degrees">
-                <span class="chip-title">❄️ Eco Climate Setpoint (22°C)</span>
+              <button class="intent-chip" type="button" data-prompt="Adjust climate thermostat to 22 degrees" data-tooltip="Invokes smart_home_control to pre-cool home before peak utility grid pricing">
+                <span class="chip-title">
+                  <svg class="chip-svg-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>
+                  Eco Climate Setpoint (22°C)
+                </span>
                 <span class="chip-sub">Pre-cools before peak grid pricing</span>
               </button>
-              <button class="intent-chip" type="button" data-prompt="Turn on living room lights with cyan glow">
-                <span class="chip-title">💡 Living Room Ambient</span>
+              <button class="intent-chip" type="button" data-prompt="Turn on living room lights with cyan glow" data-tooltip="Calls smart_home_control for device living_room_light with adaptive RGB cyan #00d2ff">
+                <span class="chip-title">
+                  <svg class="chip-svg-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-7 7c0 2.5 1.5 4.5 3 6h8c1.5-1.5 3-3.5 3-6a7 7 0 0 0-7-7z"/></svg>
+                  Living Room Ambient
+                </span>
                 <span class="chip-sub">Adaptive lighting via smart_home_control</span>
               </button>
-              <button class="intent-chip" type="button" data-prompt="Check Hackathon checklist and MCP status">
-                <span class="chip-title">📋 Protocol Verification</span>
+              <button class="intent-chip" type="button" data-prompt="Check Hackathon checklist and MCP status" data-tooltip="Reads persistent context memory store and verifies MCP Streamable HTTP telemetry">
+                <span class="chip-title">
+                  <svg class="chip-svg-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Protocol Verification
+                </span>
                 <span class="chip-sub">MCP Spec 2025-11-25 + Bedrock validation</span>
               </button>
             </div>
@@ -171,12 +229,14 @@
             <!-- Active Model & Quota Switch Notice Banner -->
             <div class="quota-fallback-banner" id="quotaFallbackBanner" style="display: none;" role="status">
               <div class="qfb-inner">
-                <span class="qfb-icon">⚡</span>
+                <span class="qfb-icon">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </span>
                 <div class="qfb-info">
                   <div class="qfb-title" id="qfbTitle">Automatic Model Failover Active</div>
                   <div class="qfb-desc" id="qfbDesc">Primary model reached quota/rate limit. Autonomous failover seamlessly switched to Amazon Nova Pro.</div>
                 </div>
-                <button type="button" class="qfb-close-btn" id="qfbCloseBtn" aria-label="Dismiss alert">✕</button>
+                <button type="button" class="qfb-close-btn" id="qfbCloseBtn" aria-label="Dismiss alert"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
               </div>
             </div>
 
@@ -200,7 +260,55 @@
                 <span class="badge-mini">Interactive Components</span>
               </div>
               <div class="cards-canvas" id="cardsCanvas">
-                <!-- Dynamically populated -->
+                <!-- Live Digital Twin Card 1: Climate Hub Component -->
+                <div class="ui-card">
+                  <div class="card-top">
+                    <h4>
+                      <svg class="card-title-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>
+                      Eco Thermostat Active
+                    </h4>
+                    <span class="card-badge badge-device">Smart Device</span>
+                  </div>
+                  <div class="card-metrics">
+                    <div class="metric-item">
+                      <span class="label">Current / Target</span>
+                      <span class="val">21.5°C / 21.0°C</span>
+                    </div>
+                    <div class="metric-item">
+                      <span class="label">Efficiency</span>
+                      <span class="val" style="color: var(--accent-emerald);">+14% Saved</span>
+                    </div>
+                  </div>
+                  <div class="card-actions">
+                    <button type="button" class="card-btn primary" onclick="toggleDeviceAction('thermostat', 'set_temperature', '20.5')">Pre-Cool (20.5°)</button>
+                    <button type="button" class="card-btn" onclick="toggleDeviceAction('thermostat', 'set_temperature', '22.0')">Eco Mode (22°)</button>
+                  </div>
+                </div>
+
+                <!-- Live Digital Twin Card 2: Solar Battery Dispatch Component -->
+                <div class="ui-card">
+                  <div class="card-top">
+                    <h4>
+                      <svg class="card-title-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="6" width="18" height="12" rx="2"/><line x1="23" y1="13" x2="23" y2="11"/></svg>
+                      Powerwall 3 Storage
+                    </h4>
+                    <span class="card-badge badge-routine">Energy Mesh</span>
+                  </div>
+                  <div class="card-metrics">
+                    <div class="metric-item">
+                      <span class="label">Stored Capacity</span>
+                      <span class="val" style="color: var(--accent-cyan);">84% (11.3 kWh)</span>
+                    </div>
+                    <div class="metric-item">
+                      <span class="label">Solar Inverter</span>
+                      <span class="val" style="color: var(--accent-emerald);">+3.4 kW Charge</span>
+                    </div>
+                  </div>
+                  <div class="card-actions">
+                    <button type="button" class="card-btn primary" onclick="setBatteryMode('self_powered')">Self-Powered</button>
+                    <button type="button" class="card-btn" onclick="setBatteryMode('backup_only')">Backup Only</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -220,7 +328,9 @@
               <div class="plan-tree-container">
                 <div class="plan-task-node">
                   <div class="task-node-header">
-                    <span class="task-icon complete">✓</span>
+                    <span class="task-icon complete" aria-label="Completed">
+                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                    </span>
                     <span class="task-title">Evaluate Grid Tariffs & Home Demand</span>
                     <span class="task-badge">0.48/kWh</span>
                   </div>
@@ -234,7 +344,9 @@
 
                 <div class="plan-task-node active">
                   <div class="task-node-header">
-                    <span class="task-icon active">●</span>
+                    <span class="task-icon active" aria-label="In Flight">
+                      <span class="task-pulse-dot" aria-hidden="true"></span>
+                    </span>
                     <span class="task-title">Execute HVAC & Lighting Optimization</span>
                     <span class="task-badge active">In Flight</span>
                   </div>
@@ -249,7 +361,9 @@
 
                 <div class="plan-task-node pending">
                   <div class="task-node-header">
-                    <span class="task-icon pending">○</span>
+                    <span class="task-icon pending" aria-label="Queued">
+                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="7"/></svg>
+                    </span>
                     <span class="task-title">Synchronize Digital Twin State & SSE Feed</span>
                     <span class="task-badge pending">Queued</span>
                   </div>
@@ -277,10 +391,12 @@
                 <!-- Tool Call 1: Smart Home Control -->
                 <div class="ai-tool-card" id="toolCallCard1">
                   <div class="tool-card-summary" role="button" tabindex="0" aria-expanded="false" aria-label="Toggle smart_home_control tool call details" onclick="toggleToolCard('toolCallCard1')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleToolCard('toolCallCard1')}">
-                    <span class="tool-badge success">✓</span>
+                    <span class="tool-badge success">
+                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                    </span>
                     <span class="tool-name">smart_home_control</span>
                     <span class="tool-summary-text">deviceId: thermostat • set_temperature (21.5°C)</span>
-                    <span class="chevron-icon">›</span>
+                    <svg class="chevron-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
                   </div>
                   <div class="tool-card-details">
                     <div class="detail-block">
@@ -301,10 +417,12 @@
                 <!-- Tool Call 2: Context Memory -->
                 <div class="ai-tool-card" id="toolCallCard2">
                   <div class="tool-card-summary" role="button" tabindex="0" aria-expanded="false" aria-label="Toggle manage_context_memory tool call details" onclick="toggleToolCard('toolCallCard2')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleToolCard('toolCallCard2')}">
-                    <span class="tool-badge success">✓</span>
+                    <span class="tool-badge success">
+                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                    </span>
                     <span class="tool-name">manage_context_memory</span>
                     <span class="tool-summary-text">operation: read_preferences • user: Sidhant</span>
-                    <span class="chevron-icon">›</span>
+                    <svg class="chevron-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
                   </div>
                   <div class="tool-card-details">
                     <div class="detail-block">
@@ -343,7 +461,7 @@
             <div class="trace-meta-pills">
               <span class="trace-tag" id="traceRunTag">Run: run_alexa_8f29</span>
               <span class="trace-tag" id="traceModelTag">Model: bedrock:claude-3-5-sonnet</span>
-              <span class="trace-tag fallback-trace-tag" id="traceFallbackTag" style="display: none;">⚡ Quota Failover Active</span>
+              <span class="trace-tag fallback-trace-tag" id="traceFallbackTag" style="display: none;">Quota Failover Active</span>
               <span class="trace-tag highlight" id="traceTotalDuration">Total: 480ms</span>
             </div>
           </div>
@@ -351,7 +469,7 @@
           <!-- Time Ruler (Calibrated with Waterfall Bar Lane) -->
           <div class="trace-ruler">
             <div class="ruler-spacer"></div>
-            <div class="ruler-ticks">
+            <div class="ruler-ticks" id="traceRulerTicks">
               <span>0ms</span>
               <span>120ms</span>
               <span>240ms</span>
@@ -361,8 +479,12 @@
             <div class="ruler-status-spacer"></div>
           </div>
 
-          <!-- Span Waterfall Bars -->
-          <div class="trace-spans-container">
+          <!-- Span Waterfall Bars with Interactive Scrubber -->
+          <div class="trace-spans-container" id="traceSpansContainer">
+            <!-- Dynamic Interactive Time Scrubber Line -->
+            <div class="trace-scrubber-line" id="traceScrubberLine" style="display: none;">
+              <span class="trace-scrubber-badge" id="traceScrubberBadge">0ms</span>
+            </div>
             <!-- Optional Span 0: Failed Primary Model (Quota Limit) -->
             <div class="trace-span-row trace-quota-fail-row" id="traceQuotaFailRow" style="display: none;">
               <div class="span-label">
@@ -374,7 +496,7 @@
                   <span class="bar-text">429 Throttling • 18ms</span>
                 </div>
               </div>
-              <div class="span-status fail">⚠ quota exceeded</div>
+              <div class="span-status fail"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:3px;vertical-align:-1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>quota exceeded</div>
             </div>
 
             <!-- Span 1: Model Reasoning -->
@@ -388,49 +510,94 @@
                   <span class="bar-text" id="traceModelBarText">264ms • 186 tokens</span>
                 </div>
               </div>
-              <div class="span-status ok" id="traceModelStatus">✓ ok</div>
+              <div class="span-status ok" id="traceModelStatus"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:3px;vertical-align:-1px;"><polyline points="20 6 9 17 4 12"/></svg>ok</div>
             </div>
 
             <!-- Span 2: MCP Smart Home Control -->
-            <div class="trace-span-row">
+            <div class="trace-span-row" id="traceTool1Row">
               <div class="span-label">
                 <span class="span-type-badge tool">tool</span>
-                <span class="span-name">mcp:smart_home_control</span>
+                <span class="span-name" id="traceTool1Name">mcp:smart_home_control</span>
               </div>
               <div class="span-bar-lane">
-                <div class="span-bar tool-bar" style="left: 55%; width: 25%;">
-                  <span class="bar-text">120ms</span>
+                <div class="span-bar tool-bar" id="traceTool1Bar" style="left: 55%; width: 25%;">
+                  <span class="bar-text" id="traceTool1BarText">120ms</span>
                 </div>
               </div>
-              <div class="span-status ok">✓ ok</div>
+              <div class="span-status ok"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:3px;vertical-align:-1px;"><polyline points="20 6 9 17 4 12"/></svg>ok</div>
             </div>
 
             <!-- Span 3: MCP Memory Storage -->
-            <div class="trace-span-row">
+            <div class="trace-span-row" id="traceTool2Row">
               <div class="span-label">
                 <span class="span-type-badge tool">tool</span>
-                <span class="span-name">mcp:manage_context_memory</span>
+                <span class="span-name" id="traceTool2Name">mcp:manage_context_memory</span>
               </div>
               <div class="span-bar-lane">
-                <div class="span-bar tool-bar" style="left: 80%; width: 12%;">
-                  <span class="bar-text">58ms</span>
+                <div class="span-bar tool-bar" id="traceTool2Bar" style="left: 80%; width: 12%;">
+                  <span class="bar-text" id="traceTool2BarText">58ms</span>
                 </div>
               </div>
-              <div class="span-status ok">✓ ok</div>
+              <div class="span-status ok"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:3px;vertical-align:-1px;"><polyline points="20 6 9 17 4 12"/></svg>ok</div>
             </div>
 
             <!-- Span 4: SSE Stream Broadcast -->
-            <div class="trace-span-row">
+            <div class="trace-span-row" id="traceSseRow">
               <div class="span-label">
                 <span class="span-type-badge io">io</span>
                 <span class="span-name">sse:streamable_http</span>
               </div>
               <div class="span-bar-lane">
-                <div class="span-bar io-bar" style="left: 92%; width: 8%;">
-                  <span class="bar-text">38ms</span>
+                <div class="span-bar io-bar" id="traceSseBar" style="left: 92%; width: 8%;">
+                  <span class="bar-text" id="traceSseBarText">38ms</span>
                 </div>
               </div>
-              <div class="span-status ok">✓ ok</div>
+              <div class="span-status ok"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:3px;vertical-align:-1px;"><polyline points="20 6 9 17 4 12"/></svg>ok</div>
+            </div>
+          </div>
+
+          <!-- Trace Performance & SLA Metrics Deck (M3 Tonal Containers) -->
+          <div class="trace-diagnostics-grid">
+            <div class="diag-card">
+              <div class="diag-header">
+                <span class="mono-eyebrow">LATENCY PROFILE</span>
+                <span class="diag-badge badge-cyan">P95 SLA &lt; 1000ms</span>
+              </div>
+              <div class="diag-value"><span id="diagLatencyVal">480</span> <span class="diag-unit">ms</span></div>
+              <p class="diag-desc">End-to-end user turnaround from prompt entry to SSE event broadcast.</p>
+              <div class="diag-breakdown">
+                <span class="diag-pill" id="diagModelPill">Model: 264ms (55%)</span>
+                <span class="diag-pill" id="diagToolsPill">Tools: 178ms (37%)</span>
+                <span class="diag-pill" id="diagSsePill">SSE: 38ms (8%)</span>
+              </div>
+            </div>
+
+            <div class="diag-card">
+              <div class="diag-header">
+                <span class="mono-eyebrow">TOKEN EFFICIENCY</span>
+                <span class="diag-badge badge-emerald">Bedrock Runtime</span>
+              </div>
+              <div class="diag-value"><span id="diagTokRate">68</span> <span class="diag-unit">tok/s</span></div>
+              <p class="diag-desc">Prompt: 412 tokens • Output: 186 tokens • Zero prompt-cache misses.</p>
+              <div class="diag-breakdown">
+                <span class="diag-pill" id="diagContextPill">Context: 412 tok</span>
+                <span class="diag-pill" id="diagResponsePill">Response: 186 tok</span>
+                <span class="diag-pill">Region: us-east-1</span>
+              </div>
+            </div>
+
+            <div class="diag-card">
+              <div class="diag-header">
+                <span class="mono-eyebrow">PROTOCOL INTEGRITY</span>
+                <span class="diag-badge badge-purple">MCP 2025-11-25+</span>
+              </div>
+              <div class="diag-value">100% <span class="diag-unit">Pass</span></div>
+              <p class="diag-desc">Strict JSON-RPC 2.0 schema validation across all tool executions.</p>
+              <div class="diag-breakdown">
+                <span class="diag-pill" id="diagToolsExecutedPill">Tools: 2 Executed</span>
+                <span class="diag-pill" id="diagFailoverPill">Failover: Active Cascade</span>
+                <span class="diag-pill">State: Synchronized</span>
+              </div>
             </div>
           </div>
         </div>
@@ -523,7 +690,7 @@
                   <h3>Tesla Powerwall 3</h3>
                   <span class="panel-sub">13.5 kWh LFP • Integrated Inverter</span>
                 </div>
-                <span class="badge-mini status-green" id="batteryStatusBadge">⚡ Charging (+3.4 kW)</span>
+                <span class="badge-mini status-green" id="batteryStatusBadge"><svg class="badge-svg-icon" viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Charging (+3.4 kW)</span>
               </div>
 
               <div class="battery-flex-row">
@@ -586,16 +753,23 @@
                 </div>
 
                 <div class="slider-box">
-                  <span>❄️</span>
+                  <span class="slider-icon-wrap cool" title="Cooling limit (16°C)">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/><line x1="19.07" y1="4.93" x2="4.93" y2="19.07"/></svg>
+                  </span>
                   <div class="slider-track-wrap">
                     <div class="slider-grad-bar"></div>
                     <input type="range" class="stepped-range" id="climateRangeInput" min="16" max="30" step="0.5" value="21.5" aria-label="Climate temperature control" title="Adjust temperature (16°C – 30°C)">
                   </div>
-                  <span>🔥</span>
+                  <span class="slider-icon-wrap warm" title="Heating limit (30°C)">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+                  </span>
                 </div>
 
                 <div class="climate-footer">
-                  <span class="eco-tag" id="ecoHintText">🌱 Eco saves ~14% HVAC power</span>
+                  <span class="eco-tag" id="ecoHintText">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+                    Eco saves ~14% HVAC power
+                  </span>
                   <button class="eco-btn" type="button" onclick="applyEcoComfortPreset()">Apply 21°C Preset</button>
                 </div>
               </div>
@@ -641,6 +815,89 @@
     </footer>
   </div>
 
-  <script type="module" src="app.js?v=4.0"></script>
+  <!-- Architecture & Platform Tour Modal (Interactive Onboarding Guide) -->
+  <div class="tour-modal-backdrop" id="tourModalBackdrop" style="display: none;" role="presentation">
+    <div class="tour-modal" role="dialog" aria-modal="true" aria-labelledby="tourModalTitle" aria-describedby="tourModalDesc">
+      <div class="tour-modal-header">
+        <div class="tour-header-lead">
+          <span class="brand-badge"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg> PLATFORM & ARCHITECTURE GUIDE</span>
+          <h2 id="tourModalTitle" class="tour-title">How Aura+ Works</h2>
+          <p id="tourModalDesc" class="tour-desc">Self-hosted Model Context Protocol (MCP) server & autonomous Alexa+ agent powered by AWS Bedrock for the Amazon Developer Hackathon.</p>
+        </div>
+        <button type="button" class="tour-close-btn" id="tourCloseBtn" aria-label="Close architecture guide">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="tour-cards-grid">
+        <!-- Card 1 -->
+        <div class="tour-step-card">
+          <div class="tour-step-header">
+            <span class="tour-step-num">01</span>
+            <div class="tour-icon-wrap">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+            </div>
+          </div>
+          <h3>Simulated Alexa+ Surface</h3>
+          <p>Accepts natural voice or text commands. Aura+ plans multi-step routines, remembers user preferences across sessions, and renders dynamic interactive UI cards.</p>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="tour-step-card">
+          <div class="tour-step-header">
+            <span class="tour-step-num">02</span>
+            <div class="tour-icon-wrap">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            </div>
+          </div>
+          <h3>Streamable HTTP MCP</h3>
+          <p>Full implementation of the late 2025 MCP specification. Uses bidirectional Server-Sent Events (<code>/sse</code>) for real-time streaming and JSON-RPC 2.0 (<code>/messages</code>) for tool calls.</p>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="tour-step-card">
+          <div class="tour-step-header">
+            <span class="tour-step-num">03</span>
+            <div class="tour-icon-wrap">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+          </div>
+          <h3>Bedrock Quota Failover</h3>
+          <p>Zero-downtime multi-model cascade: Claude 3.5 Sonnet &rarr; Amazon Nova Pro &rarr; Claude Haiku &rarr; Gemini &rarr; Offline Simulator. Try the "Simulate Quota Limit" pill in the header.</p>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="tour-step-card">
+          <div class="tour-step-header">
+            <span class="tour-step-num">04</span>
+            <div class="tour-icon-wrap">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            </div>
+          </div>
+          <h3>Observability & Digital Twin</h3>
+          <p>Sub-500ms execution trace waterfall captures reasoning, tool dispatches, and SSE latency. Power Grid & Device Topology offer live smart home telemetry.</p>
+        </div>
+      </div>
+
+      <div class="tour-modal-footer">
+        <div class="tour-judge-tip">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <span><strong>Quick Demo:</strong> Click <em>"Launch Deep Focus Demo"</em> to see autonomous multi-step planning, chime audio, and tool execution in real time.</span>
+        </div>
+        <div class="tour-footer-actions">
+          <button type="button" class="tour-action-btn secondary" id="tourDismissBtn">Explore Console</button>
+          <button type="button" class="tour-action-btn primary" id="tourDemoBtn">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Launch Deep Focus Demo
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Global Glass Floating Tooltip Container -->
+  <div class="aura-tooltip" id="auraTooltip" role="tooltip" aria-hidden="true" style="display: none;"></div>
+
+  <script type="module" src="app.js?v=4.2"></script>
 </body>
 </html>
