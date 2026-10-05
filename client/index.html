@@ -31,60 +31,64 @@
   <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
   <div class="app-layout">
-    <!-- Top Product Header -->
+    <!-- Top Product Header (Material 3 App Bar + Navigation Hub) -->
     <header class="app-header" role="banner">
-      <div class="brand-group">
-        <div class="brand-badge">ALEXA+ PLATFORM</div>
-        <h1 class="brand-title">Aura<span>+</span></h1>
-        <span class="brand-divider">/</span>
-        <span class="brand-sub">Autonomous Orchestrator</span>
+      <div class="header-top-row">
+        <div class="brand-group">
+          <div class="brand-badge">ALEXA+ PLATFORM</div>
+          <h1 class="brand-title">Aura<span>+</span></h1>
+          <span class="brand-divider">/</span>
+          <span class="brand-sub">Autonomous Orchestrator</span>
+        </div>
+
+        <!-- Protocol Status Badges & Model Cascade Controls -->
+        <div class="header-badges">
+          <div class="status-pill live-pill" id="mcpStatusBadge" title="MCP Specification 2025-11-25+ Streamable HTTP Transport">
+            <span class="status-indicator" aria-hidden="true"></span>
+            <span>MCP Streamable HTTP</span>
+          </div>
+
+          <div class="model-select-wrapper" title="Active Reasoning Model & Multi-Model Quota Failover">
+            <label for="modelSelect" class="sr-only">Model Selection</label>
+            <select id="modelSelect" class="model-select-input" aria-label="Model Cascade Selection">
+              <option value="auto">⚡ Auto Fallback (Claude ➔ Nova ➔ Gemini ➔ Simulator)</option>
+              <option value="anthropic.claude-3-5-sonnet-20240620-v1:0">Claude 3.5 Sonnet (Bedrock)</option>
+              <option value="amazon.nova-pro-v1:0">Amazon Nova Pro (Bedrock)</option>
+              <option value="anthropic.claude-3-haiku-20240307-v1:0">Claude 3 Haiku (Bedrock)</option>
+              <option value="amazon.nova-lite-v1:0">Amazon Nova Lite (Bedrock)</option>
+              <option value="gemini-2.0-flash">Google Gemini 2.0 Flash</option>
+              <option value="simulator">Offline Simulator</option>
+            </select>
+          </div>
+
+          <div class="status-pill bedrock-pill" id="bedrockPill" title="Active Model Engine">
+            <span id="bedrockPillText">⚡ Claude 3.5 Sonnet</span>
+          </div>
+
+          <button type="button" class="status-pill quota-test-pill" id="quotaSimulateBtn" title="Toggle Quota Limit Simulation to test automatic multi-model failover" aria-pressed="false">
+            <span class="quota-pill-dot" aria-hidden="true"></span>
+            <span id="quotaSimulateLabel">Simulate Quota Limit</span>
+          </button>
+        </div>
       </div>
 
-      <!-- Navigation Views -->
-      <nav class="nav-tabs" role="tablist" aria-label="Product Views">
-        <button class="nav-tab-btn active" role="tab" aria-selected="true" aria-controls="view-console" id="tab-console" data-view="view-console">
-          <span class="tab-dot" aria-hidden="true"></span> Orchestrator Console
-        </button>
-        <button class="nav-tab-btn" role="tab" aria-selected="false" aria-controls="view-trace" id="tab-trace" data-view="view-trace">
-          <span class="tab-dot" aria-hidden="true"></span> Execution Trace
-        </button>
-        <button class="nav-tab-btn" role="tab" aria-selected="false" aria-controls="view-energy" id="tab-energy" data-view="view-energy">
-          <span class="tab-dot" aria-hidden="true"></span> Power Grid & Telemetry
-        </button>
-        <button class="nav-tab-btn" role="tab" aria-selected="false" aria-controls="view-devices" id="tab-devices" data-view="view-devices">
-          <span class="tab-dot" aria-hidden="true"></span> Device Topology
-        </button>
+      <!-- Navigation Views (M3 Primary Tab Bar) -->
+      <nav class="nav-tabs-bar" role="tablist" aria-label="Product Views">
+        <div class="nav-tabs">
+          <button class="nav-tab-btn active" role="tab" aria-selected="true" aria-controls="view-console" id="tab-console" data-view="view-console">
+            <span class="tab-dot" aria-hidden="true"></span> Orchestrator Console
+          </button>
+          <button class="nav-tab-btn" role="tab" aria-selected="false" aria-controls="view-trace" id="tab-trace" data-view="view-trace">
+            <span class="tab-dot" aria-hidden="true"></span> Execution Trace
+          </button>
+          <button class="nav-tab-btn" role="tab" aria-selected="false" aria-controls="view-energy" id="tab-energy" data-view="view-energy">
+            <span class="tab-dot" aria-hidden="true"></span> Power Grid & Telemetry
+          </button>
+          <button class="nav-tab-btn" role="tab" aria-selected="false" aria-controls="view-devices" id="tab-devices" data-view="view-devices">
+            <span class="tab-dot" aria-hidden="true"></span> Device Topology
+          </button>
+        </div>
       </nav>
-
-      <!-- Protocol Status Badges & Model Cascade Controls -->
-      <div class="header-badges">
-        <div class="status-pill live-pill" id="mcpStatusBadge" title="MCP Specification 2025-11-25+ Streamable HTTP Transport">
-          <span class="status-indicator" aria-hidden="true"></span>
-          <span>MCP Streamable HTTP</span>
-        </div>
-
-        <div class="model-select-wrapper" title="Active Reasoning Model & Multi-Model Quota Failover">
-          <label for="modelSelect" class="sr-only">Model Selection</label>
-          <select id="modelSelect" class="model-select-input" aria-label="Model Cascade Selection">
-            <option value="auto">⚡ Auto Fallback (Claude ➔ Nova ➔ Gemini ➔ Simulator)</option>
-            <option value="anthropic.claude-3-5-sonnet-20240620-v1:0">Claude 3.5 Sonnet (Bedrock)</option>
-            <option value="amazon.nova-pro-v1:0">Amazon Nova Pro (Bedrock)</option>
-            <option value="anthropic.claude-3-haiku-20240307-v1:0">Claude 3 Haiku (Bedrock)</option>
-            <option value="amazon.nova-lite-v1:0">Amazon Nova Lite (Bedrock)</option>
-            <option value="gemini-2.0-flash">Google Gemini 2.0 Flash</option>
-            <option value="simulator">Offline Simulator</option>
-          </select>
-        </div>
-
-        <div class="status-pill bedrock-pill" id="bedrockPill" title="Active Model Engine">
-          <span id="bedrockPillText">⚡ Claude 3.5 Sonnet</span>
-        </div>
-
-        <button type="button" class="status-pill quota-test-pill" id="quotaSimulateBtn" title="Toggle Quota Limit Simulation to test automatic multi-model failover" aria-pressed="false">
-          <span class="quota-pill-dot" aria-hidden="true"></span>
-          <span id="quotaSimulateLabel">Simulate Quota Limit</span>
-        </button>
-      </div>
     </header>
 
     <!-- Main Workspace -->
