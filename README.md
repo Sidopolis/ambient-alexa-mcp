@@ -5,17 +5,15 @@
 [![MCP Spec](https://img.shields.io/badge/MCP%20Spec-2025--11--25%20Streamable%20HTTP-brightgreen.svg)](https://modelcontextprotocol.io/)
 [![AWS Bedrock](https://img.shields.io/badge/AWS-Bedrock%20Runtime-FF9900.svg)](https://aws.amazon.com/bedrock/)
 
-> **Build, Ship, Shape: Amazon Developer Hackathon 2026**
-> Primary Track: **Alexa+** (Self-Hosted MCP Server & Simulated Web Experience)
-> Mini-Challenges: **AWS Builder** & **Open Source**
+> Autonomous ambient agent and self-hosted Model Context Protocol (MCP) server for Alexa+ with AWS Bedrock reasoning, multi-model failover, and interactive digital twin telemetry.
 
 ---
 
 ## What is Aura+?
 
-Aura+ is a self-hosted MCP server and simulated Alexa+ agent that goes beyond traditional single-turn voice skills. Instead of "ask a question, get an answer," Aura+ can plan and execute multi-step tasks across your smart home, remember your preferences across sessions, and render interactive controls directly on screen.
+Aura+ is a self-hosted MCP server and ambient Alexa+ agent that goes beyond traditional single-turn voice skills. Instead of "ask a question, get an answer," Aura+ plans and executes multi-step tasks across connected smart homes, persists user context across sessions, and renders interactive controls directly on screen.
 
-It runs on the open **Streamable HTTP** transport (MCP Spec 2025-11-25+) and uses **AWS Bedrock** (Claude 3.5 Sonnet) for reasoning and tool selection. When Bedrock credentials aren't available, it falls back to a built-in intent engine so judges can test everything locally without AWS access.
+It runs on the open **Streamable HTTP** transport (MCP Spec 2025-11-25+) and connects with **AWS Bedrock** (Claude 3.5 Sonnet & Amazon Nova) for reasoning and tool selection. When AWS credentials are not configured, it seamlessly runs an autonomous simulation engine for zero-config local development and testing.
 
 ---
 
@@ -55,7 +53,7 @@ graph TD
 - Multi-Model Cascade: Primary (Claude 3.5 Sonnet) ➔ Amazon Nova Pro ➔ Claude 3 Haiku ➔ Amazon Nova Lite ➔ Gemini / OpenAI ➔ Offline Simulator
 - Automatic quota & rate limit detection (`ThrottlingException`, HTTP 429, capacity limits) with zero-downtime hot-swapping
 - Interactive "Simulate Quota Limit" test toggle in UI with Execution Trace waterfall telemetry
-- Built-in offline autonomous simulator so judges can test every feature without AWS credentials
+- Built-in offline autonomous simulator for comprehensive local testing without requiring external cloud credentials
 
 **Web Interface (4 Views)**
 - **Orchestrator Console** — command bar with voice input, one-click workflow chips, hierarchical agent plan tree, and expandable tool call disclosures showing JSON-RPC arguments and results
@@ -138,21 +136,9 @@ Without this file, the built-in intent engine handles all requests locally.
 
 ---
 
-## Demo Video Script (3 Minutes)
+## Developer Experience & Friction Log
 
-| Time | What to show |
-| :--- | :--- |
-| 0:00 - 0:35 | The problem with single-turn voice skills. How Aura+ uses Streamable HTTP MCP + Bedrock to plan and execute autonomously. |
-| 0:35 - 1:15 | Click "Activate Deep Focus routine" in the Orchestrator Console. Show the voice waveform, chime, agent plan tree, and tool call disclosures. |
-| 1:15 - 1:50 | Switch to **Execution Trace**. Walk through the waterfall spans and timing ruler. |
-| 1:50 - 2:25 | Switch to **Power Grid & Telemetry**. Scrub the solar chart, toggle Powerwall modes. Open **Device Topology** and toggle a device. |
-| 2:25 - 3:00 | Wrap up with MIT license, Bedrock integration, and the [FRICTION_LOG.md](FRICTION_LOG.md) for the 10% judging bonus. |
-
----
-
-## Friction Log
-
-See [FRICTION_LOG.md](FRICTION_LOG.md) for documented issues with Streamable HTTP session binding, Bedrock schema normalization, and real-time card state sync. This qualifies for the **10% judging bonus**.
+See [FRICTION_LOG.md](FRICTION_LOG.md) for detailed observations on Streamable HTTP session binding across reconnects, Bedrock schema interoperability, and real-time state synchronization.
 
 ---
 

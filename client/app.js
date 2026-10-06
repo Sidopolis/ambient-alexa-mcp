@@ -861,6 +861,17 @@ function initNavTabs() {
       });
     });
   });
+
+  // Deep linking via URL hash (#view-trace, #view-energy, #view-devices, #view-console)
+  function handleHashNavigation() {
+    const hash = window.location.hash.replace("#", "");
+    if (hash) {
+      const matchingTab = document.querySelector(`[data-view="${hash}"]`);
+      if (matchingTab) matchingTab.click();
+    }
+  }
+  window.addEventListener("hashchange", handleHashNavigation);
+  handleHashNavigation();
 }
 
 async function fetchCurrentState() {
