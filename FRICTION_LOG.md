@@ -1,5 +1,5 @@
 # Developer Friction Log — Amazon Developer Hackathon 2026
-**Project:** Aura+ (Alexa+ Model Context Protocol & AWS Bedrock Agent)  
+**Project:** Ambient (Alexa+ Model Context Protocol & AWS Bedrock Agent)  
 **Track:** Alexa+ (Primary Track) | **Mini-Challenges:** AWS Builder & Open Source  
 **Author:** Sidhant Patro  
 

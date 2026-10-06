@@ -1,5 +1,5 @@
 {
-  "name": "auraplus-mcp-server",
+  "name": "ambient-mcp-server",
   "version": "1.0.0",
   "description": "Self-hosted Streamable HTTP Model Context Protocol (MCP) server for Alexa+ with AWS Bedrock integration",
   "main": "src/index.js",

@@ -1,5 +1,5 @@
 /**
- * Aura+ Self-Hosted Streamable HTTP Model Context Protocol (MCP) Server
+ * Ambient Self-Hosted Streamable HTTP Model Context Protocol (MCP) Server
  * Entry point for Alexa+ integrations and Simulated Web Experience.
  * Compliant with MCP Spec 2025-11-25+ & AWS Bedrock Runtime.
  */
@@ -62,7 +62,7 @@ app.get("/sse", (req, res) => {
 
   broadcastMcpEvent("handshake", {
     protocolVersion: "2025-11-25",
-    serverName: "AuraPlus-AlexaPlus-MCP",
+    serverName: "Ambient-AlexaPlus-MCP",
     serverVersion: "1.0.0",
     capabilities: {
       tools: { listChanged: true },
@@ -98,7 +98,7 @@ app.post("/messages", async (req, res) => {
             resources: {}
           },
           serverInfo: {
-            name: "AuraPlus-AlexaPlus-MCP",
+            name: "Ambient-AlexaPlus-MCP",
             version: "1.0.0"
           }
         };
@@ -299,7 +299,7 @@ app.get("*", (req, res) => {
 // Start Server
 app.listen(PORT, () => {
   console.log(`\n========================================================`);
-  console.log(`🚀 Aura+ Self-Hosted MCP Server & Alexa+ Simulator Running!`);
+  console.log(`🚀 Ambient Self-Hosted MCP Server & Alexa+ Simulator Running!`);
   console.log(`🌐 Web Experience URL:       http://localhost:${PORT}`);
   console.log(`📡 Streamable HTTP (SSE):    http://localhost:${PORT}/sse`);
   console.log(`💬 MCP JSON-RPC Messages:    http://localhost:${PORT}/messages`);

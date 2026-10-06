@@ -1,5 +1,5 @@
 /**
- * Aura+ Client Controller v4.1
+ * Ambient Client Controller v4.2
  * MCP Spec 2025-11-25+ | AWS Bedrock Runtime
  */
 
@@ -502,7 +502,7 @@ async function handleUserPrompt(promptText) {
           if (qfbTitle) qfbTitle.textContent = "Multi-Model Quota Failover Active";
           if (qfbDesc) {
             const primaryName = formatModelName(data.primaryModel || "Claude 3.5 Sonnet");
-            qfbDesc.innerHTML = `Primary model (<strong>${escapeHtml(primaryName)}</strong>) reached quota or rate limit. Aura+ automatically failed over to <strong>${escapeHtml(modelDisplayName)}</strong> in ${data.latencyMs}ms with zero disruption.`;
+            qfbDesc.innerHTML = `Primary model (<strong>${escapeHtml(primaryName)}</strong>) reached quota or rate limit. Ambient automatically failed over to <strong>${escapeHtml(modelDisplayName)}</strong> in ${data.latencyMs}ms with zero disruption.`;
           }
         }
 

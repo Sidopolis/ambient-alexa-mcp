@@ -154,7 +154,7 @@ async function invokeBedrockModel(modelId, userPrompt, conversationContext = [])
       modelId,
       messages: formattedMessages,
       system: [{
-        text: `You are Aura+, an autonomous agent built for Alexa+. You have access to Model Context Protocol (MCP) tools: smart_home_control, manage_context_memory, execute_multi_step_routine, and render_interactive_card. Choose tools intelligently to help the user.`
+        text: `You are Ambient, an autonomous agent built for Alexa+. You have access to Model Context Protocol (MCP) tools: smart_home_control, manage_context_memory, execute_multi_step_routine, and render_interactive_card. Choose tools intelligently to help the user.`
       }],
       inferenceConfig: {
         maxTokens: 1024,
@@ -211,7 +211,7 @@ async function invokeBedrockModel(modelId, userPrompt, conversationContext = [])
           ...conversationContext,
           { role: "user", content: userPrompt }
         ],
-        system: `You are Aura+, an autonomous agent built for Alexa+. You have access to Model Context Protocol (MCP) tools: smart_home_control, manage_context_memory, execute_multi_step_routine, and render_interactive_card. Choose tools intelligently to help the user.`,
+        system: `You are Ambient, an autonomous agent built for Alexa+. You have access to Model Context Protocol (MCP) tools: smart_home_control, manage_context_memory, execute_multi_step_routine, and render_interactive_card. Choose tools intelligently to help the user.`,
         tools: toolDefinitions.map(t => ({
           name: t.name,
           description: t.description,
@@ -266,7 +266,7 @@ async function invokeGeminiModel(userPrompt, conversationContext = []) {
       ],
       systemInstruction: {
         parts: [{
-          text: "You are Aura+, an autonomous agent built for Alexa+. Choose Model Context Protocol (MCP) tools to help the user."
+          text: "You are Ambient, an autonomous agent built for Alexa+. Choose Model Context Protocol (MCP) tools to help the user."
         }]
       },
       tools: [{
@@ -330,7 +330,7 @@ async function invokeOpenAIModel(userPrompt, conversationContext = []) {
       messages: [
         {
           role: "system",
-          content: "You are Aura+, an autonomous agent built for Alexa+. Use MCP tools when appropriate."
+          content: "You are Ambient, an autonomous agent built for Alexa+. Use MCP tools when appropriate."
         },
         ...conversationContext,
         { role: "user", content: userPrompt }
@@ -417,7 +417,7 @@ export async function runAgentReasoning(userPrompt, conversationContext = [], op
   if (bedrockClient && !simulateQuota) {
     for (const modelId of modelsToAttempt) {
       try {
-        console.log(`[Aura+ Reasoning] Attempting model: ${modelId}`);
+        console.log(`[Ambient Reasoning] Attempting model: ${modelId}`);
         const res = await invokeBedrockModel(modelId, userPrompt, conversationContext);
 
         fallbackChain.push({
@@ -446,7 +446,7 @@ export async function runAgentReasoning(userPrompt, conversationContext = [], op
     }
   } else if (simulateQuota) {
     // Explicit simulation of quota limit on primary model
-    console.warn(`[Aura+ Simulation] Simulating quota limit on primary model: ${defaultModelId}`);
+    console.warn(`[Ambient Simulation] Simulating quota limit on primary model: ${defaultModelId}`);
     fallbackChain.push({
       model: defaultModelId,
       status: "quota_exceeded",
@@ -468,7 +468,7 @@ export async function runAgentReasoning(userPrompt, conversationContext = [], op
   if (!successfulResult && !simulateQuota) {
     if (geminiApiKey) {
       try {
-        console.log("[Aura+ Reasoning] Falling back to Google Gemini 2.0 Flash...");
+        console.log("[Ambient Reasoning] Falling back to Google Gemini 2.0 Flash...");
         const res = await invokeGeminiModel(userPrompt, conversationContext);
         fallbackChain.push({
           model: res.model,
@@ -490,7 +490,7 @@ export async function runAgentReasoning(userPrompt, conversationContext = [], op
 
     if (!successfulResult && openAiApiKey) {
       try {
-        console.log("[Aura+ Reasoning] Falling back to OpenAI GPT-4o Mini...");
+        console.log("[Ambient Reasoning] Falling back to OpenAI GPT-4o Mini...");
         const res = await invokeOpenAIModel(userPrompt, conversationContext);
         fallbackChain.push({
           model: res.model,
@@ -709,7 +709,7 @@ function formulateAutonomousPlan(prompt) {
     responseText: `Connected to your MCP server over Streamable HTTP. You can control devices, run routines, or check your memory store.`,
     defaultCard: {
       cardType: "smart_suggestion",
-      title: "Aura+ Assistant Ready",
+      title: "Ambient Assistant Ready",
       details: {
         protocol: "Model Context Protocol (Spec 2025-11-25+)",
         transport: "Streamable HTTP / Server-Sent Events",

@@ -1,8 +1,8 @@
-# Aura+ | Autonomous Alexa+ Agent Platform
-> Self-hosted Model Context Protocol (MCP) server & autonomous Alexa+ orchestrator powered by AWS Bedrock for the Amazon Developer Hackathon.
+# Ambient | Autonomous Alexa+ Agent Platform
+> Self-hosted Model Context Protocol (MCP) server and autonomous Alexa+ orchestrator powered by AWS Bedrock for the Amazon Developer Hackathon.
 
 ## System Overview
-- **Name**: Aura+
+- **Name**: Ambient
 - **Track**: Amazon Developer Hackathon — Alexa+ Primary Track, AWS Builder & Open Source Mini-Challenges
 - **Protocol**: MCP Specification (2025-11-25+ Streamable HTTP Transport `/sse` and `/messages`)
 - **Reasoning Runtime**: AWS Bedrock Multi-Model Cascade (Anthropic Claude 3.5 Sonnet, Amazon Nova Pro, Google Gemini 2.0 Flash, Offline Autonomous Simulator)

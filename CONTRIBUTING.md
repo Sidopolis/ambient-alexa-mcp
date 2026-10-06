@@ -1,6 +1,6 @@
-# Contributing to Aura+
+# Contributing to Ambient
 
-Thank you for your interest in contributing to **Aura+**! This project is an open-source, self-hosted Model Context Protocol (MCP) server and ambient agent interface built for the Amazon Developer Hackathon 2026.
+Thank you for your interest in contributing to **Ambient**! This project is an open-source, self-hosted Model Context Protocol (MCP) server and ambient agent interface built for the Amazon Developer Hackathon 2026.
 
 We welcome contributions from the community, including bug reports, documentation updates, new MCP tools, and test cases.
 
@@ -122,4 +122,4 @@ All 16 unit tests should exit with code 0. If you add new functionality, please 
 
 ## License
 
-By contributing to Aura+, you agree that your contributions will be licensed under the [MIT License](LICENSE).
+By contributing to Ambient, you agree that your contributions will be licensed under the [MIT License](LICENSE).

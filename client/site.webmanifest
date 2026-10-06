@@ -1,6 +1,6 @@
 {
-  "name": "Aura+ | Autonomous Alexa+ Agent Platform",
-  "short_name": "Aura+",
+  "name": "Ambient | Autonomous Alexa+ Agent Platform",
+  "short_name": "Ambient",
   "description": "Self-hosted Model Context Protocol (MCP) server & autonomous Alexa+ agent powered by AWS Bedrock.",
   "start_url": "/",
   "display": "standalone",

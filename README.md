@@ -1,4 +1,4 @@
-# Aura+
+# Ambient
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![MCP Spec](https://img.shields.io/badge/MCP%20Spec-2025--11--25%20Streamable%20HTTP-brightgreen.svg)](https://modelcontextprotocol.io/)
@@ -10,7 +10,7 @@ A self-hosted Model Context Protocol (MCP) server and web dashboard for Alexa+, 
 
 ## Overview
 
-Aura+ connects an Alexa+ interface to smart home devices through the Model Context Protocol (MCP). Unlike traditional single-turn voice skills, Aura+ can break down complex requests into multi-step routines, save user preferences across sessions, and show interactive controls directly on screen.
+Ambient connects an Alexa+ interface to smart home devices through the Model Context Protocol (MCP). Unlike traditional single-turn voice skills, Ambient can break down complex requests into multi-step routines, save user preferences across sessions, and show interactive controls directly on screen.
 
 It uses the open **Streamable HTTP** transport (MCP Spec 2025-11-25+) with Server-Sent Events (SSE) and JSON-RPC 2.0. For reasoning, it calls **AWS Bedrock** (Claude 3.5 Sonnet and Amazon Nova). If AWS credentials are not set, it uses a local simulator so you can test everything out of the box.
 

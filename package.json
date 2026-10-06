@@ -1,7 +1,7 @@
 {
-  "name": "auraplus-alexa-mcp",
+  "name": "ambient-alexa-mcp",
   "version": "1.0.0",
-  "description": "Aura+ - Autonomous Agent & Model Context Protocol (MCP) Ecosystem for Alexa+ with AWS Bedrock",
+  "description": "Ambient - Autonomous Agent & Model Context Protocol (MCP) Ecosystem for Alexa+ with AWS Bedrock",
   "scripts": {
     "start": "npm --prefix server start",
     "dev": "npm --prefix server run dev",

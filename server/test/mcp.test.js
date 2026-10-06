@@ -1,5 +1,5 @@
 /**
- * Aura+ Automated Test Suite
+ * Ambient Automated Test Suite
  * Validates MCP Streamable HTTP endpoints, JSON-RPC 2.0 schemas, and Tool Execution.
  */
 
