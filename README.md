@@ -70,6 +70,20 @@ graph TD
 
 ---
 
+## User Interface & Interactive Views
+
+| 1. Orchestrator Console & Hierarchical Agent Plan | 2. Execution Trace & Latency Waterfall |
+| :---: | :---: |
+| ![Orchestrator Console](docs/screenshots/01-orchestrator-console.png) | ![Execution Trace](docs/screenshots/02-execution-trace.png) |
+| *Natural language command bar, routine chips, agent plan tree & live MCP tool disclosures* | *Sub-millisecond waterfall spans, 0-480ms ruler & multi-model quota failover cascade* |
+
+| 3. Power Grid & Telemetry | 4. Connected Device Matrix (Digital Twin) |
+| :---: | :---: |
+| ![Power Grid & Telemetry](docs/screenshots/03-power-grid-telemetry.png) | ![Device Topology](docs/screenshots/04-device-topology.png) |
+| *Interactive solar scrubber, Tesla Powerwall 3 battery mode & multi-zone climate hub* | *Real-time digital twin matrix synchronized via Streamable HTTP tool calls* |
+
+---
+
 ## Quick Start
 
 **Prerequisites:** Node.js v18+, npm v9+
@@ -139,6 +153,33 @@ Without this file, the built-in intent engine handles all requests locally.
 ## Friction Log
 
 See [FRICTION_LOG.md](FRICTION_LOG.md) for documented issues with Streamable HTTP session binding, Bedrock schema normalization, and real-time card state sync. This qualifies for the **10% judging bonus**.
+
+---
+
+## Public Deployment
+
+### Option 1: Render (Recommended for Streamable HTTP SSE)
+Aura+ uses continuous Server-Sent Events (`/sse`) for real-time telemetry and MCP session binding. Platforms that support persistent Node.js processes (such as Render, Railway, or Fly.io) maintain open SSE connections indefinitely without serverless execution timeouts.
+
+1. Fork or push to your GitHub repository.
+2. Sign in to [Render](https://render.com) and click **New + ➔ Web Service** (or use the blueprint with `render.yaml`).
+3. Set:
+   - **Build Command**: `npm install`
+   - **Start Command**: `npm start`
+4. *(Optional)* Add your `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` under Environment Variables.
+5. Your service will be live at `https://your-app.onrender.com`.
+
+### Option 2: Vercel (Serverless / Static Preview)
+For serverless hosting or frontend previews, a `vercel.json` configuration is provided in the repository. Note that on serverless architectures, individual lambda execution timeouts (10s on free Hobby tier) will periodically reconnect the SSE stream, but standard JSON-RPC tool calling and UI simulation remain fully functional.
+
+1. Install the Vercel CLI: `npm i -g vercel`
+2. Run `vercel` from the project root and follow the prompts.
+
+---
+
+## Contributing
+
+Contributions, bug reports, and feature requests are welcome! See our [CONTRIBUTING.md](CONTRIBUTING.md) for architecture guidelines, MCP tool registration standards, and local testing instructions.
 
 ---
 

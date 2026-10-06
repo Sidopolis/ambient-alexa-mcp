@@ -306,3 +306,5 @@ app.listen(PORT, () => {
   console.log(`[Bedrock] Integration:       Configured (Spec 2025-11-25+)`);
   console.log(`========================================================\n`);
 });
+
+export default app;
