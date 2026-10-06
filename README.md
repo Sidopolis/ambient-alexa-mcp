@@ -1,19 +1,18 @@
 # Aura+
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Hackathon: Amazon Developer 2026](https://img.shields.io/badge/Amazon%20Developer%20Hackathon-Alexa%2B%20Track-orange.svg)](https://amazonappdev2026.devpost.com/)
 [![MCP Spec](https://img.shields.io/badge/MCP%20Spec-2025--11--25%20Streamable%20HTTP-brightgreen.svg)](https://modelcontextprotocol.io/)
 [![AWS Bedrock](https://img.shields.io/badge/AWS-Bedrock%20Runtime-FF9900.svg)](https://aws.amazon.com/bedrock/)
 
-> Autonomous ambient agent and self-hosted Model Context Protocol (MCP) server for Alexa+ with AWS Bedrock reasoning, multi-model failover, and interactive digital twin telemetry.
+A self-hosted Model Context Protocol (MCP) server and web dashboard for Alexa+, powered by AWS Bedrock.
 
 ---
 
-## What is Aura+?
+## Overview
 
-Aura+ is a self-hosted MCP server and ambient Alexa+ agent that goes beyond traditional single-turn voice skills. Instead of "ask a question, get an answer," Aura+ plans and executes multi-step tasks across connected smart homes, persists user context across sessions, and renders interactive controls directly on screen.
+Aura+ connects an Alexa+ interface to smart home devices through the Model Context Protocol (MCP). Unlike traditional single-turn voice skills, Aura+ can break down complex requests into multi-step routines, save user preferences across sessions, and show interactive controls directly on screen.
 
-It runs on the open **Streamable HTTP** transport (MCP Spec 2025-11-25+) and connects with **AWS Bedrock** (Claude 3.5 Sonnet & Amazon Nova) for reasoning and tool selection. When AWS credentials are not configured, it seamlessly runs an autonomous simulation engine for zero-config local development and testing.
+It uses the open **Streamable HTTP** transport (MCP Spec 2025-11-25+) with Server-Sent Events (SSE) and JSON-RPC 2.0. For reasoning, it calls **AWS Bedrock** (Claude 3.5 Sonnet and Amazon Nova). If AWS credentials are not set, it uses a local simulator so you can test everything out of the box.
 
 ---
 
@@ -21,15 +20,15 @@ It runs on the open **Streamable HTTP** transport (MCP Spec 2025-11-25+) and con
 
 ```mermaid
 graph TD
-    User(["User Voice / Text Input"]) --> Client["Alexa+ Interface"]
+    User["User Voice / Text Input"] --> Client["Alexa+ Web Interface"]
 
     subgraph Transport["Streamable HTTP Transport"]
-        Client <-->|"SSE Stream /sse"| MCP["MCP Server - Express/Node.js"]
-        Client <-->|"JSON-RPC 2.0 /messages"| MCP
+        Client <-->|"SSE Stream /sse"| MCP["MCP Server (Express)"]
+        Client <-->|"JSON-RPC /messages"| MCP
     end
 
     subgraph AWS["AWS Cloud"]
-        MCP <-->|"Bedrock Runtime SDK"| Bedrock["Amazon Bedrock - Claude 3.5 Sonnet"]
+        MCP <-->|"Bedrock SDK"| Bedrock["Amazon Bedrock"]
     end
 
     subgraph Tools["MCP Tools"]
@@ -42,69 +41,65 @@ graph TD
 
 ---
 
-## Key Features
+## Screenshots
 
-**MCP Server**
-- Full Streamable HTTP implementation with SSE (`/sse`) and JSON-RPC 2.0 (`/messages`)
-- 4 registered tools: device control, multi-step routines, persistent memory, and visual card rendering
-- MCP Resources for user profile (`alexa://user/profile`) and system telemetry (`alexa://system/telemetry`)
-
-**AWS Bedrock Multi-Model Quota Failover**
-- Multi-Model Cascade: Primary (Claude 3.5 Sonnet) ➔ Amazon Nova Pro ➔ Claude 3 Haiku ➔ Amazon Nova Lite ➔ Gemini / OpenAI ➔ Offline Simulator
-- Automatic quota & rate limit detection (`ThrottlingException`, HTTP 429, capacity limits) with zero-downtime hot-swapping
-- Interactive "Simulate Quota Limit" test toggle in UI with Execution Trace waterfall telemetry
-- Built-in offline autonomous simulator for comprehensive local testing without requiring external cloud credentials
-
-**Web Interface (4 Views)**
-- **Orchestrator Console** — command bar with voice input, one-click workflow chips, hierarchical agent plan tree, and expandable tool call disclosures showing JSON-RPC arguments and results
-- **Execution Trace** — waterfall visualization of each span (model reasoning, tool execution, SSE broadcast) with a calibrated 0-480ms ruler
-- **Power Grid & Telemetry** — interactive solar/load area chart with crosshair scrubber, Tesla Powerwall 3 battery tank, and multi-zone climate controller
-- **Device Topology** — digital twin matrix showing all connected devices with live state and toggle controls
-
-**Audio & Voice**
-- Web Audio API chimes for wake and success feedback
-- Browser SpeechRecognition for voice input
-- SpeechSynthesis TTS for Alexa-style spoken responses
-
----
-
-## User Interface & Interactive Views
-
-| 1. Orchestrator Console & Hierarchical Agent Plan | 2. Execution Trace & Latency Waterfall |
+| Orchestrator Console | Execution Trace |
 | :---: | :---: |
 | ![Orchestrator Console](docs/screenshots/01-orchestrator-console.png) | ![Execution Trace](docs/screenshots/02-execution-trace.png) |
-| *Natural language command bar, routine chips, agent plan tree & live MCP tool disclosures* | *Sub-millisecond waterfall spans, 0-480ms ruler & multi-model quota failover cascade* |
+| *Command bar, quick routines, agent plan tree, and tool calls* | *Trace waterfall showing latency across model, tools, and SSE* |
 
-| 3. Power Grid & Telemetry | 4. Connected Device Matrix (Digital Twin) |
+| Power Grid & Telemetry | Device Topology |
 | :---: | :---: |
 | ![Power Grid & Telemetry](docs/screenshots/03-power-grid-telemetry.png) | ![Device Topology](docs/screenshots/04-device-topology.png) |
-| *Interactive solar scrubber, Tesla Powerwall 3 battery mode & multi-zone climate hub* | *Real-time digital twin matrix synchronized via Streamable HTTP tool calls* |
+| *Solar generation curve, Powerwall controls, and climate setpoint* | *Digital twin device grid with live status toggles* |
 
 ---
 
-## Quick Start
+## Features
 
-**Prerequisites:** Node.js v18+, npm v9+
-
-```bash
-git clone https://github.com/Sidopolis/ambient-alexa-mcp.git
-cd ambient-alexa-mcp
-npm start
-```
-
-Open `http://localhost:3000` in your browser.
-
-Run the test suite:
-```bash
-npm test
-```
-This runs 16 tests covering MCP tool schemas, execution engine, intent parsing, and multi-model quota failover.
+- **Streamable HTTP MCP Server**: Conforms to the MCP Spec (2025-11-25+) with `/sse` for event streaming and `/messages` for JSON-RPC 2.0 requests.
+- **AWS Bedrock Integration**: Uses `@aws-sdk/client-bedrock-runtime` for tool calling and reasoning with Claude 3.5 Sonnet and Amazon Nova Pro.
+- **Model Fallback**: If Bedrock hits a rate limit (HTTP 429 / ThrottlingException), the server automatically falls back to secondary models or the local simulator.
+- **Interactive Web Interface**: 4 tab views (Console, Trace, Energy, Devices) with voice input, audio cues, and responsive controls.
+- **Context Memory**: Persists user settings and preferences across sessions via MCP resource and tool endpoints.
 
 ---
 
-## AWS Bedrock Setup (Optional)
+## Getting Started
 
-Create `server/.env`:
+### Prerequisites
+
+- Node.js 18+
+- npm 9+
+
+### Run Locally
+
+1. Clone the repository and install dependencies:
+   ```bash
+   git clone https://github.com/Sidopolis/ambient-alexa-mcp.git
+   cd ambient-alexa-mcp
+   npm install
+   ```
+
+2. Start the server:
+   ```bash
+   npm start
+   ```
+
+3. Open `http://localhost:3000` in your browser.
+
+4. Run the test suite:
+   ```bash
+   npm test
+   ```
+   Runs 16 unit tests covering MCP tool schemas, tool execution, intent parsing, and fallback logic.
+
+---
+
+## AWS Bedrock Configuration (Optional)
+
+To connect directly to AWS Bedrock instead of the local simulator, add a `server/.env` file:
+
 ```env
 AWS_REGION=us-east-1
 AWS_ACCESS_KEY_ID=your_access_key
@@ -112,60 +107,40 @@ AWS_SECRET_ACCESS_KEY=your_secret_key
 BEDROCK_MODEL_ID=anthropic.claude-3-5-sonnet-20240620-v1:0
 PORT=3000
 ```
-Restart the server. Aura+ detects the credentials and routes queries through Bedrock automatically.
 
-Without this file, the built-in intent engine handles all requests locally.
+Restart the server to apply the changes.
 
 ---
 
 ## MCP Tools & Resources
 
-### Tools (`tools/list` & `tools/call`)
-| Tool | Parameters | What it does |
+### Registered Tools (`tools/list` & `tools/call`)
+
+| Tool | Parameters | Description |
 | :--- | :--- | :--- |
-| `smart_home_control` | `deviceId`, `action`, `value` | Controls lights, thermostats, locks, speakers |
-| `execute_multi_step_routine` | `routineName`, `steps[]` | Runs sequential multi-device routines |
-| `manage_context_memory` | `operation`, `key`, `value` | Persists user preferences across sessions |
-| `render_interactive_card` | `cardType`, `title`, `details` | Renders UI cards on the visual surface |
+| `smart_home_control` | `deviceId`, `action`, `value` | Controls lights, thermostat, lock, and speakers |
+| `execute_multi_step_routine` | `routineName`, `steps[]` | Runs a sequence of actions across multiple devices |
+| `manage_context_memory` | `operation`, `key`, `value` | Reads and writes user preferences across sessions |
+| `render_interactive_card` | `cardType`, `title`, `details` | Sends visual cards to the client display |
 
 ### Resources (`resources/list` & `resources/read`)
-| URI | Type | Content |
+
+| URI | MIME Type | Description |
 | :--- | :--- | :--- |
-| `alexa://user/profile` | `application/json` | Device topology, routines, and todo list |
-| `alexa://system/telemetry` | `application/json` | Uptime, SSE connections, protocol health |
+| `alexa://user/profile` | `application/json` | Current device states, routines, and user todo list |
+| `alexa://system/telemetry` | `application/json` | Server uptime, active SSE clients, and protocol health |
 
 ---
 
 ## Developer Experience & Friction Log
 
-See [FRICTION_LOG.md](FRICTION_LOG.md) for detailed observations on Streamable HTTP session binding across reconnects, Bedrock schema interoperability, and real-time state synchronization.
-
----
-
-## Public Deployment
-
-### Option 1: Render (Recommended for Streamable HTTP SSE)
-Aura+ uses continuous Server-Sent Events (`/sse`) for real-time telemetry and MCP session binding. Platforms that support persistent Node.js processes (such as Render, Railway, or Fly.io) maintain open SSE connections indefinitely without serverless execution timeouts.
-
-1. Fork or push to your GitHub repository.
-2. Sign in to [Render](https://render.com) and click **New + ➔ Web Service** (or use the blueprint with `render.yaml`).
-3. Set:
-   - **Build Command**: `npm install`
-   - **Start Command**: `npm start`
-4. *(Optional)* Add your `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` under Environment Variables.
-5. Your service will be live at `https://your-app.onrender.com`.
-
-### Option 2: Vercel (Serverless / Static Preview)
-For serverless hosting or frontend previews, a `vercel.json` configuration is provided in the repository. Note that on serverless architectures, individual lambda execution timeouts (10s on free Hobby tier) will periodically reconnect the SSE stream, but standard JSON-RPC tool calling and UI simulation remain fully functional.
-
-1. Install the Vercel CLI: `npm i -g vercel`
-2. Run `vercel` from the project root and follow the prompts.
+See [FRICTION_LOG.md](FRICTION_LOG.md) for notes on MCP session binding, Bedrock tool schema formats, and client-server state synchronization.
 
 ---
 
 ## Contributing
 
-Contributions, bug reports, and feature requests are welcome! See our [CONTRIBUTING.md](CONTRIBUTING.md) for architecture guidelines, MCP tool registration standards, and local testing instructions.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on code standards, adding new MCP tools, and running tests.
 
 ---
 

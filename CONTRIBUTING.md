@@ -2,7 +2,7 @@
 
 Thank you for your interest in contributing to **Aura+**! This project is an open-source, self-hosted Model Context Protocol (MCP) server and ambient agent interface built for the Amazon Developer Hackathon 2026.
 
-We welcome contributions from the community—whether it's reporting bugs, improving documentation, adding new MCP tools, or extending AWS Bedrock model cascades.
+We welcome contributions from the community, including bug reports, documentation updates, new MCP tools, and test cases.
 
 ---
 
