@@ -30,8 +30,8 @@
   <meta name="twitter:description" content="Self-hosted Streamable HTTP MCP server for Alexa+ with AWS Bedrock integration.">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%2309090b' stroke='%2300d2ff' stroke-width='2'/%3E%3Cpath d='M11 16h10M16 11v10' stroke='%2300d2ff' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
-  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%2309090b'/%3E%3Ccircle cx='90' cy='90' r='60' fill='none' stroke='%2300d2ff' stroke-width='6'/%3E%3Cpath d='M65 90h50M90 65v50' stroke='%2300d2ff' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="icon" type="image/svg+xml" href="ambient-alexa.svg">
+  <link rel="apple-touch-icon" href="ambient-alexa.svg">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Ambient">
@@ -61,7 +61,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=4.2">
+  <link rel="stylesheet" href="style.css?v=4.3">
 </head>
 <body class="dotgrid-bg">
   <!-- Skip Navigation Link -->
@@ -74,6 +74,17 @@
     <header class="app-header" role="banner">
       <div class="header-top-row">
         <div class="brand-group">
+          <div class="brand-logo-mark" aria-hidden="true">
+            <svg viewBox="0 0 56 48" width="22" height="19" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="brandLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00d2ff"/>
+                  <stop offset="100%" stop-color="#00cd8f"/>
+                </linearGradient>
+              </defs>
+              <path d="M56 11.8L46.4 0H21.8L31.4 11.8L21.8 23.6L12.2 11.8L21.8 0H9.59999L0 11.8L9.59999 23.6L0 35.4L9.59999 47.2H34.3L24.6 35.4L34.3 23.6L43.9 35.4L34.3 47.2H46.4L56 35.4L46.4 23.6L56 11.8Z" fill="url(#brandLogoGrad)"/>
+            </svg>
+          </div>
           <div class="brand-badge">ALEXA+ PLATFORM</div>
           <h1 class="brand-title">Ambient</h1>
           <span class="brand-divider">/</span>

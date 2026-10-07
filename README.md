@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="ambient-alexa.svg" width="60" height="52" alt="Ambient Logo" />
+</p>
+
 # Ambient
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)

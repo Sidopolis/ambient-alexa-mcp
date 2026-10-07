@@ -200,6 +200,31 @@ body {
   flex-shrink: 0;
 }
 
+.brand-logo-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: rgba(0, 210, 255, 0.08);
+  border: 1px solid rgba(0, 210, 255, 0.22);
+  flex-shrink: 0;
+  transition: all 0.25s var(--ease-std);
+}
+
+.brand-logo-mark:hover {
+  background: rgba(0, 210, 255, 0.14);
+  border-color: rgba(0, 210, 255, 0.45);
+  transform: translateY(-1px);
+  box-shadow: 0 0 12px rgba(0, 210, 255, 0.35);
+}
+
+.brand-logo-mark svg {
+  display: block;
+  filter: drop-shadow(0 0 5px rgba(0, 210, 255, 0.4));
+}
+
 .brand-badge {
   font-family: var(--font-mono);
   font-size: 10px;
